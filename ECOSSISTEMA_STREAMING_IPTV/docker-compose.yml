@@ -1,0 +1,15 @@
+services:
+  # Guovin/iptv-api (~26k stars) - Motor de autocoleta, teste de velocidade e gerador M3U/EPG
+  iptv-api:
+    image: guovern/iptv-api:latest
+    container_name: iptv_api_engine
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - TZ=America/Sao_Paulo
+      - UPDATE_CRON=0 3 * * * # Atualiza diariamente às 03:00
+      - TIMEOUT=5 # Tempo limite de conexão por stream (segundos)
+    volumes:
+      - ./config:/app/config
+      - ./output:/app/output

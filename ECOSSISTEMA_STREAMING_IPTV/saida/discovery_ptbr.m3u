@@ -1,0 +1,25 @@
+#EXTM3U
+#EXTINF:-1 tvg-name="Discovery Channel FHD (PT-BR)" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/brazil/discovery-channel-br.png" group-title="🔬 Documentários e Ciência",Discovery Channel FHD (PT-BR)
+http://rtv30t.com:80/Wintvx/Wtv1020/71863.ts
+#EXTINF:-1 tvg-name="Discovery Kids 4K (PT-BR)" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/brazil/discovery-kids-br.png" group-title="🧸 Infantis e Desenhos",Discovery Kids 4K (PT-BR)
+http://rtv30t.com:80/Wintvx/Wtv1020/90250.ts
+#EXTINF:-1 tvg-name="Discovery Turbo 4K (PT-BR)" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/brazil/discovery-turbo-br.png" group-title="🚗 Motores e Velocidade",Discovery Turbo 4K (PT-BR)
+http://rtv30t.com:80/Wintvx/Wtv1020/90641.ts
+#EXTINF:-1 tvg-name="Discovery Home & Health 4K (PT-BR)" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/brazil/discovery-home-and-health-br.png" group-title="🏠 Estilo de Vida e Saúde",Discovery Home & Health 4K (PT-BR)
+http://rtv30t.com:80/Wintvx/Wtv1020/90251.ts
+#EXTINF:-1 tvg-name="Animal Planet 4K (PT-BR)" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/brazil/animal-planet-br.png" group-title="🦁 Vida Selvagem e Natureza",Animal Planet 4K (PT-BR)
+http://rtv30t.com:80/Wintvx/Wtv1020/71774.ts
+#EXTINF:-1 tvg-name="Investigation Discovery ID (PT-BR)" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/brazil/investigation-discovery-br.png" group-title="🔍 Investigação e Crimes",Investigation Discovery ID (PT-BR)
+http://rtv30t.com:80/Wintvx/Wtv1020/72151.ts
+#EXTINF:-1 tvg-name="Discovery Science 4K (PT-BR)" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/brazil/discovery-science-br.png" group-title="🔬 Documentários e Ciência",Discovery Science 4K (PT-BR)
+http://rtv30t.com:80/Wintvx/Wtv1020/103511.ts
+#EXTINF:-1 tvg-name="Discovery Theater 4K (PT-BR)" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/brazil/discovery-theater-br.png" group-title="🎬 Cultura e Documentários",Discovery Theater 4K (PT-BR)
+http://rtv30t.com:80/Wintvx/Wtv1020/103510.ts
+#EXTINF:-1 tvg-name="Discovery World 4K (PT-BR)" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/brazil/discovery-world-br.png" group-title="🌍 Viagens e Culturas",Discovery World 4K (PT-BR)
+http://rtv30t.com:80/Wintvx/Wtv1020/103509.ts
+#EXTINF:-1 tvg-name="Food Network 4K (PT-BR)" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/brazil/food-network-br.png" group-title="🍳 Culinária e Gastronomia",Food Network 4K (PT-BR)
+http://rtv30t.com:80/Wintvx/Wtv1020/103501.ts
+#EXTINF:-1 tvg-name="TLC 4K (PT-BR)" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/brazil/tlc-br.png" group-title="🏠 Estilo de Vida e Reality",TLC 4K (PT-BR)
+http://rtv30t.com:80/Wintvx/Wtv1020/103465.ts
+#EXTINF:-1 tvg-name="HGTV 4K (PT-BR)" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/brazil/hgtv-br.png" group-title="🏡 Reformas e Decoração",HGTV 4K (PT-BR)
+http://rtv30t.com:80/Wintvx/Wtv1020/103493.ts

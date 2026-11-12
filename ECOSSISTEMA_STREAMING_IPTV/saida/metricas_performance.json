@@ -1,0 +1,67 @@
+[
+  {
+    "nome": "Canal Gov - Oficial HD",
+    "nome_exibicao": "Canal Gov - Oficial HD",
+    "url": "https://stream.ebc.com.br/hls/canalgov/canalgov.m3u8",
+    "categoria": "Governo",
+    "logo": "https://raw.githubusercontent.com/fanmingming/live/main/tv/CanalGov.png",
+    "online": false,
+    "latencia_ms": 28.79,
+    "resolucao": "Desconhecida",
+    "bitrate_kbps": 0,
+    "selo_qualidade": "Offline",
+    "erro": "Erro Conexão: [Errno 11001] getaddrinfo failed"
+  },
+  {
+    "nome": "TV Brasil",
+    "nome_exibicao": "TV Brasil",
+    "url": "https://tvbrasil-stream.ebc.com.br/hls/tvbrasil/tvbrasil.m3u8",
+    "categoria": "Abertos",
+    "logo": "https://raw.githubusercontent.com/fanmingming/live/main/tv/TVBrasil.png",
+    "online": false,
+    "latencia_ms": 250.36,
+    "resolucao": "Desconhecida",
+    "bitrate_kbps": 0,
+    "selo_qualidade": "Offline",
+    "erro": "HTTP 400"
+  },
+  {
+    "nome": "NASA TV HD",
+    "nome_exibicao": "NASA TV HD [HD (720p)]",
+    "url": "https://ntv1.akamaized.net/hls/live/2014075/NASA-NTV1-HLS/master.m3u8",
+    "categoria": "Ciência e Documentários",
+    "logo": "https://raw.githubusercontent.com/fanmingming/live/main/tv/NASA.png",
+    "online": true,
+    "latencia_ms": 273.43,
+    "resolucao": "1280x720",
+    "bitrate_kbps": 2341,
+    "selo_qualidade": "HD (720p)",
+    "erro": ""
+  },
+  {
+    "nome": "Red Bull TV Live Sports",
+    "nome_exibicao": "Red Bull TV Live Sports [FHD (1080p)]",
+    "url": "https://rbmn-live.akamaized.net/hls/live/590964/BoRB-AT/master.m3u8",
+    "categoria": "Esportes",
+    "logo": "https://raw.githubusercontent.com/fanmingming/live/main/tv/RedBull.png",
+    "online": true,
+    "latencia_ms": 287.74,
+    "resolucao": "1920x1080",
+    "bitrate_kbps": 7612,
+    "selo_qualidade": "FHD (1080p)",
+    "erro": ""
+  },
+  {
+    "nome": "DW Deutsch",
+    "nome_exibicao": "DW Deutsch [FHD (1080p)]",
+    "url": "https://dwamdstream102.akamaized.net/hls/live/2015525/dwstream102/index.m3u8",
+    "categoria": "Notícias",
+    "logo": "https://raw.githubusercontent.com/fanmingming/live/main/tv/DW.png",
+    "online": true,
+    "latencia_ms": 681.71,
+    "resolucao": "1920x1080",
+    "bitrate_kbps": 6221,
+    "selo_qualidade": "FHD (1080p)",
+    "erro": ""
+  }
+]

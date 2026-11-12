@@ -1,0 +1,8 @@
+#EXTM3U name="Canais Otimizados Alta Fidelidade"
+#EXT-X-VERSION:3
+#EXTINF:-1 tvg-id="Red Bull TV Live Sports" tvg-name="Red Bull TV Live Sports" tvg-logo="https://raw.githubusercontent.com/fanmingming/live/main/tv/RedBull.png" group-title="Esportes",Red Bull TV Live Sports [FHD (1080p)]
+https://rbmn-live.akamaized.net/hls/live/590964/BoRB-AT/master.m3u8
+#EXTINF:-1 tvg-id="DW Deutsch" tvg-name="DW Deutsch" tvg-logo="https://raw.githubusercontent.com/fanmingming/live/main/tv/DW.png" group-title="Notícias",DW Deutsch [FHD (1080p)]
+https://dwamdstream102.akamaized.net/hls/live/2015525/dwstream102/index.m3u8
+#EXTINF:-1 tvg-id="NASA TV HD" tvg-name="NASA TV HD" tvg-logo="https://raw.githubusercontent.com/fanmingming/live/main/tv/NASA.png" group-title="Ciência e Documentários",NASA TV HD [HD (720p)]
+https://ntv1.akamaized.net/hls/live/2014075/NASA-NTV1-HLS/master.m3u8

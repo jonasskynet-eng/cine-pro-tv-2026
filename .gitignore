@@ -1,0 +1,57 @@
+# ==============================================================================
+# .gitignore - Projeto de Estudo & Central IPTV Pro 2026
+# ==============================================================================
+
+# Arquivos e listas brutas com mais de 50MB (limite do GitHub)
+*.m3u8_cache/
+*lista_rtv30t_wintvx.m3u
+ECOSSISTEMA_STREAMING_IPTV/saida/lista_rtv30t_wintvx.m3u
+*.ts
+
+# Python Cache & Bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Ambientes Virtuais
+venv/
+.venv/
+ENV/
+
+# Logs e Processos Temporários
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Editores e Sistema Operacional
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Backups temporários
+*.bak
+*.tmp
