@@ -29,6 +29,49 @@ c.execute("""
 """)
 c.execute("UPDATE canais SET status = 'INATIVO' WHERE qualidade IN ('4K Ultra HD', 'Full HD', '1080p')")
 
+# Desativação de canais europeus/italianos/nórdicos da Pluto TV descontinuados
+c.execute("""
+    UPDATE canais 
+    SET status = 'INATIVO' 
+    WHERE (url LIKE '%pluto%' OR nome LIKE '%pluto%')
+      AND (
+          nome LIKE '%(Sweden)%'
+          OR nome LIKE '% DK'
+          OR nome LIKE '% NO'
+          OR nome LIKE '%Alberto Sordi%'
+          OR nome LIKE '%Western IT%'
+          OR nome LIKE '%Scherzi e risate%'
+          OR nome LIKE '%Viaggi%'
+          OR nome LIKE '%Toto%'
+          OR nome LIKE '%Christmas tutto%'
+          OR nome LIKE '%Cinema Italiano%'
+          OR nome LIKE '%Bud & Terence%'
+          OR nome LIKE '%Humor (Sweden)%'
+          OR nome LIKE '%Horror (Sweden)%'
+          OR nome LIKE '%Film (Sweden)%'
+          OR nome LIKE '%Sci-Fi (Sweden)%'
+          OR nome LIKE '%Paranormal (Sweden)%'
+          OR nome LIKE '%Star Trek (Sweden)%'
+          OR nome LIKE '%Reaction%'
+          OR nome LIKE '%Sensacine%'
+          OR nome LIKE '%Pluto TV Cucina%'
+          OR nome LIKE '%Pluto TV PlutoTV%'
+          OR nome LIKE '%Pluto TV Horror%'
+          OR nome LIKE '%Pluto TV Paranormal%'
+          OR nome LIKE '%Pluto TV Cinema Orientale%'
+          OR nome LIKE '%Pluto TV Film Commedia%'
+          OR nome LIKE '%Pluto TV Film Storici%'
+          OR nome LIKE '%Pluto TV Film Romantici%'
+          OR nome LIKE '%Pluto TV Notti di Passione%'
+          OR nome LIKE '%Pluto TV Film Thriller%'
+          OR nome LIKE '%Pluto TV Film Azione%'
+          OR nome LIKE '%Pluto TV Legami Letali%'
+          OR nome LIKE '%Pluto TV Serie Sci-Fi%'
+          OR nome LIKE '%(United States)%'
+          OR nome LIKE '%LatAm%'
+      )
+""")
+
 
 # Lista Oficial de Canais de TV Aberta do Brasil 100% Verificados e Funcionais
 canais_tv_aberta_brasil = [
@@ -2032,6 +2075,273 @@ html_code = f"""<!DOCTYPE html>
             font-size: 12px;
             color: var(--text-main);
         }}
+
+        /* LOGO DO TOPO CINE PRO TV */
+        .brand-logo-svg {{
+            display: flex;
+            align-items: center;
+        }}
+        .brand-substatus {{
+            font-size: 11px;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 2px;
+        }}
+
+        /* BOTÃO FLUTUANTE EXPANDIR TELA TODA */
+        .btn-floating-expand {{
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            background: rgba(12, 19, 34, 0.88);
+            border: 1.5px solid rgba(16, 185, 129, 0.65);
+            color: #ffffff;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 11.5px;
+            font-weight: 800;
+            letter-spacing: 0.6px;
+            z-index: 25;
+            cursor: pointer;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.7), 0 0 16px rgba(16, 185, 129, 0.25);
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }}
+        .btn-floating-expand:hover {{
+            background: #10b981;
+            color: #060913;
+            border-color: #34d399;
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.65);
+            transform: translateY(-1px) scale(1.03);
+        }}
+        .btn-floating-expand .expand-icon {{
+            font-size: 15px;
+        }}
+
+        /* TELA CHEIA VERDADEIRA PARA O SCREEN-CONTAINER */
+        .screen-container:fullscreen {{
+            width: 100vw !important;
+            height: 100vh !important;
+            max-width: 100vw !important;
+            max-height: 100vh !important;
+            border-radius: 0 !important;
+            border: none !important;
+            background: #000 !important;
+        }}
+        .screen-container:-webkit-full-screen {{
+            width: 100vw !important;
+            height: 100vh !important;
+            max-width: 100vw !important;
+            max-height: 100vh !important;
+            border-radius: 0 !important;
+            border: none !important;
+            background: #000 !important;
+        }}
+
+        /* CARD DO GUIA DE PROGRAMAÇÃO EPG NO DOCK */
+        .epg-dock-card {{
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            padding: 8px 14px;
+            border-radius: 10px;
+            min-width: 320px;
+            max-width: 440px;
+            flex: 1;
+        }}
+        .epg-top-row {{
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            overflow: hidden;
+        }}
+        .epg-live-badge {{
+            font-size: 9.5px;
+            font-weight: 900;
+            color: #f43f5e;
+            background: rgba(244, 63, 94, 0.15);
+            border: 1px solid rgba(244, 63, 94, 0.35);
+            padding: 2px 6px;
+            border-radius: 5px;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            white-space: nowrap;
+        }}
+        .live-pulse-dot {{
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #f43f5e;
+            box-shadow: 0 0 6px #f43f5e;
+            animation: pulse-ring 1.5s infinite;
+        }}
+        .epg-clock {{
+            font-size: 11px;
+            font-weight: 800;
+            color: var(--emerald);
+            background: rgba(16, 185, 129, 0.1);
+            padding: 2px 6px;
+            border-radius: 5px;
+            white-space: nowrap;
+        }}
+        .epg-title {{
+            font-size: 11.5px;
+            font-weight: 700;
+            color: #fff;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }}
+        .epg-progress-track {{
+            width: 100%;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 2px;
+            overflow: hidden;
+        }}
+        .epg-progress-fill {{
+            height: 100%;
+            background: linear-gradient(90deg, #10b981 0%, #06b6d4 100%);
+            border-radius: 2px;
+            transition: width 0.5s ease;
+        }}
+        .epg-bottom-row {{
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            font-size: 10.5px;
+            overflow: hidden;
+        }}
+        .epg-next-tag {{
+            color: var(--amber);
+            font-weight: 800;
+            white-space: nowrap;
+        }}
+        .epg-next-title {{
+            color: var(--text-muted);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            flex: 1;
+        }}
+        .btn-epg-guide {{
+            background: rgba(16, 185, 129, 0.12);
+            border: 1px solid rgba(16, 185, 129, 0.35);
+            color: #6ee7b7;
+            font-size: 10px;
+            font-weight: 800;
+            padding: 3px 8px;
+            border-radius: 6px;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.15s;
+        }}
+        .btn-epg-guide:hover {{
+            background: #10b981;
+            color: #060913;
+        }}
+
+        /* MODAL EPG GRADE COMPLETA */
+        .epg-modal-panel {{
+            max-width: 600px;
+            width: 92%;
+            max-height: 85vh;
+            display: flex;
+            flex-direction: column;
+        }}
+        .epg-modal-header-left {{
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }}
+        .epg-modal-logo {{
+            width: 44px;
+            height: 44px;
+            background: #0f172a;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }}
+        .epg-modal-logo img {{
+            max-width: 85%;
+            max-height: 85%;
+            object-fit: contain;
+        }}
+        .epg-schedule-list {{
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            overflow-y: auto;
+            margin-top: 14px;
+            padding-right: 4px;
+        }}
+        .epg-item {{
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 12px 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            transition: border-color 0.2s;
+        }}
+        .epg-item.current {{
+            border-color: var(--emerald);
+            background: rgba(16, 185, 129, 0.08);
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.15);
+        }}
+        .epg-item-header {{
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }}
+        .epg-item-time {{
+            font-size: 11.5px;
+            font-weight: 800;
+            font-family: monospace;
+            color: var(--emerald);
+        }}
+        .epg-item-badge {{
+            font-size: 10px;
+            font-weight: 800;
+            padding: 2px 7px;
+            border-radius: 4px;
+        }}
+        .badge-live {{
+            background: rgba(244, 63, 94, 0.2);
+            color: #fda4af;
+            border: 1px solid rgba(244, 63, 94, 0.4);
+        }}
+        .badge-upcoming {{
+            background: rgba(148, 163, 184, 0.15);
+            color: #94a3b8;
+            border: 1px solid rgba(148, 163, 184, 0.3);
+        }}
+        .epg-item-title {{
+            font-size: 13.5px;
+            font-weight: 800;
+            color: #fff;
+        }}
+        .epg-item-desc {{
+            font-size: 11.5px;
+            color: var(--text-muted);
+            line-height: 1.4;
+        }}
+
     </style>
 </head>
 <body>
@@ -2039,13 +2349,37 @@ html_code = f"""<!DOCTYPE html>
     <!-- CABEÇALHO PROFISSIONAL COM GLASSMORPHISM -->
     <header>
         <div class="brand">
-            <div class="brand-badge">⚡</div>
-            <div class="brand-meta">
-                <h1>CENTRAL DE TV DIGITAL <span class="pro-tag">PRO 2026</span></h1>
-                <p>
-                    <span class="status-dot"></span>
-                    <span>100% Fibra Leve • Zero Travamento • <b id="totalCanaisBadge">{total_canais}</b> Canais</span>
-                </p>
+            <div class="brand-logo-svg" title="CINE PRO TV - Central Digital 2026">
+                <svg viewBox="0 0 460 88" width="220" height="42">
+                    <defs>
+                        <linearGradient id="tvGlow" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#10b981"/>
+                            <stop offset="50%" stop-color="#06b6d4"/>
+                            <stop offset="100%" stop-color="#3b82f6"/>
+                        </linearGradient>
+                        <linearGradient id="panelGlow" x1="0%" y1="0%" x2="0%" y2="100%">
+                            <stop offset="0%" stop-color="#1e293b"/>
+                            <stop offset="100%" stop-color="#090e1a"/>
+                        </linearGradient>
+                    </defs>
+                    <g transform="translate(6, 6)">
+                        <rect x="0" y="0" width="76" height="76" rx="20" fill="url(#panelGlow)" stroke="url(#tvGlow)" stroke-width="2.5"/>
+                        <path d="M16 24 C 24 20, 52 20, 60 24 C 64 36, 64 48, 60 60 C 52 64, 24 64, 16 60 C 12 48, 12 36, 16 24 Z" fill="rgba(16,185,129,0.15)" stroke="url(#tvGlow)" stroke-width="2"/>
+                        <polygon points="34,32 50,42 34,52" fill="url(#tvGlow)"/>
+                        <circle cx="58" cy="18" r="3.5" fill="#10b981"/>
+                    </g>
+                    <text x="96" y="40" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="28" font-weight="900" fill="#ffffff" letter-spacing="1">CINE<tspan fill="#10b981">PRO</tspan> <tspan fill="#06b6d4">TV</tspan></text>
+                    <rect x="96" y="47" width="210" height="2" rx="1" fill="url(#tvGlow)"/>
+                    <text x="96" y="66" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="800" fill="#94a3b8" letter-spacing="2">CENTRAL DIGITAL • 2026</text>
+                    <g transform="translate(365, 22)">
+                        <rect x="0" y="0" width="80" height="24" rx="6" fill="rgba(16,185,129,0.15)" stroke="#10b981" stroke-width="1.2"/>
+                        <text x="40" y="16" font-family="monospace" font-size="10.5" font-weight="900" fill="#6ee7b7" text-anchor="middle">ULTRA HD</text>
+                    </g>
+                </svg>
+            </div>
+            <div class="brand-substatus">
+                <span class="status-dot"></span>
+                <span>Fibra Leve • Zero Travamento • <b id="totalCanaisBadge">{total_canais}</b> Canais</span>
             </div>
         </div>
 
@@ -2080,6 +2414,12 @@ html_code = f"""<!DOCTYPE html>
                         <span class="tag-dot"></span>
                         <span id="screenStandardTagText">PADRÃO 16:9 • CINEMA</span>
                     </div>
+
+                    <!-- BOTÃO PROEMINENTE DE EXPANDIR NA TELA TODA -->
+                    <button id="btnFloatingFullscreen" class="btn-floating-expand" title="Expandir Tela Toda (Atalho: Tecla F ou 2 Cliques no Vídeo)">
+                        <span class="expand-icon">⛶</span>
+                        <span id="btnFloatingFullscreenText">EXPANDIR TELA TODA</span>
+                    </button>
 
                     <!-- OVERLAY INICIAL PARA LIBERAR REPRODUÇÃO IMEDIATA -->
                     <div id="playClickOverlay" class="click-overlay">
@@ -2116,9 +2456,22 @@ html_code = f"""<!DOCTYPE html>
                     </div>
                 </div>
 
-                <div class="epg-timeline">
-                    <span class="epg-clock" id="epgTimeBadge">10:00 - 12:00</span>
-                    <span class="epg-desc" id="epgProgBadge">Grade Matutina • Programação Ao Vivo</span>
+                <div class="epg-dock-card" id="epgDockCard">
+                    <div class="epg-top-row">
+                        <div class="epg-live-badge"><span class="live-pulse-dot"></span> NO AR AGORA</div>
+                        <span class="epg-clock" id="epgTimeBadge">14:00 - 15:30</span>
+                        <span class="epg-title" id="epgProgBadge">Programação Ao Vivo</span>
+                    </div>
+                    <div class="epg-progress-track" title="Progresso da atração atual">
+                        <div class="epg-progress-fill" id="epgProgressFill" style="width: 45%;"></div>
+                    </div>
+                    <div class="epg-bottom-row">
+                        <span class="epg-next-tag">A SEGUIR:</span>
+                        <span class="epg-next-title" id="epgNextBadge">15:30 • Cinema Studio HD</span>
+                        <button class="btn-epg-guide" id="btnOpenEpgModal" title="Abrir Grade de Programação Completa">
+                            📅 Grade (EPG)
+                        </button>
+                    </div>
                 </div>
 
                 <div class="player-actions">
@@ -2128,7 +2481,9 @@ html_code = f"""<!DOCTYPE html>
                     <button class="icon-btn" id="btnZapPrev" title="Canal Anterior (Seta Cima / P)">⏮</button>
                     <button class="icon-btn" id="btnZapNext" title="Próximo Canal (Seta Baixo / N)">⏭</button>
                     <button class="icon-btn" id="btnPip" title="Picture-in-Picture">📺</button>
-                    <button class="icon-btn" id="btnFull" title="Tela Cheia (F)">⛶</button>
+                    <button class="icon-btn-text" id="btnFull" title="Expandir Tela Toda (Atalho: Tecla F ou 2 Cliques no Vídeo)">
+                        <span>⛶</span> <span id="fullDockLabel">Tela Toda</span>
+                    </button>
                 </div>
             </div>
         </div>
@@ -2175,6 +2530,25 @@ html_code = f"""<!DOCTYPE html>
             <!-- LISTA ULTRA-LEVE DE CANAIS COM RENDERIZAÇÃO PROGRESSIVA -->
             <div class="channel-list" id="channelListBody">
                 <!-- Inserido progressivamente via JS para zero travamento -->
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL DE GRADE COMPLETA DE PROGRAMAÇÃO (EPG) -->
+    <div id="epgModal" class="modal-shade">
+        <div class="modal-panel epg-modal-panel">
+            <div class="modal-title-bar">
+                <div class="epg-modal-header-left">
+                    <div class="epg-modal-logo" id="epgModalLogo">⚡</div>
+                    <div>
+                        <h3 id="epgModalChName">Grade de Programação (EPG)</h3>
+                        <p id="epgModalChCategory" style="font-size:11px; color:var(--text-muted);">Sinal Digital em Fibra Óptica</p>
+                    </div>
+                </div>
+                <button class="modal-dismiss" id="epgModalDismiss">✕</button>
+            </div>
+            <div class="epg-schedule-list" id="epgScheduleList">
+                <!-- Inserido dinamicamente via JS -->
             </div>
         </div>
     </div>
@@ -2929,6 +3303,9 @@ html_code = f"""<!DOCTYPE html>
                     break;
                 case 'cinema':
                     btnCinema.click();
+                    break;
+                case 'fullscreen':
+                    alternarTelaCheia();
                     break;
                 case 'sintonizar':
                     const numDesejado = parseInt(val, 10);

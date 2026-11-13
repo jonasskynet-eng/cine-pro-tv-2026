@@ -322,6 +322,48 @@
             opacity: 1;
             transform: translateY(0);
         }
+    
+        /* BOTÃO PROEMINENTE DE TELA TODA NO CELULAR */
+        .btn-expand-full {
+            width: 100%;
+            max-width: 360px;
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.25) 0%, rgba(6, 182, 212, 0.2) 100%);
+            border: 1.5px solid rgba(16, 185, 129, 0.55);
+            border-radius: 14px;
+            padding: 13px 16px;
+            color: #6ee7b7;
+            font-size: 13px;
+            font-weight: 900;
+            letter-spacing: 0.6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            cursor: pointer;
+            margin-bottom: 14px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4), 0 0 12px rgba(16, 185, 129, 0.2);
+            transition: all 0.15s;
+        }
+        .btn-expand-full:active {
+            background: var(--emerald);
+            color: #060913;
+            transform: scale(0.96);
+        }
+        .tv-epg-box {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 4px;
+            line-height: 1.3;
+        }
+        .tv-epg-now {
+            color: #fca5a5;
+            font-weight: 700;
+        }
+        .tv-epg-next {
+            color: #fde68a;
+            font-weight: 600;
+        }
+    
     </style>
 </head>
 <body>
@@ -342,8 +384,18 @@
         <div class="tv-meta">
             <div class="tv-label-live">Ao Vivo na TV</div>
             <div class="tv-name" id="tvCurName">Sintonizando...</div>
+            <div class="tv-epg-box">
+                <div id="tvCurEpgNow" class="tv-epg-now">🔴 Carregando guia...</div>
+                <div id="tvCurEpgNext" class="tv-epg-next">⏳ A seguir: ...</div>
+            </div>
         </div>
     </div>
+
+    <!-- BOTÃO PROEMINENTE TELA CHEIA -->
+    <button class="btn-expand-full" onclick="enviarComando('fullscreen')">
+        <span style="font-size:18px;">⛶</span>
+        <span>EXPANDIR TELA TODA</span>
+    </button>
 
     <!-- D-PAD DE NAVEGAÇÃO -->
     <div class="dpad-container">
@@ -492,6 +544,12 @@
                         document.getElementById('tvCurName').textContent = data.canal_nome;
                     }
                     document.getElementById('connLabel').textContent = 'Wi-Fi Conectado';
+                    if (data.epg_atual) {
+                        document.getElementById('tvCurEpgNow').textContent = '🔴 No Ar: ' + data.epg_atual;
+                    }
+                    if (data.epg_proximo) {
+                        document.getElementById('tvCurEpgNext').textContent = '⏳ A Seguir: ' + data.epg_proximo;
+                    }
                 }
             } catch (err) {
                 document.getElementById('connLabel').textContent = 'Offline';
