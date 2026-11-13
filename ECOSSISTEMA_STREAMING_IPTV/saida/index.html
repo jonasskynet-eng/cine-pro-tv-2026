@@ -1294,6 +1294,76 @@
             line-height: 1.4;
         }
 
+        /* RESPONSIVIDADE COMPLETA PARA CELULAR EM PÉ (9:16) */
+        @media (max-width: 900px) {
+            body {
+                height: 100vh;
+                height: 100dvh;
+            }
+            header {
+                padding: 8px 12px;
+                gap: 8px;
+            }
+            .brand-logo-svg svg {
+                width: 140px;
+                height: 28px;
+            }
+            .brand-substatus,
+            .search-wrapper,
+            .header-controls button:not(#btnQrRemote) {
+                display: none !important;
+            }
+            .main-stage {
+                flex-direction: column !important;
+            }
+            .player-viewport {
+                flex: none !important;
+                width: 100% !important;
+                height: auto !important;
+                padding: 4px 6px !important;
+            }
+            .screen-stage-wrapper {
+                width: 100% !important;
+                height: auto !important;
+            }
+            .screen-container {
+                width: 100% !important;
+                max-width: 100% !important;
+                height: auto !important;
+                aspect-ratio: 16 / 9 !important;
+                max-height: 38vh !important;
+            }
+            .player-info-dock {
+                margin-top: 6px;
+                padding: 6px 10px;
+                gap: 8px;
+            }
+            .cur-ch-num {
+                font-size: 13px;
+                padding: 3px 6px;
+            }
+            .cur-ch-logo {
+                width: 32px;
+                height: 32px;
+            }
+            .cur-ch-meta h2 {
+                font-size: 12px;
+            }
+            .epg-dock-card {
+                min-width: unset;
+                padding: 4px 8px;
+            }
+            .epg-title, .epg-next-title {
+                font-size: 10px;
+            }
+            .sidebar-channels {
+                width: 100% !important;
+                flex: 1 !important;
+                border-left: none !important;
+                border-top: 1px solid var(--border);
+            }
+        }
+
     </style>
 </head>
 <body>
