@@ -1982,20 +1982,25 @@
         });
 
         // AÇÕES DO DOCK
-        document.getElementById('btnZapPrev').addEventListener('click', () => sintonizar(canalAtualIndex - 1));
-        document.getElementById('btnZapNext').addEventListener('click', () => sintonizar(canalAtualIndex + 1));
+        const btnPrev = document.getElementById('btnZapPrev');
+        if (btnPrev) btnPrev.addEventListener('click', () => sintonizar(canalAtualIndex - 1));
+        const btnNext = document.getElementById('btnZapNext');
+        if (btnNext) btnNext.addEventListener('click', () => sintonizar(canalAtualIndex + 1));
         
-        document.getElementById('btnPip').addEventListener('click', async () => {
-            try {
-                if (document.pictureInPictureElement) {
-                    await document.exitPictureInPicture();
-                } else if (document.pictureInPictureEnabled) {
-                    await video.requestPictureInPicture();
+        const btnPipEl = document.getElementById('btnPip');
+        if (btnPipEl) {
+            btnPipEl.addEventListener('click', async () => {
+                try {
+                    if (document.pictureInPictureElement) {
+                        await document.exitPictureInPicture();
+                    } else if (document.pictureInPictureEnabled) {
+                        await video.requestPictureInPicture();
+                    }
+                } catch (err) {
+                    mostrarHUD('⚠️ PiP não suportado neste navegador');
                 }
-            } catch (err) {
-                mostrarHUD('⚠️ PiP não suportado neste navegador');
-            }
-        });
+            });
+        }
 
         function atualizarBotoesFullscreen() {
             const emFull = !!(document.fullscreenElement || document.webkitFullscreenElement || document.body.classList.contains('video-fullscreen-mode') || document.body.classList.contains('cinema-mode'));
