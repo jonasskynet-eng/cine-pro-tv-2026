@@ -1028,6 +1028,7 @@ html_code = f"""<!DOCTYPE html>
         }}
     </script>
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
         :root {{
             --bg-base: #060913;
@@ -2055,6 +2056,9 @@ html_code = f"""<!DOCTYPE html>
         </div>
 
         <div class="header-controls">
+            <button id="btnQrRemote" class="btn-ui" style="background: rgba(16, 185, 129, 0.15); border-color: rgba(16, 185, 129, 0.4); color: #6ee7b7;" title="Controlar pelo Celular">
+                📱 Controle Celular
+            </button>
             <button id="btnAspectHeader" class="btn-ui" title="Ajuste de Proporção / Enquadramento de Tela (Atalho: Tecla A)">
                 📐 <span id="aspectHeaderLabel">16:9 Cinema</span>
             </button>
@@ -2223,6 +2227,28 @@ html_code = f"""<!DOCTYPE html>
         </div>
     </div>
 
+    <!-- MODAL DO CONTROLE REMOTO POR CELULAR COM QR CODE -->
+    <div id="remoteModal" class="modal-shade">
+        <div class="modal-panel" style="text-align: center; max-width: 440px;">
+            <div class="modal-title-bar">
+                <h3>📱 Controle Remoto no Celular</h3>
+                <button class="modal-dismiss" id="remoteModalDismiss">&times;</button>
+            </div>
+            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 16px;">
+                Aponte a câmera do seu celular para o QR Code abaixo para controlar a TV pelo Wi-Fi:
+            </p>
+            <div id="qrcodeBox" style="background: #fff; padding: 14px; border-radius: 14px; display: inline-block; box-shadow: 0 10px 30px rgba(0,0,0,0.5); margin-bottom: 16px;">
+                <div id="qrcodeContainer"></div>
+            </div>
+            <div style="background: var(--bg-card); border: 1px solid var(--border); padding: 10px 14px; border-radius: 10px; margin-bottom: 14px; font-family: monospace; font-size: 13px; color: #6ee7b7; word-break: break-all;" id="remoteUrlDisplay">
+                Carregando link...
+            </div>
+            <button class="btn-ui" id="btnCopiarLinkRemote" style="width: 100%; justify-content: center; padding: 10px; font-size: 13px; background: rgba(16, 185, 129, 0.2); border-color: var(--emerald); color: #6ee7b7; cursor: pointer;">
+                📋 Copiar Link do Controle
+            </button>
+        </div>
+    </div>
+
     <script>
         const TODOS_CANAIS = {json_canais_str};
         let hls = null;
@@ -2350,6 +2376,9 @@ html_code = f"""<!DOCTYPE html>
             document.getElementById('epgProgBadge').textContent = epg.titulo;
 
             mostrarHUD(`⚡ Sintonizando CH #${{c.numero_str}}: ${{c.nome}}`);
+
+            // Notificar status atual para o controle remoto no celular
+            fetch(`/api/status_tv?canal_numero=${{c.numero}}&canal_nome=${{encodeURIComponent(c.nome)}}`).catch(() => {{}});
 
             // Roteamento inteligente de fluxo com aceleração HTTP local
             const PROXY_ORIGIN = window.location.protocol.startsWith('http') ? window.location.origin : 'http://localhost:8080';
@@ -2812,6 +2841,115 @@ html_code = f"""<!DOCTYPE html>
         modalShade.addEventListener('click', (e) => {{
             if (e.target === modalShade) modalShade.classList.remove('open');
         }});
+
+        // MODAL DO CONTROLE REMOTO POR CELULAR COM QR CODE
+        const remoteModal = document.getElementById('remoteModal');
+        const btnQrRemote = document.getElementById('btnQrRemote');
+        let qrCodeInstancia = null;
+
+        btnQrRemote.addEventListener('click', async () => {{
+            remoteModal.classList.add('open');
+            if (!qrCodeInstancia) {{
+                try {{
+                    const resp = await fetch('/api/ip_local');
+                    const data = await resp.json();
+                    const url = data.url_controle;
+                    document.getElementById('remoteUrlDisplay').textContent = url;
+                    const container = document.getElementById('qrcodeContainer');
+                    container.innerHTML = '';
+                    qrCodeInstancia = new QRCode(container, {{
+                        text: url,
+                        width: 190,
+                        height: 190,
+                        colorDark: "#060913",
+                        colorLight: "#ffffff",
+                        correctLevel: QRCode.CorrectLevel.M
+                    }});
+                }} catch (err) {{
+                    const fallbackUrl = `http://${{window.location.hostname || '192.168.100.210'}}:8080/controle.html`;
+                    document.getElementById('remoteUrlDisplay').textContent = fallbackUrl;
+                }}
+            }}
+        }});
+
+        document.getElementById('remoteModalDismiss').addEventListener('click', () => remoteModal.classList.remove('open'));
+        remoteModal.addEventListener('click', (e) => {{
+            if (e.target === remoteModal) remoteModal.classList.remove('open');
+        }});
+
+        document.getElementById('btnCopiarLinkRemote').addEventListener('click', () => {{
+            const url = document.getElementById('remoteUrlDisplay').textContent.trim();
+            navigator.clipboard.writeText(url).then(() => {{
+                mostrarHUD('📋 Link do controle copiado para o celular!');
+            }}).catch(() => {{
+                mostrarHUD('📋 Link: ' + url);
+            }});
+        }});
+
+        // ESCUTADOR EM TEMPO REAL DE COMANDOS DO CELULAR (POLLING SUAVE A CADA 350ms)
+        async function ouvirComandosRemotos() {{
+            try {{
+                const resp = await fetch('/api/ouvir_comandos');
+                if (resp.ok) {{
+                    const cmds = await resp.json();
+                    for (const item of cmds) {{
+                        executarComandoRemoto(item.cmd, item.val);
+                    }}
+                }}
+            }} catch (err) {{}}
+        }}
+        setInterval(ouvirComandosRemotos, 350);
+
+        function executarComandoRemoto(cmd, val) {{
+            switch (cmd) {{
+                case 'proximo':
+                    sintonizar(canalAtualIndex + 1);
+                    break;
+                case 'anterior':
+                    sintonizar(canalAtualIndex - 1);
+                    break;
+                case 'playpause':
+                    if (video.paused) {{ video.play(); mostrarHUD('▶ Reproduzindo (via Celular)'); }}
+                    else {{ video.pause(); mostrarHUD('⏸ Pausado (via Celular)'); }}
+                    break;
+                case 'volume_up':
+                    video.volume = Math.min(1, video.volume + 0.1);
+                    mostrarHUD(`🔊 Volume: ${{Math.round(video.volume * 100)}}% (via Celular)`);
+                    break;
+                case 'volume_down':
+                    video.volume = Math.max(0, video.volume - 0.1);
+                    mostrarHUD(`🔉 Volume: ${{Math.round(video.volume * 100)}}% (via Celular)`);
+                    break;
+                case 'mute':
+                    video.muted = !video.muted;
+                    mostrarHUD(video.muted ? '🔇 Mudo (via Celular)' : '🔊 Áudio Ativado (via Celular)');
+                    break;
+                case 'aspect':
+                    alternarEnquadramento();
+                    break;
+                case 'cinema':
+                    btnCinema.click();
+                    break;
+                case 'sintonizar':
+                    const numDesejado = parseInt(val, 10);
+                    const idx = TODOS_CANAIS.findIndex(c => c.numero === numDesejado);
+                    if (idx !== -1) {{
+                        if (idx >= canaisRenderizadosQtd) {{
+                            canaisRenderizadosQtd = Math.min(TODOS_CANAIS.length, idx + 20);
+                            renderizarMaisCanais();
+                        }}
+                        sintonizar(idx);
+                        mostrarHUD(`📱 Celular sintonizou CH #${{numDesejado}}`);
+                    }} else {{
+                        mostrarHUD(`⚠️ Canal #${{numDesejado}} não encontrado`);
+                    }}
+                    break;
+                case 'categoria':
+                    const pill = document.querySelector(`.cat-pill[data-cat="${{val}}"]`);
+                    if (pill) pill.click();
+                    break;
+            }}
+        }}
 
         // INICIALIZAÇÃO AUTOMÁTICA
         aplicarEnquadramento(enquadramentoIndex, false);

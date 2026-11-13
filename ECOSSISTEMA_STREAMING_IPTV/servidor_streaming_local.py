@@ -6,10 +6,35 @@ import ssl
 import sys
 import os
 import re
+import socket
+import json
+import threading
 from pathlib import Path
 
 PORT = 8080
 DIRETORIO_SAIDA = Path(__file__).parent / "saida"
+
+# Fila sincronizada de comandos remotos (Celular -> TV)
+LOCK_COMANDOS = threading.Lock()
+COMANDOS_PENDENTES = []
+STATUS_TV = {
+    "canal_numero": 1,
+    "canal_nome": "SBT Nacional HD",
+    "pausado": False,
+    "volume": 100,
+    "mudo": False
+}
+
+def obter_ip_local():
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    try:
+        s.connect(('10.255.255.255', 1))
+        IP = s.getsockname()[0]
+    except Exception:
+        IP = '127.0.0.1'
+    finally:
+        s.close()
+    return IP
 
 class ServidorMultithreadStreaming(http.server.SimpleHTTPRequestHandler):
     def __init__(self, *args, **kwargs):
@@ -27,6 +52,61 @@ class ServidorMultithreadStreaming(http.server.SimpleHTTPRequestHandler):
         self.end_headers()
 
     def do_GET(self):
+        # 1. API DE COMANDOS REMOTOS (CELULAR -> TV)
+        if self.path.startswith('/api/comando'):
+            parsed = urllib.parse.urlparse(self.path)
+            params = urllib.parse.parse_qs(parsed.query)
+            cmd = params.get('cmd', [''])[0]
+            val = params.get('val', [''])[0]
+            with LOCK_COMANDOS:
+                COMANDOS_PENDENTES.append({"cmd": cmd, "val": val})
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json')
+            self.end_headers()
+            self.wfile.write(b'{"status":"ok"}')
+            return
+
+        elif self.path == '/api/ouvir_comandos':
+            with LOCK_COMANDOS:
+                cmds = list(COMANDOS_PENDENTES)
+                COMANDOS_PENDENTES.clear()
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json')
+            self.end_headers()
+            self.wfile.write(json.dumps(cmds).encode('utf-8'))
+            return
+
+        elif self.path.startswith('/api/status_tv'):
+            parsed = urllib.parse.urlparse(self.path)
+            params = urllib.parse.parse_qs(parsed.query)
+            for k, v in params.items():
+                STATUS_TV[k] = v[0]
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json')
+            self.end_headers()
+            self.wfile.write(json.dumps(STATUS_TV).encode('utf-8'))
+            return
+
+        elif self.path == '/api/obter_status_tv':
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json')
+            self.end_headers()
+            self.wfile.write(json.dumps(STATUS_TV).encode('utf-8'))
+            return
+
+        elif self.path == '/api/ip_local':
+            ip = obter_ip_local()
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json')
+            self.end_headers()
+            self.wfile.write(json.dumps({
+                "ip": ip,
+                "porta": PORT,
+                "url_controle": f"http://{ip}:{PORT}/controle.html"
+            }).encode('utf-8'))
+            return
+
+        # 2. PROXY DE STREAMING HLS
         if self.path.startswith('/proxy?url='):
             raw_url = self.path.split('/proxy?url=')[1]
             target_url = urllib.parse.unquote(raw_url)
