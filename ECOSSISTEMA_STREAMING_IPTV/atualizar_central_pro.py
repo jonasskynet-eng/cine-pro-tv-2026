@@ -2425,7 +2425,7 @@ html_code = f"""<!DOCTYPE html>
                 </div>
             </div>
 
-            <!-- DOCK INFERIOR DE INFORMAÇÕES E CONTROLES -->
+            <!-- DOCK INFERIOR SLIM & LIMPO (SÓ O ESSENCIAL DO CANAL) -->
             <div class="player-info-dock">
                 <div class="cur-channel-box">
                     <div class="cur-ch-num" id="dockChNum">#001</div>
@@ -2433,41 +2433,25 @@ html_code = f"""<!DOCTYPE html>
                     <div class="cur-ch-meta">
                         <h2>
                             <span id="dockName">Discovery Kids (Digital Leve)</span>
-                            <span class="badge-pill badge-digital" id="dockSignalBadge">
-                                <span class="signal-led led-green" id="dockSignalLed"></span>
-                                <span id="dockSignalText">Fibra Direta • 45ms</span>
-                            </span>
-                            <span class="badge-pill badge-pais" id="dockPais">🇧🇷 Brasil</span>
                         </h2>
-                        <p id="dockDetails">⭐ VIP Fibra • Nacional • Consumo Ultraleve & Zero Buffering</p>
                     </div>
                 </div>
 
                 <div class="epg-dock-card" id="epgDockCard">
                     <div class="epg-top-row">
-                        <div class="epg-live-badge"><span class="live-pulse-dot"></span> NO AR AGORA</div>
+                        <div class="epg-live-badge"><span class="live-pulse-dot"></span> NO AR</div>
                         <span class="epg-clock" id="epgTimeBadge">14:00 - 15:30</span>
                         <span class="epg-title" id="epgProgBadge">Programação Ao Vivo</span>
                     </div>
-                    <div class="epg-progress-track" title="Progresso da atração atual">
-                        <div class="epg-progress-fill" id="epgProgressFill" style="width: 45%;"></div>
-                    </div>
-                    <div class="epg-bottom-row">
+                    <div class="epg-bottom-row" style="margin-top: 3px;">
                         <span class="epg-next-tag">A SEGUIR:</span>
                         <span class="epg-next-title" id="epgNextBadge">15:30 • Cinema Studio HD</span>
-                        <button type="button" class="btn-epg-guide" id="btnOpenEpgModal" onclick="abrirModalEpg(event)" title="Abrir Grade de Programação Completa">
-                            📅 Grade (EPG)
-                        </button>
                     </div>
                 </div>
 
                 <div class="player-actions">
-                    <button class="icon-btn-text" id="btnAspectDock" title="Ajuste de Tela: 16:9 Cinema / Preencher / Esticar (Atalho: Tecla A)">
-                        📐 <span id="aspectDockLabel">16:9 Cinema</span>
-                    </button>
                     <button class="icon-btn" id="btnZapPrev" title="Canal Anterior (Seta Cima / P)">⏮</button>
                     <button class="icon-btn" id="btnZapNext" title="Próximo Canal (Seta Baixo / N)">⏭</button>
-                    <button class="icon-btn" id="btnPip" title="Picture-in-Picture">📺</button>
                     <button type="button" class="icon-btn-text" id="btnFull" onclick="alternarTelaCheia(event)" title="Expandir Tela Toda (Atalho: Tecla F ou 2 Cliques no Vídeo)">
                         <span>⛶</span> <span id="fullDockLabel">Tela Toda</span>
                     </button>
@@ -2751,8 +2735,6 @@ html_code = f"""<!DOCTYPE html>
             const c = TODOS_CANAIS[idx];
             document.getElementById('dockChNum').textContent = `#${{c.numero_str}}`;
             document.getElementById('dockName').textContent = c.nome;
-            document.getElementById('dockPais').textContent = c.pais;
-            document.getElementById('dockDetails').textContent = `${{c.categoria}} • ${{c.regiao || 'Nacional'}} • Qualidade: Digital • Consumo Ultraleve`;
 
             const logoBox = document.getElementById('dockLogo');
             const safeName = c.nome.replace(/'/g, "\\'");
@@ -2765,8 +2747,6 @@ html_code = f"""<!DOCTYPE html>
             const epg = obterEpgDinamico(c);
             document.getElementById('epgTimeBadge').textContent = epg.faixa;
             document.getElementById('epgProgBadge').textContent = epg.titulo;
-            const epgFill = document.getElementById('epgProgressFill');
-            if (epgFill) epgFill.style.width = `${{epg.progresso}}%`;
             const epgNext = document.getElementById('epgNextBadge');
             if (epgNext) epgNext.textContent = `${{epg.proximaFaixa.split(' - ')[0]}} • ${{epg.proximoTitulo}}`;
 
