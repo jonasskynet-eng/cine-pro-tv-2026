@@ -1,0 +1,26 @@
+{
+  "version": 2,
+  "cleanUrls": true,
+  "routes": [
+    {
+      "src": "^/manifest.json$",
+      "dest": "/manifest.json"
+    },
+    {
+      "src": "^/sw.js$",
+      "dest": "/sw.js"
+    },
+    {
+      "src": "^/canais_leves.json$",
+      "dest": "/canais_leves.json"
+    },
+    {
+      "src": "^/qrcode_celular.png$",
+      "dest": "/qrcode_celular.png"
+    },
+    {
+      "src": "^/(.*)$",
+      "dest": "/index.html"
+    }
+  ]
+}
