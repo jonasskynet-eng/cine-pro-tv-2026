@@ -1081,17 +1081,11 @@ html_code = f"""<!DOCTYPE html>
             overflow: hidden;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }}
-        /* MODO CINEMA */
+        /* MODO CINEMA / TELA 100% LIMPA (SÓ O CANAL FUNCIONANDO) */
         body.cinema-mode header,
-        body.cinema-mode .sidebar-channels {{
-            opacity: 0.04;
-            pointer-events: none;
-            transition: opacity 0.4s ease;
-        }}
-        body.cinema-mode header:hover,
-        body.cinema-mode .sidebar-channels:hover {{
-            opacity: 1;
-            pointer-events: auto;
+        body.cinema-mode .sidebar-channels,
+        body.cinema-mode .player-info-dock {{
+            display: none !important;
         }}
         body.cinema-mode .player-viewport {{
             padding: 0;
@@ -1315,33 +1309,9 @@ html_code = f"""<!DOCTYPE html>
             object-fit: fill; /* Esticar 100% */
         }}
 
-        /* BADGE INDICADOR DE PADRÃO 16:9 FIXO */
+        /* BADGE INDICADOR DE PADRÃO 16:9 FIXO (OCULTO PARA NÃO POLUIR A TELA DO CANAL) */
         .screen-standard-tag {{
-            position: absolute;
-            top: 14px;
-            left: 14px;
-            background: rgba(12, 19, 34, 0.85);
-            border: 1px solid rgba(16, 185, 129, 0.4);
-            color: #6ee7b7;
-            padding: 5px 12px;
-            border-radius: 6px;
-            font-size: 11px;
-            font-weight: 800;
-            letter-spacing: 0.5px;
-            z-index: 10;
-            backdrop-filter: blur(8px);
-            pointer-events: none;
-            display: flex;
-            align-items: center;
-            gap: 7px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
-        }}
-        .screen-standard-tag .tag-dot {{
-            width: 7px;
-            height: 7px;
-            border-radius: 50%;
-            background: #10b981;
-            box-shadow: 0 0 8px #10b981;
+            display: none !important;
         }}
 
         /* OVERLAY DE CLIQUE DE REPRODUÇÃO */
@@ -2117,23 +2087,43 @@ html_code = f"""<!DOCTYPE html>
             border: none !important;
             background: #000 !important;
         }}
-        body.video-fullscreen-mode .screen-container {{
+        body.video-fullscreen-mode header,
+        body.video-fullscreen-mode .sidebar-channels,
+        body.video-fullscreen-mode .player-info-dock,
+        body.cinema-mode header,
+        body.cinema-mode .sidebar-channels,
+        body.cinema-mode .player-info-dock {{
+            display: none !important;
+        }}
+        body.video-fullscreen-mode .main-stage,
+        body.video-fullscreen-mode .player-viewport,
+        body.video-fullscreen-mode .screen-stage-wrapper,
+        body.video-fullscreen-mode .screen-container,
+        body.cinema-mode .main-stage,
+        body.cinema-mode .player-viewport,
+        body.cinema-mode .screen-stage-wrapper,
+        body.cinema-mode .screen-container {{
             position: fixed !important;
             inset: 0 !important;
             width: 100vw !important;
             height: 100vh !important;
             max-width: 100vw !important;
             max-height: 100vh !important;
+            margin: 0 !important;
+            padding: 0 !important;
             aspect-ratio: unset !important;
             border-radius: 0 !important;
             border: none !important;
             background: #000 !important;
             z-index: 9999 !important;
         }}
-        body.video-fullscreen-mode header,
-        body.video-fullscreen-mode .sidebar-channels,
-        body.video-fullscreen-mode .player-info-dock {{
-            display: none !important;
+        body.mouse-idle .btn-floating-expand {{
+            opacity: 0 !important;
+            pointer-events: none !important;
+        }}
+        body.video-fullscreen-mode.mouse-idle video,
+        body.cinema-mode.mouse-idle video {{
+            cursor: none !important;
         }}
 
         /* CARD DO GUIA DE PROGRAMAÇÃO EPG NO DOCK */
@@ -3062,18 +3052,18 @@ html_code = f"""<!DOCTYPE html>
         }});
 
         function atualizarBotoesFullscreen() {{
-            const emFull = !!(document.fullscreenElement || document.webkitFullscreenElement || document.body.classList.contains('video-fullscreen-mode'));
+            const emFull = !!(document.fullscreenElement || document.webkitFullscreenElement || document.body.classList.contains('video-fullscreen-mode') || document.body.classList.contains('cinema-mode'));
             const txtFloat = document.getElementById('btnFloatingFullscreenText');
-            if (txtFloat) txtFloat.textContent = emFull ? 'SAIR DA TELA TODA (ESC)' : 'EXPANDIR TELA TODA';
+            if (txtFloat) txtFloat.textContent = emFull ? '📋 MOSTRAR CANAIS (ESC)' : 'EXPANDIR TELA TODA';
             const txtDock = document.getElementById('fullDockLabel');
-            if (txtDock) txtDock.textContent = emFull ? 'Sair Tela Toda' : 'Tela Toda';
+            if (txtDock) txtDock.textContent = emFull ? 'Mostrar Canais' : 'Tela Toda';
         }}
 
         function alternarTelaCheia(ev) {{
             if (ev && ev.stopPropagation) ev.stopPropagation();
             const stage = document.getElementById('screenBox') || document.querySelector('.screen-container') || document.documentElement;
             const nativoAtivo = !!(document.fullscreenElement || document.webkitFullscreenElement);
-            const cssAtivo = document.body.classList.contains('video-fullscreen-mode');
+            const cssAtivo = document.body.classList.contains('video-fullscreen-mode') || document.body.classList.contains('cinema-mode');
             const jaEmFull = nativoAtivo || cssAtivo;
 
             if (!jaEmFull) {{
@@ -3086,9 +3076,12 @@ html_code = f"""<!DOCTYPE html>
                     }}
                 }} catch (e) {{}}
                 atualizarBotoesFullscreen();
-                mostrarHUD('⛶ Modo Tela Toda Ativado (ESC ou clique para sair)');
+                mostrarHUD('📺 Só o canal na tela! (Aperte ESC ou mexa o mouse para sair)');
             }} else {{
                 document.body.classList.remove('video-fullscreen-mode');
+                document.body.classList.remove('cinema-mode');
+                const btnC = document.getElementById('btnCinemaMode');
+                if (btnC) btnC.classList.remove('active');
                 try {{
                     if (document.fullscreenElement && document.exitFullscreen) {{
                         document.exitFullscreen().catch(() => {{}});
@@ -3097,7 +3090,7 @@ html_code = f"""<!DOCTYPE html>
                     }}
                 }} catch (e) {{}}
                 atualizarBotoesFullscreen();
-                mostrarHUD('🗗 Tela Restaurada ao Padrão');
+                mostrarHUD('📋 Lista de canais restaurada');
             }}
         }}
         window.alternarTelaCheia = alternarTelaCheia;
@@ -3173,13 +3166,13 @@ html_code = f"""<!DOCTYPE html>
         const btnAspectHeader = document.getElementById('btnAspectHeader');
         if (btnAspectHeader) btnAspectHeader.addEventListener('click', alternarEnquadramento);
 
-        // MODO CINEMA
+        // MODO CINEMA (TELA 100% LIMPA SÓ COM O CANAL)
         const btnCinema = document.getElementById('btnCinemaMode');
         btnCinema.addEventListener('click', () => {{
-            document.body.classList.toggle('cinema-mode');
-            const ativo = document.body.classList.contains('cinema-mode');
+            const ativo = document.body.classList.toggle('cinema-mode');
             btnCinema.classList.toggle('active', ativo);
-            mostrarHUD(ativo ? '🎬 Modo Cinema Ativado' : '📺 Modo Padrão Restaurado');
+            atualizarBotoesFullscreen();
+            mostrarHUD(ativo ? '🎬 Só o Canal na Tela! (ESC para voltar)' : '📋 Lista de Canais Restaurada');
         }});
 
         const btnFavFilter = document.getElementById('btnFavFilter');
@@ -3275,10 +3268,12 @@ html_code = f"""<!DOCTYPE html>
                     mostrarHUD('✖ Digitação de canal cancelada');
                     return;
                 }}
-                if (document.body.classList.contains('video-fullscreen-mode')) {{
+                if (document.body.classList.contains('video-fullscreen-mode') || document.body.classList.contains('cinema-mode')) {{
                     document.body.classList.remove('video-fullscreen-mode');
+                    document.body.classList.remove('cinema-mode');
+                    if (btnCinema) btnCinema.classList.remove('active');
                     atualizarBotoesFullscreen();
-                    mostrarHUD('🗗 Tela Restaurada ao Padrão');
+                    mostrarHUD('📋 Lista de canais restaurada');
                 }}
                 if (epgModalShade) epgModalShade.classList.remove('open');
                 modalShade.classList.remove('open');
@@ -3455,8 +3450,24 @@ html_code = f"""<!DOCTYPE html>
                     const pill = document.querySelector(`.cat-pill[data-cat="${{val}}"]`);
                     if (pill) pill.click();
                     break;
+                case 'recarregar':
+                    window.location.reload();
+                    break;
             }}
         }}
+
+        // AUTO-OCULTAÇÃO DO BOTÃO FLUTUANTE E CURSOR APÓS 2s PARADO (TELA 100% LIMPA)
+        let mouseIdleTimer = null;
+        function resetarInatividadeMouse() {{
+            document.body.classList.remove('mouse-idle');
+            clearTimeout(mouseIdleTimer);
+            mouseIdleTimer = setTimeout(() => {{
+                document.body.classList.add('mouse-idle');
+            }}, 2000);
+        }}
+        window.addEventListener('mousemove', resetarInatividadeMouse);
+        window.addEventListener('touchstart', resetarInatividadeMouse);
+        resetarInatividadeMouse();
 
         // INICIALIZAÇÃO AUTOMÁTICA
         aplicarEnquadramento(enquadramentoIndex, false);
