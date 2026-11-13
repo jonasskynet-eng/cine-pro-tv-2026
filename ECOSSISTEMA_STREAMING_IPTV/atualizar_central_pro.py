@@ -2117,6 +2117,24 @@ html_code = f"""<!DOCTYPE html>
             border: none !important;
             background: #000 !important;
         }}
+        body.video-fullscreen-mode .screen-container {{
+            position: fixed !important;
+            inset: 0 !important;
+            width: 100vw !important;
+            height: 100vh !important;
+            max-width: 100vw !important;
+            max-height: 100vh !important;
+            aspect-ratio: unset !important;
+            border-radius: 0 !important;
+            border: none !important;
+            background: #000 !important;
+            z-index: 9999 !important;
+        }}
+        body.video-fullscreen-mode header,
+        body.video-fullscreen-mode .sidebar-channels,
+        body.video-fullscreen-mode .player-info-dock {{
+            display: none !important;
+        }}
 
         /* CARD DO GUIA DE PROGRAMAÇÃO EPG NO DOCK */
         .epg-dock-card {{
@@ -2390,7 +2408,7 @@ html_code = f"""<!DOCTYPE html>
                     </div>
 
                     <!-- BOTÃO PROEMINENTE DE EXPANDIR NA TELA TODA -->
-                    <button id="btnFloatingFullscreen" class="btn-floating-expand" title="Expandir Tela Toda (Atalho: Tecla F ou 2 Cliques no Vídeo)">
+                    <button type="button" id="btnFloatingFullscreen" class="btn-floating-expand" onclick="alternarTelaCheia(event)" title="Expandir Tela Toda (Atalho: Tecla F ou 2 Cliques no Vídeo)">
                         <span class="expand-icon">⛶</span>
                         <span id="btnFloatingFullscreenText">EXPANDIR TELA TODA</span>
                     </button>
@@ -2442,7 +2460,7 @@ html_code = f"""<!DOCTYPE html>
                     <div class="epg-bottom-row">
                         <span class="epg-next-tag">A SEGUIR:</span>
                         <span class="epg-next-title" id="epgNextBadge">15:30 • Cinema Studio HD</span>
-                        <button class="btn-epg-guide" id="btnOpenEpgModal" title="Abrir Grade de Programação Completa">
+                        <button type="button" class="btn-epg-guide" id="btnOpenEpgModal" onclick="abrirModalEpg(event)" title="Abrir Grade de Programação Completa">
                             📅 Grade (EPG)
                         </button>
                     </div>
@@ -2455,7 +2473,7 @@ html_code = f"""<!DOCTYPE html>
                     <button class="icon-btn" id="btnZapPrev" title="Canal Anterior (Seta Cima / P)">⏮</button>
                     <button class="icon-btn" id="btnZapNext" title="Próximo Canal (Seta Baixo / N)">⏭</button>
                     <button class="icon-btn" id="btnPip" title="Picture-in-Picture">📺</button>
-                    <button class="icon-btn-text" id="btnFull" title="Expandir Tela Toda (Atalho: Tecla F ou 2 Cliques no Vídeo)">
+                    <button type="button" class="icon-btn-text" id="btnFull" onclick="alternarTelaCheia(event)" title="Expandir Tela Toda (Atalho: Tecla F ou 2 Cliques no Vídeo)">
                         <span>⛶</span> <span id="fullDockLabel">Tela Toda</span>
                     </button>
                 </div>
@@ -3043,73 +3061,110 @@ html_code = f"""<!DOCTYPE html>
             }}
         }});
 
-        function alternarTelaCheia() {{
-            const stage = document.getElementById('playerStage') || document.documentElement;
-            if (!document.fullscreenElement) {{
-                if (stage.requestFullscreen) {{
-                    stage.requestFullscreen().catch(() => document.documentElement.requestFullscreen());
-                }} else {{
-                    document.documentElement.requestFullscreen();
-                }}
-                mostrarHUD('⛶ Modo Tela Cheia Ativado (ESC para sair)');
-            }} else {{
-                document.exitFullscreen();
-                mostrarHUD('🗗 Tela Restaurada');
-            }}
+        function atualizarBotoesFullscreen() {{
+            const emFull = !!(document.fullscreenElement || document.webkitFullscreenElement || document.body.classList.contains('video-fullscreen-mode'));
+            const txtFloat = document.getElementById('btnFloatingFullscreenText');
+            if (txtFloat) txtFloat.textContent = emFull ? 'SAIR DA TELA TODA (ESC)' : 'EXPANDIR TELA TODA';
+            const txtDock = document.getElementById('fullDockLabel');
+            if (txtDock) txtDock.textContent = emFull ? 'Sair Tela Toda' : 'Tela Toda';
         }}
 
-        document.getElementById('btnFull').addEventListener('click', alternarTelaCheia);
-        const btnFloatingFull = document.getElementById('btnFloatingFullscreen');
-        if (btnFloatingFull) btnFloatingFull.addEventListener('click', alternarTelaCheia);
+        function alternarTelaCheia(ev) {{
+            if (ev && ev.stopPropagation) ev.stopPropagation();
+            const stage = document.getElementById('screenBox') || document.querySelector('.screen-container') || document.documentElement;
+            const nativoAtivo = !!(document.fullscreenElement || document.webkitFullscreenElement);
+            const cssAtivo = document.body.classList.contains('video-fullscreen-mode');
+            const jaEmFull = nativoAtivo || cssAtivo;
+
+            if (!jaEmFull) {{
+                document.body.classList.add('video-fullscreen-mode');
+                try {{
+                    if (stage.requestFullscreen) {{
+                        stage.requestFullscreen().catch(() => {{}});
+                    }} else if (stage.webkitRequestFullscreen) {{
+                        stage.webkitRequestFullscreen();
+                    }}
+                }} catch (e) {{}}
+                atualizarBotoesFullscreen();
+                mostrarHUD('⛶ Modo Tela Toda Ativado (ESC ou clique para sair)');
+            }} else {{
+                document.body.classList.remove('video-fullscreen-mode');
+                try {{
+                    if (document.fullscreenElement && document.exitFullscreen) {{
+                        document.exitFullscreen().catch(() => {{}});
+                    }} else if (document.webkitFullscreenElement && document.webkitExitFullscreen) {{
+                        document.webkitExitFullscreen();
+                    }}
+                }} catch (e) {{}}
+                atualizarBotoesFullscreen();
+                mostrarHUD('🗗 Tela Restaurada ao Padrão');
+            }}
+        }}
+        window.alternarTelaCheia = alternarTelaCheia;
+
         video.addEventListener('dblclick', alternarTelaCheia);
 
         document.addEventListener('fullscreenchange', () => {{
-            const emFull = !!document.fullscreenElement;
-            const txt = emFull ? '🗗 Sair da Tela Toda' : '⛶ Expandir Tela Toda';
-            const btnF = document.getElementById('btnFloatingFullscreen');
-            if (btnF) btnF.textContent = txt;
+            if (!document.fullscreenElement && !document.webkitFullscreenElement) {{
+                document.body.classList.remove('video-fullscreen-mode');
+            }}
+            atualizarBotoesFullscreen();
         }});
 
-        function abrirModalEpg() {{
+        function abrirModalEpg(ev) {{
+            if (ev && ev.stopPropagation) ev.stopPropagation();
             const modal = document.getElementById('epgModal');
-            const body = document.getElementById('epgModalBody');
-            const title = document.getElementById('epgModalTitle');
-            if (!modal || !body) return;
+            const list = document.getElementById('epgScheduleList');
+            const chName = document.getElementById('epgModalChName');
+            const chCat = document.getElementById('epgModalChCategory');
+            const chLogo = document.getElementById('epgModalLogo');
+            if (!modal || !list) return;
             const c = TODOS_CANAIS[canalAtualIndex] || TODOS_CANAIS[0];
             const epg = obterEpgDinamico(c);
-            if (title) title.textContent = `📅 Grade de Programação • #${{c.numero_str}} ${{c.nome}}`;
-            body.innerHTML = `
-                <div class="epg-slot-card active">
-                    <span class="epg-slot-time">🔴 AGORA (${{epg.faixa}})</span>
-                    <div style="flex:1">
-                        <div class="epg-slot-title">${{epg.titulo}}</div>
-                        <div class="epg-slot-desc">${{c.categoria}} • Progresso da faixa atual: ${{epg.progresso}}% concluído</div>
+            if (chName) chName.textContent = `#${{c.numero_str}} • ${{c.nome}}`;
+            if (chCat) chCat.textContent = `${{c.categoria}} • ${{c.pais}} • Grade Automática 24h`;
+            if (chLogo) {{
+                const safeName = c.nome.replace(/'/g, "\\'");
+                chLogo.innerHTML = c.logo ? `<img src="${{c.logo}}" alt="${{c.nome}}" onerror="this.outerHTML=obterBadgeSvgCliente('${{safeName}}')">` : obterBadgeSvgCliente(c.nome);
+            }}
+            list.innerHTML = `
+                <div class="epg-item current">
+                    <div class="epg-item-header">
+                        <span class="epg-item-time">🕒 ${{epg.faixa}}</span>
+                        <span class="epg-item-badge badge-live">🔴 NO AR AGORA • ${{epg.progresso}}%</span>
                     </div>
+                    <div class="epg-item-title">${{epg.titulo}}</div>
+                    <div class="epg-item-desc">Transmissão ao vivo em andamento • ${{c.categoria}}</div>
                 </div>
-                <div class="epg-slot-card">
-                    <span class="epg-slot-time">⏭️ A SEGUIR (${{epg.proximaFaixa}})</span>
-                    <div style="flex:1">
-                        <div class="epg-slot-title">${{epg.proximoTitulo}}</div>
-                        <div class="epg-slot-desc">Transmissão sequencial programada • ${{c.nome}}</div>
+                <div class="epg-item">
+                    <div class="epg-item-header">
+                        <span class="epg-item-time">🕒 ${{epg.proximaFaixa}}</span>
+                        <span class="epg-item-badge badge-upcoming">⏭️ A SEGUIR</span>
                     </div>
+                    <div class="epg-item-title">${{epg.proximoTitulo}}</div>
+                    <div class="epg-item-desc">Próxima atração programada na sequência • ${{c.nome}}</div>
                 </div>
-                <div class="epg-slot-card">
-                    <span class="epg-slot-time">🕒 DEPOIS (${{epg.depoisFaixa}})</span>
-                    <div style="flex:1">
-                        <div class="epg-slot-title">${{epg.depoisTitulo}}</div>
-                        <div class="epg-slot-desc">Grade automática 24h • ${{c.pais}}</div>
+                <div class="epg-item">
+                    <div class="epg-item-header">
+                        <span class="epg-item-time">🕒 ${{epg.depoisFaixa}}</span>
+                        <span class="epg-item-badge badge-upcoming">📅 MAIS TARDE</span>
                     </div>
+                    <div class="epg-item-title">${{epg.depoisTitulo}}</div>
+                    <div class="epg-item-desc">Continuação da grade digital 24h • ${{c.pais}}</div>
                 </div>
             `;
-            modal.classList.add('show');
+            modal.classList.add('open');
         }}
+        window.abrirModalEpg = abrirModalEpg;
 
-        const btnOpenEpg = document.getElementById('btnOpenEpgModal');
-        if (btnOpenEpg) btnOpenEpg.addEventListener('click', (e) => {{ e.stopPropagation(); abrirModalEpg(); }});
         const epgCard = document.getElementById('epgDockCard');
         if (epgCard) epgCard.addEventListener('click', abrirModalEpg);
         const btnCloseEpg = document.getElementById('epgModalDismiss');
-        if (btnCloseEpg) btnCloseEpg.addEventListener('click', () => document.getElementById('epgModal').classList.remove('show'));
+        if (btnCloseEpg) btnCloseEpg.addEventListener('click', () => document.getElementById('epgModal').classList.remove('open'));
+        const epgModalShade = document.getElementById('epgModal');
+        if (epgModalShade) epgModalShade.addEventListener('click', (e) => {{
+            if (e.target === epgModalShade) epgModalShade.classList.remove('open');
+        }});
 
         // BOTÕES DE ENQUADRAMENTO / PROPORÇÃO
         const btnAspectDock = document.getElementById('btnAspectDock');
@@ -3220,6 +3275,12 @@ html_code = f"""<!DOCTYPE html>
                     mostrarHUD('✖ Digitação de canal cancelada');
                     return;
                 }}
+                if (document.body.classList.contains('video-fullscreen-mode')) {{
+                    document.body.classList.remove('video-fullscreen-mode');
+                    atualizarBotoesFullscreen();
+                    mostrarHUD('🗗 Tela Restaurada ao Padrão');
+                }}
+                if (epgModalShade) epgModalShade.classList.remove('open');
                 modalShade.classList.remove('open');
                 return;
             }}
