@@ -6,7 +6,7 @@ from pathlib import Path
 BASE_DIR = Path(r"c:\Users\jonas\Downloads\projeto de estudo\ECOSSISTEMA_STREAMING_IPTV")
 SAIDA_DIR = BASE_DIR / "saida"
 DB_PATH = SAIDA_DIR / "banco_iptv.db"
-DESKTOP_DIR = Path(r"C:\Users\jonas\Desktop")
+DESKTOP_DIR = Path(r"C:\Users\jonas\Desktop\iptv")
 
 SAIDA_DIR.mkdir(parents=True, exist_ok=True)
 
