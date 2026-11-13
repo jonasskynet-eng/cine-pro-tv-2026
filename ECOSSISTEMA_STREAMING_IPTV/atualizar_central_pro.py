@@ -2216,8 +2216,8 @@ html_code = f"""<!DOCTYPE html>
                     <span class="key-badge">C</span>
                 </div>
                 <div class="key-row">
-                    <span class="key-label">Canais VIP 1 a 9</span>
-                    <span class="key-badge">1 a 9</span>
+                    <span class="key-label">Sintonizar Canal por Número</span>
+                    <span class="key-badge">0 a 9 (+ Enter)</span>
                 </div>
             </div>
         </div>
@@ -2452,6 +2452,10 @@ html_code = f"""<!DOCTYPE html>
                 const cardIdx = parseInt(card.getAttribute('data-idx'));
                 card.classList.toggle('active', cardIdx === canalAtualIndex);
             }});
+            const activeCard = document.querySelector(`.channel-card[data-idx="${{canalAtualIndex}}"]`);
+            if (activeCard) {{
+                activeCard.scrollIntoView({{ behavior: 'smooth', block: 'nearest' }});
+            }}
         }}
 
         function alternarFavorito(id, event) {{
@@ -2680,9 +2684,72 @@ html_code = f"""<!DOCTYPE html>
 
         searchInput.addEventListener('input', () => aplicarFiltros(true));
 
+        // CONTROLE REMOTO NUMÉRICO INTELIGENTE (0 a 9)
+        let bufferNumeroCanal = '';
+        let timerNumeroCanal = null;
+
+        function processarNumeroCanal(digito) {{
+            clearTimeout(timerNumeroCanal);
+            bufferNumeroCanal += digito;
+            if (bufferNumeroCanal.length > 4) bufferNumeroCanal = digito;
+
+            const numDesejado = parseInt(bufferNumeroCanal, 10);
+            mostrarHUD(`🔢 Canal #${{bufferNumeroCanal}}... (Pressione Enter ou aguarde)`);
+
+            timerNumeroCanal = setTimeout(() => {{
+                executarSintonizacaoPorNumero();
+            }}, 1400);
+        }}
+
+        function executarSintonizacaoPorNumero() {{
+            clearTimeout(timerNumeroCanal);
+            if (!bufferNumeroCanal) return;
+
+            const numDesejado = parseInt(bufferNumeroCanal, 10);
+            bufferNumeroCanal = '';
+
+            const idxEncontrado = TODOS_CANAIS.findIndex(c => c.numero === numDesejado);
+
+            if (idxEncontrado !== -1) {{
+                if (idxEncontrado >= canaisRenderizadosQtd) {{
+                    canaisRenderizadosQtd = Math.min(TODOS_CANAIS.length, idxEncontrado + 20);
+                    renderizarMaisCanais();
+                }}
+                sintonizar(idxEncontrado);
+            }} else {{
+                mostrarHUD(`⚠️ Canal #${{numDesejado}} não encontrado na grade`);
+            }}
+        }}
+
         // CONTROLE REMOTO PELO TECLADO
         window.addEventListener('keydown', (e) => {{
             if (e.target === searchInput) return;
+
+            // Sintonização rápida por teclado numérico (0 a 9)
+            if (/^[0-9]$/.test(e.key)) {{
+                e.preventDefault();
+                processarNumeroCanal(e.key);
+                return;
+            }}
+
+            if (e.key === 'Enter') {{
+                if (bufferNumeroCanal.length > 0) {{
+                    e.preventDefault();
+                    executarSintonizacaoPorNumero();
+                    return;
+                }}
+            }}
+
+            if (e.key === 'Escape') {{
+                if (bufferNumeroCanal.length > 0) {{
+                    bufferNumeroCanal = '';
+                    clearTimeout(timerNumeroCanal);
+                    mostrarHUD('✖ Digitação de canal cancelada');
+                    return;
+                }}
+                modalShade.classList.remove('open');
+                return;
+            }}
 
             switch (e.key) {{
                 case ' ':
@@ -2734,20 +2801,6 @@ html_code = f"""<!DOCTYPE html>
                 case 'h':
                 case 'H':
                     modalShade.classList.toggle('open');
-                    break;
-                case '1':
-                case '2':
-                case '3':
-                case '4':
-                case '5':
-                case '6':
-                case '7':
-                case '8':
-                case '9':
-                    const canalNum = parseInt(e.key) - 1;
-                    if (canalNum < TODOS_CANAIS.length) {{
-                        sintonizar(canalNum);
-                    }}
                     break;
             }}
         }});
