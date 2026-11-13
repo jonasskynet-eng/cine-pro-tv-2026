@@ -27,7 +27,12 @@ c.execute("""
        OR url LIKE '%190.128.214.97%'
        OR nome LIKE '%(Digital HLS)%'
 """)
-c.execute("UPDATE canais SET status = 'INATIVO' WHERE qualidade IN ('4K Ultra HD', 'Full HD', '1080p')")
+# Garantir canais premium da Globo ativos
+c.execute("""
+    UPDATE canais
+    SET status = 'ATIVO', qualidade = 'Digital Leve'
+    WHERE id IN (516, 88, 11)
+""")
 
 # Desativação definitiva dos 198 canais estrangeiros da Pluto TV (Suécia, Dinamarca, Noruega, Espanha, Itália, França, EUA, etc.)
 c.execute("""
