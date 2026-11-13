@@ -151,8 +151,8 @@ class ServidorMultithreadStreaming(http.server.SimpleHTTPRequestHandler):
                     if 'mpegurl' in content_type.lower() or target_url.endswith('.m3u8') or '.m3u8?' in target_url or final_url.endswith('.m3u8') or '.m3u8?' in final_url:
                         manifest = resp.read().decode('utf-8', errors='ignore')
 
-                        # Se for Master Playlist com stream único dinâmico (#EXT-X-STREAM-INF), achatamos para a sub-playlist ativa
-                        if '#EXT-X-STREAM-INF' in manifest:
+                        # Se for Master Playlist simples (#EXT-X-STREAM-INF sem áudio demuxado nem Pluto TV), achatamos para a sub-playlist ativa
+                        if '#EXT-X-STREAM-INF' in manifest and '#EXT-X-MEDIA:' not in manifest and 'pluto' not in final_url.lower():
                             sub_cands = [l.strip() for l in manifest.splitlines() if l.strip() and not l.startswith('#')]
                             if sub_cands:
                                 sub_target = sub_cands[0]
@@ -184,21 +184,9 @@ class ServidorMultithreadStreaming(http.server.SimpleHTTPRequestHandler):
                             if not l_strip:
                                 continue
                             
-                            # Tratar tag #EXT-X-MAP (segmentos init de CMAF/fMP4)
-                            if l_strip.startswith('#EXT-X-MAP:'):
-                                m = re.search(r'URI="([^"]+)"', l_strip)
-                                if m:
-                                    uri_velha = m.group(1)
-                                    uri_nova = resolver_link(uri_velha)
-                                    l_strip = l_strip.replace(f'URI="{uri_velha}"', f'URI="{uri_nova}"')
-                                linhas_novas.append(l_strip)
-                            # Tratar tag #EXT-X-KEY (Chaves criptográficas AES-128)
-                            elif l_strip.startswith('#EXT-X-KEY:'):
-                                m = re.search(r'URI="([^"]+)"', l_strip)
-                                if m:
-                                    uri_velha = m.group(1)
-                                    uri_nova = resolver_link(uri_velha)
-                                    l_strip = l_strip.replace(f'URI="{uri_velha}"', f'URI="{uri_nova}"')
+                            # Tratar qualquer tag HLS com atributo URI="..." (#EXT-X-MEDIA, #EXT-X-MAP, #EXT-X-KEY, etc.)
+                            if l_strip.startswith('#') and 'URI="' in l_strip:
+                                l_strip = re.sub(r'URI="([^"]+)"', lambda m: f'URI="{resolver_link(m.group(1))}"', l_strip)
                                 linhas_novas.append(l_strip)
                             elif not l_strip.startswith('#'):
                                 linhas_novas.append(resolver_link(l_strip))

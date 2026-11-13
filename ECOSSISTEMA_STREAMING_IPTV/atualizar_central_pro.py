@@ -29,47 +29,21 @@ c.execute("""
 """)
 c.execute("UPDATE canais SET status = 'INATIVO' WHERE qualidade IN ('4K Ultra HD', 'Full HD', '1080p')")
 
-# Desativação de canais europeus/italianos/nórdicos da Pluto TV descontinuados
+# Desativação definitiva dos 198 canais estrangeiros da Pluto TV (Suécia, Dinamarca, Noruega, Espanha, Itália, França, EUA, etc.)
 c.execute("""
     UPDATE canais 
     SET status = 'INATIVO' 
-    WHERE (url LIKE '%pluto%' OR nome LIKE '%pluto%')
-      AND (
-          nome LIKE '%(Sweden)%'
-          OR nome LIKE '% DK'
-          OR nome LIKE '% NO'
-          OR nome LIKE '%Alberto Sordi%'
-          OR nome LIKE '%Western IT%'
-          OR nome LIKE '%Scherzi e risate%'
-          OR nome LIKE '%Viaggi%'
-          OR nome LIKE '%Toto%'
-          OR nome LIKE '%Christmas tutto%'
-          OR nome LIKE '%Cinema Italiano%'
-          OR nome LIKE '%Bud & Terence%'
-          OR nome LIKE '%Humor (Sweden)%'
-          OR nome LIKE '%Horror (Sweden)%'
-          OR nome LIKE '%Film (Sweden)%'
-          OR nome LIKE '%Sci-Fi (Sweden)%'
-          OR nome LIKE '%Paranormal (Sweden)%'
-          OR nome LIKE '%Star Trek (Sweden)%'
-          OR nome LIKE '%Reaction%'
-          OR nome LIKE '%Sensacine%'
-          OR nome LIKE '%Pluto TV Cucina%'
-          OR nome LIKE '%Pluto TV PlutoTV%'
-          OR nome LIKE '%Pluto TV Horror%'
-          OR nome LIKE '%Pluto TV Paranormal%'
-          OR nome LIKE '%Pluto TV Cinema Orientale%'
-          OR nome LIKE '%Pluto TV Film Commedia%'
-          OR nome LIKE '%Pluto TV Film Storici%'
-          OR nome LIKE '%Pluto TV Film Romantici%'
-          OR nome LIKE '%Pluto TV Notti di Passione%'
-          OR nome LIKE '%Pluto TV Film Thriller%'
-          OR nome LIKE '%Pluto TV Film Azione%'
-          OR nome LIKE '%Pluto TV Legami Letali%'
-          OR nome LIKE '%Pluto TV Serie Sci-Fi%'
-          OR nome LIKE '%(United States)%'
-          OR nome LIKE '%LatAm%'
-      )
+    WHERE (url LIKE '%jmp2.uk%' OR url LIKE '%pluto%' OR nome LIKE '%pluto%')
+      AND NOT (id < 600 OR (id BETWEEN 1325 AND 1354))
+""")
+
+# Garantir que os 97 canais genuínos da Pluto TV Brasil estejam ATIVOS e sem sufixo '(United States)' incorreto
+c.execute("""
+    UPDATE canais
+    SET status = 'ATIVO',
+        nome = REPLACE(REPLACE(nome, ' (United States) BR', ' BR'), ' (United States)', ' BR')
+    WHERE (url LIKE '%jmp2.uk%' OR url LIKE '%pluto%')
+      AND (id < 600 OR (id BETWEEN 1325 AND 1354))
 """)
 
 
@@ -2707,19 +2681,49 @@ html_code = f"""<!DOCTYPE html>
             window.hudTimer = setTimeout(() => hudToast.classList.remove('show'), 2400);
         }}
 
-        function obterEpgDinamico(nomeCanal) {{
+        function obterEpgDinamico(canalObj) {{
+            const c = typeof canalObj === 'object' && canalObj !== null ? canalObj : {{ nome: String(canalObj || 'Canal Ao Vivo'), categoria: '' }};
+            const nomeLimpo = (c.nome || 'Canal').replace('(Digital Leve)', '').replace('(Fibra Leve)', '').trim();
+            const cat = (c.categoria || '').toLowerCase();
             const agora = new Date();
             const h = agora.getHours();
-            const formatHora = (hora, min) => `${{String(hora % 24).padStart(2, '0')}}:${{String(min).padStart(2, '0')}}`;
-            
-            let faixa = 'Grade Matutina';
-            if (h >= 12 && h < 18) faixa = 'Grade Vespertina';
-            else if (h >= 18) faixa = 'Horário Nobre';
-            else if (h < 6) faixa = 'Madrugada';
+            const min = agora.getMinutes();
+            const formatHora = (hora, m) => `${{String((hora + 24) % 24).padStart(2, '0')}}:${{String(m).padStart(2, '0')}}`;
+
+            const inicioBloco = h;
+            const fimBloco = h + 1;
+            const progresso = Math.max(6, Math.min(96, Math.round((min / 60) * 100)));
+
+            let grade = [
+                `Edição Especial • ${{nomeLimpo}}`,
+                `Destaque da Programação • ${{nomeLimpo}}`,
+                `Sessão Principal • ${{nomeLimpo}}`,
+                `Maratona Ao Vivo • ${{nomeLimpo}}`
+            ];
+            if (cat.includes('esporte')) {{
+                grade = [`Arena Ao Vivo • ${{nomeLimpo}}`, `Debate Esportivo`, `Gols & Melhores Momentos`, `Transmissão Especial`];
+            }} else if (cat.includes('jornalismo') || cat.includes('not')) {{
+                grade = [`Jornal Ao Vivo • ${{nomeLimpo}}`, `Análise & Bastidores`, `Plantão de Notícias`, `Resumo do Dia`];
+            }} else if (cat.includes('filme') || cat.includes('cine')) {{
+                grade = [`Sessão Cinema • ${{nomeLimpo}}`, `Superestreia HD`, `Clássicos da Tela`, `Cine Especial`];
+            }} else if (cat.includes('infantil') || cat.includes('kids') || cat.includes('desenho') || cat.includes('anime')) {{
+                grade = [`Festival Animado • ${{nomeLimpo}}`, `Maratona Kids`, `Aventura & Diversão`, `Clube da Animação`];
+            }} else if (cat.includes('comédia') || cat.includes('comedia') || cat.includes('humor') || cat.includes('série') || cat.includes('serie')) {{
+                grade = [`Maratona de Episódios • ${{nomeLimpo}}`, `Sessão Comédia & Séries`, `Episódios Favoritos`, `Especial Fim de Noite`];
+            }}
+
+            const idxProg = h % grade.length;
+            const idxProx = (h + 1) % grade.length;
+            const idxDepois = (h + 2) % grade.length;
 
             return {{
-                faixa: `${{formatHora(h, 0)}} - ${{formatHora(h + 2, 0)}}`,
-                titulo: `${{faixa}} • ${{nomeCanal.replace('(Digital Leve)', '').trim()}} Ao Vivo`
+                faixa: `${{formatHora(inicioBloco, 0)}} - ${{formatHora(fimBloco, 0)}}`,
+                titulo: grade[idxProg],
+                progresso: progresso,
+                proximaFaixa: `${{formatHora(fimBloco, 0)}} - ${{formatHora(fimBloco + 1, 0)}}`,
+                proximoTitulo: grade[idxProx],
+                depoisFaixa: `${{formatHora(fimBloco + 1, 0)}} - ${{formatHora(fimBloco + 2, 0)}}`,
+                depoisTitulo: grade[idxDepois]
             }};
         }}
 
@@ -2745,14 +2749,20 @@ html_code = f"""<!DOCTYPE html>
                 logoBox.innerHTML = obterBadgeSvgCliente(c.nome);
             }}
 
-            const epg = obterEpgDinamico(c.nome);
+            const epg = obterEpgDinamico(c);
             document.getElementById('epgTimeBadge').textContent = epg.faixa;
             document.getElementById('epgProgBadge').textContent = epg.titulo;
+            const epgFill = document.getElementById('epgProgressFill');
+            if (epgFill) epgFill.style.width = `${{epg.progresso}}%`;
+            const epgNext = document.getElementById('epgNextBadge');
+            if (epgNext) epgNext.textContent = `${{epg.proximaFaixa.split(' - ')[0]}} • ${{epg.proximoTitulo}}`;
 
             mostrarHUD(`⚡ Sintonizando CH #${{c.numero_str}}: ${{c.nome}}`);
 
-            // Notificar status atual para o controle remoto no celular
-            fetch(`/api/status_tv?canal_numero=${{c.numero}}&canal_nome=${{encodeURIComponent(c.nome)}}`).catch(() => {{}});
+            // Notificar status atual e EPG para o controle remoto no celular
+            const epgAtualStr = `${{epg.faixa}} • ${{epg.titulo}}`;
+            const epgProxStr = `A seguir (${{epg.proximaFaixa.split(' - ')[0]}}): ${{epg.proximoTitulo}}`;
+            fetch(`/api/status_tv?canal_numero=${{c.numero}}&canal_nome=${{encodeURIComponent(c.nome)}}&epg_atual=${{encodeURIComponent(epgAtualStr)}}&epg_proximo=${{encodeURIComponent(epgProxStr)}}`).catch(() => {{}});
 
             // Roteamento inteligente de fluxo com aceleração HTTP local
             const PROXY_ORIGIN = window.location.protocol.startsWith('http') ? window.location.origin : 'http://localhost:8080';
@@ -3033,13 +3043,73 @@ html_code = f"""<!DOCTYPE html>
             }}
         }});
 
-        document.getElementById('btnFull').addEventListener('click', () => {{
+        function alternarTelaCheia() {{
+            const stage = document.getElementById('playerStage') || document.documentElement;
             if (!document.fullscreenElement) {{
-                document.documentElement.requestFullscreen();
+                if (stage.requestFullscreen) {{
+                    stage.requestFullscreen().catch(() => document.documentElement.requestFullscreen());
+                }} else {{
+                    document.documentElement.requestFullscreen();
+                }}
+                mostrarHUD('⛶ Modo Tela Cheia Ativado (ESC para sair)');
             }} else {{
                 document.exitFullscreen();
+                mostrarHUD('🗗 Tela Restaurada');
             }}
+        }}
+
+        document.getElementById('btnFull').addEventListener('click', alternarTelaCheia);
+        const btnFloatingFull = document.getElementById('btnFloatingFullscreen');
+        if (btnFloatingFull) btnFloatingFull.addEventListener('click', alternarTelaCheia);
+        video.addEventListener('dblclick', alternarTelaCheia);
+
+        document.addEventListener('fullscreenchange', () => {{
+            const emFull = !!document.fullscreenElement;
+            const txt = emFull ? '🗗 Sair da Tela Toda' : '⛶ Expandir Tela Toda';
+            const btnF = document.getElementById('btnFloatingFullscreen');
+            if (btnF) btnF.textContent = txt;
         }});
+
+        function abrirModalEpg() {{
+            const modal = document.getElementById('epgModal');
+            const body = document.getElementById('epgModalBody');
+            const title = document.getElementById('epgModalTitle');
+            if (!modal || !body) return;
+            const c = TODOS_CANAIS[canalAtualIndex] || TODOS_CANAIS[0];
+            const epg = obterEpgDinamico(c);
+            if (title) title.textContent = `📅 Grade de Programação • #${{c.numero_str}} ${{c.nome}}`;
+            body.innerHTML = `
+                <div class="epg-slot-card active">
+                    <span class="epg-slot-time">🔴 AGORA (${{epg.faixa}})</span>
+                    <div style="flex:1">
+                        <div class="epg-slot-title">${{epg.titulo}}</div>
+                        <div class="epg-slot-desc">${{c.categoria}} • Progresso da faixa atual: ${{epg.progresso}}% concluído</div>
+                    </div>
+                </div>
+                <div class="epg-slot-card">
+                    <span class="epg-slot-time">⏭️ A SEGUIR (${{epg.proximaFaixa}})</span>
+                    <div style="flex:1">
+                        <div class="epg-slot-title">${{epg.proximoTitulo}}</div>
+                        <div class="epg-slot-desc">Transmissão sequencial programada • ${{c.nome}}</div>
+                    </div>
+                </div>
+                <div class="epg-slot-card">
+                    <span class="epg-slot-time">🕒 DEPOIS (${{epg.depoisFaixa}})</span>
+                    <div style="flex:1">
+                        <div class="epg-slot-title">${{epg.depoisTitulo}}</div>
+                        <div class="epg-slot-desc">Grade automática 24h • ${{c.pais}}</div>
+                    </div>
+                </div>
+            `;
+            modal.classList.add('show');
+        }}
+
+        const btnOpenEpg = document.getElementById('btnOpenEpgModal');
+        if (btnOpenEpg) btnOpenEpg.addEventListener('click', (e) => {{ e.stopPropagation(); abrirModalEpg(); }});
+        const epgCard = document.getElementById('epgDockCard');
+        if (epgCard) epgCard.addEventListener('click', abrirModalEpg);
+        const btnCloseEpg = document.getElementById('epgModalDismiss');
+        if (btnCloseEpg) btnCloseEpg.addEventListener('click', () => document.getElementById('epgModal').classList.remove('show'));
 
         // BOTÕES DE ENQUADRAMENTO / PROPORÇÃO
         const btnAspectDock = document.getElementById('btnAspectDock');
@@ -3194,8 +3264,7 @@ html_code = f"""<!DOCTYPE html>
                     break;
                 case 'f':
                 case 'F':
-                    if (!document.fullscreenElement) document.documentElement.requestFullscreen();
-                    else document.exitFullscreen();
+                    alternarTelaCheia();
                     break;
                 case 'c':
                 case 'C':
