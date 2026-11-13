@@ -472,7 +472,7 @@ canais_vip_fibra = [
     },
     {
         "nome": "Investigation Discovery (Digital Leve)",
-        "url": "http://170.83.16.50/INVESTIGATION_DISCOVERY/index.m3u8",
+        "url": "http://170.83.16.50/DISCOVERY_ID/index.m3u8",
         "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/brazil/investigation-discovery-br.png",
         "categoria": "⭐ VIP Fibra",
         "tags": ["vip", "filmes"],
@@ -542,7 +542,7 @@ canais_vip_fibra = [
     },
     {
         "nome": "Cartoon Network (Digital Leve)",
-        "url": "http://170.83.16.50/CARTOON_NETWORK/index.m3u8",
+        "url": "http://170.83.16.50/CARTOON/index.m3u8",
         "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/brazil/cartoon-network-br.png",
         "categoria": "⭐ VIP Fibra",
         "tags": ["vip", "infantil", "comedia"],
@@ -598,7 +598,7 @@ canais_vip_fibra = [
     },
     {
         "nome": "Sony Channel (Digital Leve)",
-        "url": "http://170.83.16.50/SONY/index.m3u8",
+        "url": "http://170.83.16.50/SONY_CHANNEL/index.m3u8",
         "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/brazil/sony-channel-br.png",
         "categoria": "⭐ VIP Fibra",
         "tags": ["vip", "filmes", "comedia"],
@@ -2257,6 +2257,26 @@ html_code = f"""<!DOCTYPE html>
         const searchInput = document.getElementById('searchInput');
         const searchCountBadge = document.getElementById('searchCountBadge');
 
+        function obterBadgeSvgCliente(nome) {{
+            const limpo = nome.replace(/\\(.*?\\)|\\[.*?\\]|\\bHD\\b|\\bSD\\b|\\b4K\\b|\\bFHD\\b|\\bDigital\\b|\\bLeve\\b|\\bFibra\\b/gi, '').trim();
+            const palavras = limpo.split(/\\s+/).filter(p => !['de','da','do','das','dos','e','the','a','tv'].includes(p.toLowerCase()));
+            let iniciais = 'TV';
+            if (palavras.length >= 3) iniciais = (palavras[0][0] + palavras[1][0] + palavras[2][0]).toUpperCase();
+            else if (palavras.length === 2) iniciais = (palavras[0].slice(0, 2) + palavras[1][0]).toUpperCase();
+            else if (palavras.length === 1 && palavras[0].length >= 3) iniciais = palavras[0].slice(0, 3).toUpperCase();
+            else if (palavras.length === 1) iniciais = palavras[0].toUpperCase();
+
+            let hash = 0;
+            for (let i = 0; i < nome.length; i++) hash = nome.charCodeAt(i) + ((hash << 5) - hash);
+            const gradientes = [
+                ['#1e3a8a', '#3b82f6'], ['#065f46', '#10b981'], ['#7c2d12', '#f97316'],
+                ['#581c87', '#a855f7'], ['#831843', '#ec4899'], ['#164e63', '#06b6d4'],
+                ['#881337', '#f43f5e'], ['#1e293b', '#475569'], ['#713f12', '#eab308']
+            ];
+            const [c1, c2] = gradientes[Math.abs(hash) % gradientes.length];
+            return `<div style="width:100%;height:100%;border-radius:8px;background:linear-gradient(135deg, ${{c1}}, ${{c2}});display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:11px;letter-spacing:0.5px;box-shadow:inset 0 0 0 1px rgba(255,255,255,0.2);">${{iniciais}}</div>`;
+        }}
+
         function aplicarEnquadramento(idx, notificar = true) {{
             enquadramentoIndex = idx % MODOS_ENQUADRAMENTO.length;
             const modo = MODOS_ENQUADRAMENTO[enquadramentoIndex];
@@ -2318,10 +2338,11 @@ html_code = f"""<!DOCTYPE html>
             document.getElementById('dockDetails').textContent = `${{c.categoria}} • ${{c.regiao || 'Nacional'}} • Qualidade: Digital • Consumo Ultraleve`;
 
             const logoBox = document.getElementById('dockLogo');
+            const safeName = c.nome.replace(/'/g, "\\'");
             if (c.logo) {{
-                logoBox.innerHTML = `<img src="${{c.logo}}" alt="${{c.nome}}" onerror="this.parentElement.innerHTML='⚡'">`;
+                logoBox.innerHTML = `<img src="${{c.logo}}" alt="${{c.nome}}" onerror="this.outerHTML=obterBadgeSvgCliente('${{safeName}}')">`;
             }} else {{
-                logoBox.innerHTML = '⚡';
+                logoBox.innerHTML = obterBadgeSvgCliente(c.nome);
             }}
 
             const epg = obterEpgDinamico(c.nome);
@@ -2505,7 +2526,8 @@ html_code = f"""<!DOCTYPE html>
                 card.setAttribute('data-idx', realIndex);
                 card.onclick = () => sintonizar(realIndex);
 
-                const logoHtml = c.logo ? `<img src="${{c.logo}}" alt="${{c.nome}}" onerror="this.parentElement.innerHTML='⚡'">` : '⚡';
+                const safeName = c.nome.replace(/'/g, "\\'");
+                const logoHtml = c.logo ? `<img src="${{c.logo}}" alt="${{c.nome}}" onerror="this.outerHTML=obterBadgeSvgCliente('${{safeName}}')">` : obterBadgeSvgCliente(c.nome);
 
                 card.innerHTML = `
                     <div class="channel-card-left">
