@@ -51,6 +51,26 @@ c.execute("""
       AND (id < 600 OR (id BETWEEN 1325 AND 1354))
 """)
 
+# Desativação definitiva de canais com termos estrangeiros, trailers, testes, playlists e VODs mortos
+termos_lixo_sql = [
+    '%romania%', '%france%', '%czech%', '%russia%', '%russian%', '%poland%', '%turkey%', '%türk%',
+    '%turkmen%', '%italia%', '%italy%', '%italian%', '%cee%', '%india%', '%hindi%', '%bhojpuri%',
+    '%telugu%', '%tamil%', '%asianet%', '%zeetv%', '%b4u%', '%arabic%', '%arabi%', '%germany%',
+    '%deutsch%', '%ukraine%', '%netherlands%', '%dutch%', '%sweden%', '%norway%', '%denmark%',
+    '%trailer%', '%trailers%', '%not 24/7%', '%google/file%', '%categories/movies.m3u%',
+    '%categories/kids.m3u%', '%categories/series.m3u%', '%group-title=%', '%like gecko)%',
+    '%viasat kino%', '%city eden kinomistika%', '%filmbox+%', '%chinese%', '%bangla%',
+    '%oneplayer.site%', '%fenixhub.online%', '%googleapis.com/drive%', '%googledrive%',
+    '%drive.google.com%', '&tv international%', '%colors cineplex%', '%etv cinema%',
+    '%star maa movies%', '%zee cinema%', '%cine nanar%', '%artflix movie%', '%4ever drama%',
+    '%5 minut tishiny%', '%all weddings we tv%', '%always funny videos%', '%anger management channel%',
+    '%animax asia taiwan%', '%antiques roadshow uk%', '%are we there yet?%', '%ava series%',
+    '%very local omaha%', '%cafetv24 veneto%'
+]
+for termo in termos_lixo_sql:
+    c.execute("UPDATE canais SET status = 'INATIVO' WHERE LOWER(nome) LIKE ? OR LOWER(url) LIKE ?", (termo, termo))
+
+
 
 # Lista Oficial de Canais de TV Aberta do Brasil 100% Verificados e Funcionais
 canais_tv_aberta_brasil = [
@@ -852,26 +872,54 @@ for r in rows:
         tags.append("vip")
         contagem_tags["vip"] += 1
 
+    # Tag INFANTIL (Desenhos, Animações, Kids, Animes Clássicos)
+    eh_infantil = any(k in nome_lower for k in [
+        "kid", "kids", "infantil", "desenho", "desenhos", "cartoon", "cartoonito", "baby",
+        "animac", "nickelodeon", "nick", "disney", "gloob", "turma da monica", "peppa",
+        "patrulha canina", "smurfs", "tartarugas ninja", "bob esponja", "avatar: a lenda",
+        "oggy", "anime", "naruto", "one piece", "tokusato", "babyfirst", "kuriakos kids",
+        "reino infantil"
+    ]) or "desenho" in cat_lower or "infantil" in cat_lower
+    if eh_infantil:
+        tags.append("infantil")
+        contagem_tags["infantil"] += 1
+
     # Tag SÉRIES (Séries 24h, Maratonas, Sitcoms, Novelas, Dramas)
-    if any(k in nome_lower for k in [
-        "serie", "series", "maratona", "sitcom", "novela", "ncis", "trek", "macgyver", 
-        "jeannie", "feiticeira", "hawaii", "csi", "criminal", "chaves", "chapolin",
-        "voyager", "doctor who", "dexter", "sherlock", "house", "charmed", "smallville",
-        "numbers", "kenan", "kel", "icarly", "zoey", "drake", "josh", "supernatural",
-        "walking dead", "colombo", "dorama", "k-drama", "soap", "sobrenatural"
-    ]) or "séries" in cat_lower:
+    tem_nome_serie = any(k in nome_lower for k in [
+        "serie", "series", "maratona", "sitcom", "novela", "novelas", "dorama", "k-drama",
+        "csi", "ncis", "macgyver", "trek", "jornada nas estrelas", "star trek", "jeannie",
+        "feiticeira", "chaves", "chapolin", "dexter", "sherlock", "house", "charmed",
+        "smallville", "numbers", "kenan", "kel", "icarly", "zoey", "drake", "josh",
+        "supernatural", "sobrenatural", "walking dead", "colombo", "schitt", "arnold",
+        "detetives medicos", "soap"
+    ])
+    if tem_nome_serie or ("séries" in cat_lower and not any(k in nome_lower for k in ["cine", "filme", "movie", "telecine", "megapix", "hbo", "paramount", "tnt", "space", "axn"])):
         tags.append("series")
         contagem_tags["series"] += 1
 
-    # Tag COMÉDIA (Humor, South Park, Sitcom, Pegadinhas, Standup)
+    # Tag FILMES (Cinema, Filmes Clássicos, Telecine, HBO, Megapix, Ação, Drama)
+    tem_nome_filme = any(k in nome_lower for k in [
+        "filme", "filmes", "movie", "movies", "cine", "cinema", "telecine", "megapix",
+        "hbo", "max", "paramount", "adrenalina pura", "netmovies", "tnt", "space",
+        "axn", "sony channel", "sony", "lifetime", "warner", "universal", "cinemax",
+        "canal brasil", "terror", "suspense", "bang bang", "ficcao cientifica"
+    ])
+    if (tem_nome_filme or "filme" in cat_lower) and not tem_nome_serie:
+        tags.append("filmes")
+        contagem_tags["filmes"] += 1
+    elif tem_nome_filme:
+        tags.append("filmes")
+        contagem_tags["filmes"] += 1
+
+    # Tag MÚSICA & RÁDIOS (Clipes, Rádios FM/AM, Áudio e Vídeo)
     if any(k in nome_lower for k in [
-        "comedia", "comedy", "south park", "humor", "risos", "stand-up", "sitcom", 
-        "toon", "fun", "chaves", "chapolin", "porta dos fundos", "failarmy", "prank",
-        "pegadinhas", "whindersson", "tata werneck", "pipocando", "caceta", "zorra",
-        "panico", "comedy central", "stand up", "chupim", "pretinho basico"
-    ]):
-        tags.append("comedia")
-        contagem_tags["comedia"] += 1
+        "radio", "rádio", " fm", "fm ", "fm", "music", "musica", "música", "som",
+        "hit", "hits", "antena 1", "jovem pan fm", "mix fm", "alpha fm", "kiss fm",
+        "metropolitana", "band fm", "nativa", "cbn", "bandnews fm", "clip", "clips",
+        "videoclipe", "stingray", "loupe", "karaoke"
+    ]) or "música" in cat_lower or "musica" in cat_lower:
+        tags.append("musica")
+        contagem_tags["musica"] += 1
 
     # Tag SHOWS (Música Ao Vivo, Festivais, Shows Musicais, Palco, Hits)
     if any(k in nome_lower for k in [
@@ -883,12 +931,23 @@ for r in rows:
         tags.append("shows")
         contagem_tags["shows"] += 1
 
+    # Tag COMÉDIA (Humor, South Park, Sitcom, Pegadinhas, Standup)
+    if any(k in nome_lower for k in [
+        "comedia", "comedy", "south park", "humor", "risos", "stand-up", "sitcom", 
+        "toon", "fun", "chaves", "chapolin", "porta dos fundos", "failarmy", "prank",
+        "pegadinhas", "whindersson", "tata werneck", "pipocando", "caceta", "zorra",
+        "panico", "comedy central", "stand up", "chupim", "pretinho basico", "porta tv", "portatv"
+    ]):
+        tags.append("comedia")
+        contagem_tags["comedia"] += 1
+
     # Tag HISTÓRIA (História, Documentários, Ciência, Planeta, Descobertas)
     if any(k in nome_lower for k in [
         "historia", "history", "discovery", "science", "world", "theater", "investigation", 
-        "animal planet", "doc", "documentario", "geography", "national", "bio", "curta",
-        "planeta", "selvagem", "wild", "nature", "biologia", "astronomia", "cosmos",
-        "espaco", "nasa", "arqueologia", "egito", "guerra", "dw", "arte", "smithsonian"
+        "investigacao", "animal planet", "doc", "documentario", "geography", "national", "bio", "curta",
+        "planeta", "selvagem", "wild", "nature", "natureza", "biologia", "astronomia", "cosmos",
+        "espaco", "nasa", "arqueologia", "egito", "guerra", "dw", "arte", "smithsonian",
+        "animais", "aliens", "misterios", "vida real"
     ]) or "document" in cat_lower or "história" in cat_lower:
         tags.append("historia")
         contagem_tags["historia"] += 1
@@ -896,7 +955,7 @@ for r in rows:
     # Tag COMBATE (Lutas, Boxe, UFC, Artes Marciais, MMA)
     if any(k in nome_lower for k in [
         "combate", "luta", "fight", "mma", "ufc", "boxe", "boxing", "wrestling", "wwe",
-        "action", "kickboxing", "jiu", "judo", "muay thai", "bellator", "one championship"
+        "action", "kickboxing", "jiu", "judo", "muay thai", "bellator", "one championship", "filmes de luta"
     ]):
         tags.append("combate")
         contagem_tags["combate"] += 1
@@ -908,25 +967,16 @@ for r in rows:
         "cozinha", "culinaria", "chef", "moda", "decoracao", "famosos", "celebridades",
         "fofoca", "talk show", "entrevista", "game show", "quiz", "talent", "the voice",
         "idol", "got talent", "shark tank", "drag", "rupaul", "survivor", "soltos",
-        "de ferias", "fazenda", "bbb"
-    ]):
+        "de ferias", "fazenda", "bbb", "kfood", "tastemade", "viagens"
+    ]) or "entretenimento" in cat_lower:
         tags.append("entretenimento")
         contagem_tags["entretenimento"] += 1
-
-    # Tag FILMES (Cinema, Filmes Clássicos, Ação, Drama)
-    if any(k in nome_lower for k in [
-        "filme", "filmes", "movie", "movies", "cine", "cinema", "tnt", "space",
-        "axn", "sony", "lifetime", "telecine", "hbo", "megapix", "paramount",
-        "warner", "universal", "cinemax", "canal brasil", "film"
-    ]) or "filmes" in cat_lower:
-        tags.append("filmes")
-        contagem_tags["filmes"] += 1
 
     # Tag ESPORTES (Futebol, Vôlei, Basquete, F1, Ligas)
     if any(k in nome_lower for k in [
         "esporte", "esportes", "sport", "sports", "futebol", "fut", "espn", "sportv",
         "fox sports", "band sports", "bandsports", "premiere", "tnt sports", "dazn",
-        "nba", "nfl", "formula 1", "f1", "nascar", "motogp", "corrida", "automobilismo"
+        "nba", "nfl", "formula 1", "f1", "nascar", "motogp", "corrida", "automobilismo", "turbo"
     ]) or "esportes" in cat_lower:
         tags.append("esportes")
         contagem_tags["esportes"] += 1
@@ -935,56 +985,38 @@ for r in rows:
     if any(k in nome_lower for k in [
         "noticia", "noticias", "news", "jornal", "cnn", "globonews", "bandnews",
         "jovem pan news", "record news", "bloomberg", "reuters", "al jazeera",
-        "euronews", "bbc", "climatempo"
+        "euronews", "bbc", "climatempo", "uol", "bm&c"
     ]) or "notícias" in cat_lower:
         tags.append("noticias")
         contagem_tags["noticias"] += 1
 
-    # Tag INFANTIL (Desenhos, Animações, Kids)
-    if any(k in nome_lower for k in [
-        "kid", "kids", "infantil", "desenho", "desenhos", "cartoon", "baby",
-        "animac", "nickelodeon", "nick", "disney", "cartoon network", "boomerang",
-        "gloob", "discovery kids", "turma da monica", "peppa", "patrulha canina"
-    ]) or "desenhos" in cat_lower or "infantil" in cat_lower:
-        tags.append("infantil")
-        contagem_tags["infantil"] += 1
-
-    # Tag MÚSICA & RÁDIOS (Clipes, Rádios FM/AM, Áudio e Vídeo)
-    if any(k in nome_lower for k in [
-        "musica", "music", "radio", "fm", "som", "hit", "hits", "clip",
-        "clips", "videoclipe", "tophits", "antena 1", "jovem pan fm", "mix fm",
-        "alpha fm", "kiss fm", "gazeta fm", "band fm", "nativa"
-    ]) or "música" in cat_lower or "musica" in cat_lower:
-        tags.append("musica")
-        contagem_tags["musica"] += 1
-
     # Categoria primária visual rigorosamente separada
-    if "aberta" in tags and any(k in nome_lower for k in ["sbt", "cultura", "futura", "globo", "record", "band", "redetv", "tv brasil", "gazeta", "rede brasil", "aparecida", "cancao nova", "senado", "justica", "terra viva", "canal do boi"]):
+    if "infantil" in tags:
+        cat_final = "🧸 Infantil & Desenhos"
+    elif tem_nome_serie or ("series" in tags and not "filmes" in tags):
+        cat_final = "🍿 Séries & Maratona"
+    elif "filmes" in tags:
+        cat_final = "🎬 Filmes & Cinema"
+    elif "musica" in tags and not any(k in nome_lower for k in ["mtv", "show", "live"]):
+        cat_final = "📻 Rádios & Música"
+    elif "shows" in tags:
+        cat_final = "🎸 Shows & Música"
+    elif "comedia" in tags:
+        cat_final = "😂 Comédia & Humor"
+    elif "combate" in tags:
+        cat_final = "🥊 Combate & Lutas"
+    elif "esportes" in tags:
+        cat_final = "⚽ Esportes & Ação"
+    elif "historia" in tags:
+        cat_final = "📜 História & Documentários"
+    elif "noticias" in tags:
+        cat_final = "📰 Notícias"
+    elif "entretenimento" in tags:
+        cat_final = "🎭 Entretenimento & Reality"
+    elif "aberta" in tags:
         cat_final = "📺 TV Aberta"
     elif "vip" in tags:
         cat_final = "⭐ VIP Fibra"
-    elif "series" in tags:
-        cat_final = "🍿 Séries & Maratona"
-    elif "comedia" in tags:
-        cat_final = "😂 Comédia & Humor"
-    elif "shows" in tags:
-        cat_final = "🎸 Shows & Música"
-    elif "historia" in tags:
-        cat_final = "📜 História & Documentários"
-    elif "combate" in tags:
-        cat_final = "🥊 Combate & Lutas"
-    elif "entretenimento" in tags:
-        cat_final = "🎭 Entretenimento & Reality"
-    elif "filmes" in tags:
-        cat_final = "🎬 Filmes & Cinema"
-    elif "infantil" in tags:
-        cat_final = "🧸 Infantil & Desenhos"
-    elif "esportes" in tags:
-        cat_final = "⚽ Esportes & Ação"
-    elif "musica" in tags:
-        cat_final = "📻 Rádios & Música"
-    elif "noticias" in tags:
-        cat_final = "📰 Notícias"
     else:
         cat_final = "📺 TV Aberta"
 
@@ -1789,6 +1821,42 @@ html_code = f"""<!DOCTYPE html>
             border-color: var(--purple);
             color: #d8b4fe;
         }}
+        .cat-pill.pill-filmes.active {{
+            background: rgba(225, 29, 72, 0.25);
+            border-color: #f43f5e;
+            color: #fda4af;
+            box-shadow: 0 0 12px rgba(244, 63, 94, 0.35);
+        }}
+        .cat-pill.pill-infantil.active {{
+            background: rgba(234, 179, 8, 0.25);
+            border-color: #eab308;
+            color: #fef08a;
+            box-shadow: 0 0 12px rgba(234, 179, 8, 0.35);
+        }}
+        .cat-pill.pill-musica.active {{
+            background: rgba(139, 92, 246, 0.25);
+            border-color: #8b5cf6;
+            color: #c4b5fd;
+            box-shadow: 0 0 12px rgba(139, 92, 246, 0.35);
+        }}
+        .cat-pill.pill-vip.active {{
+            background: rgba(245, 158, 11, 0.25);
+            border-color: #f59e0b;
+            color: #fde68a;
+            box-shadow: 0 0 12px rgba(245, 158, 11, 0.35);
+        }}
+        .cat-pill.pill-esportes.active {{
+            background: rgba(34, 197, 94, 0.25);
+            border-color: #22c55e;
+            color: #86efac;
+            box-shadow: 0 0 12px rgba(34, 197, 94, 0.35);
+        }}
+        .cat-pill.pill-noticias.active {{
+            background: rgba(59, 130, 246, 0.25);
+            border-color: #3b82f6;
+            color: #93c5fd;
+            box-shadow: 0 0 12px rgba(59, 130, 246, 0.35);
+        }}
 
         /* LISTA ULTRA-LEVE DE CANAIS */
         .channel-list {{
@@ -2558,18 +2626,18 @@ html_code = f"""<!DOCTYPE html>
             <div class="category-pills">
                 <button class="cat-pill active" data-cat="all">Todos</button>
                 <button class="cat-pill pill-aberta" data-cat="aberta">📺 TV Aberta ({contagem_tags['aberta']})</button>
+                <button class="cat-pill pill-filmes" data-cat="filmes">🎬 Filmes ({contagem_tags['filmes']})</button>
                 <button class="cat-pill pill-series" data-cat="series">🍿 Séries ({contagem_tags['series']})</button>
-                <button class="cat-pill pill-comedia" data-cat="comedia">😂 Comédia ({contagem_tags['comedia']})</button>
+                <button class="cat-pill pill-infantil" data-cat="infantil">🧸 Desenhos & Kids ({contagem_tags['infantil']})</button>
+                <button class="cat-pill pill-musica" data-cat="musica">📻 Rádios & Música ({contagem_tags['musica']})</button>
+                <button class="cat-pill pill-vip" data-cat="vip">⭐ VIP Fibra ({contagem_tags['vip']})</button>
+                <button class="cat-pill pill-esportes" data-cat="esportes">⚽ Esportes ({contagem_tags['esportes']})</button>
                 <button class="cat-pill pill-shows" data-cat="shows">🎸 Shows ({contagem_tags['shows']})</button>
                 <button class="cat-pill pill-historia" data-cat="historia">📜 Documentários ({contagem_tags['historia']})</button>
+                <button class="cat-pill pill-comedia" data-cat="comedia">😂 Comédia ({contagem_tags['comedia']})</button>
                 <button class="cat-pill pill-combate" data-cat="combate">🥊 Combate ({contagem_tags['combate']})</button>
-                <button class="cat-pill pill-entretenimento" data-cat="entretenimento">🎭 Entretenimento ({contagem_tags['entretenimento']})</button>
-                <button class="cat-pill" data-cat="filmes">🎬 Filmes ({contagem_tags['filmes']})</button>
-                <button class="cat-pill" data-cat="esportes">⚽ Esportes ({contagem_tags['esportes']})</button>
-                <button class="cat-pill" data-cat="vip">⭐ VIP Fibra ({contagem_tags['vip']})</button>
-                <button class="cat-pill" data-cat="infantil">🧸 Infantis ({contagem_tags['infantil']})</button>
-                <button class="cat-pill" data-cat="noticias">📰 Notícias ({contagem_tags['noticias']})</button>
-                <button class="cat-pill" data-cat="musica">📻 Rádios & Música ({contagem_tags['musica']})</button>
+                <button class="cat-pill pill-entretenimento" data-cat="entretenimento">🎭 Reality ({contagem_tags['entretenimento']})</button>
+                <button class="cat-pill pill-noticias" data-cat="noticias">📰 Notícias ({contagem_tags['noticias']})</button>
             </div>
 
             <!-- LISTA ULTRA-LEVE DE CANAIS COM RENDERIZAÇÃO PROGRESSIVA -->
