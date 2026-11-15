@@ -14,7 +14,7 @@ SAIDA_DIR.mkdir(parents=True, exist_ok=True)
 conn = sqlite3.connect(DB_PATH)
 c = conn.cursor()
 
-# Garantir desativação de hosts instáveis e duplicatas quebradas
+# Garantir desativação de hosts instáveis, links mortos e duplicatas quebradas
 c.execute("""
     UPDATE canais 
     SET status = 'INATIVO' 
@@ -25,13 +25,16 @@ c.execute("""
        OR url LIKE '%38.134.250.110%'
        OR url LIKE '%45.171.64.30%'
        OR url LIKE '%190.128.214.97%'
+       OR url LIKE '%LVW-15748%'
+       OR url LIKE '%LVW-10842/LVW10842_513N26MDBL/playlist.m3u8%'
+       OR url LIKE '%LVW-10801/LVW10801_Xvg4R0u57n/playlist.m3u8%'
+       OR url LIKE '%79.127.238.228%'
+       OR url LIKE '%goo.gl%'
+       OR url LIKE '%youtube.com%'
+       OR url LIKE '%youtu.be%'
+       OR LOWER(url) LIKE '%.mpd%'
+       OR LOWER(nome) LIKE '%[color%'
        OR nome LIKE '%(Digital HLS)%'
-""")
-# Garantir canais premium da Globo ativos
-c.execute("""
-    UPDATE canais
-    SET status = 'ATIVO', qualidade = 'Digital Leve'
-    WHERE id IN (516, 88, 11)
 """)
 
 # Desativação definitiva dos 198 canais estrangeiros da Pluto TV (Suécia, Dinamarca, Noruega, Espanha, Itália, França, EUA, etc.)
@@ -69,6 +72,17 @@ termos_lixo_sql = [
 ]
 for termo in termos_lixo_sql:
     c.execute("UPDATE canais SET status = 'INATIVO' WHERE LOWER(nome) LIKE ? OR LOWER(url) LIKE ?", (termo, termo))
+
+termos_estrangeiros_br = [
+    '%24 hour free movies%', '%24h catalunya%', '%30atv%', '%48 hours%',
+    '%5tv corrientes%', '%8 mty%', '%abc 7%', '%abc west%', '%alb uk tv%',
+    '%aus abc tv%', '%awe encore%', '%afroland tv%', '%trt %', '%la 2 (canarias)%',
+    '%rtve%', '%tve star%', '%scripps news%', '%newsy%', '%las vegas - 13%',
+    '%omaha -3news%', '%televisa telenovelas%', '%televisa%', '%bbc drama%',
+    '%rt documentary%', '%rt en español%', '%dw %', '%cgtn%', '%bloomberg%'
+]
+for termo in termos_estrangeiros_br:
+    c.execute("UPDATE canais SET status = 'INATIVO' WHERE LOWER(nome) LIKE ? AND pais LIKE '%Brasil%'", (termo,))
 
 
 
@@ -118,7 +132,7 @@ canais_tv_aberta_brasil = [
     },
     {
         "nome": "RecordTV Juara HD",
-        "url": "https://cdn.live.br1.jmvstream.com/w/LVW-10842/LVW10842_513N26MDBL/playlist.m3u8",
+        "url": "https://cdn.live.br1.jmvstream.com/w/LVW-10842/LVW10842_513N26MDBL/chunklist.m3u8",
         "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/brazil/record-br.png",
         "categoria": "📺 TV Aberta Brasil",
         "tags": ["aberta", "noticias"],
@@ -131,16 +145,30 @@ canais_tv_aberta_brasil = [
         "cors_star": 1
     },
     {
-        "nome": "Band TV RBA HD",
-        "url": "https://cdn.jmvstream.com/w/LVW-15748/LVW15748_Yed7yzLuRC/playlist.m3u8",
+        "nome": "Band TV HD (Ao Vivo)",
+        "url": "https://video09.logicahost.com.br/tvmodelo/tvmodelo/chunklist_w146878062.m3u8",
         "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/brazil/band-br.png",
         "categoria": "📺 TV Aberta Brasil",
         "tags": ["aberta", "esportes", "noticias"],
         "qualidade": "Digital Leve",
-        "latencia": 42,
+        "latencia": 40,
         "pais": "🇧🇷 Brasil",
         "pais_codigo": "BR",
         "regiao": "Nacional",
+        "status": "ATIVO",
+        "cors_star": 1
+    },
+    {
+        "nome": "BandNews TV (Fibra Leve)",
+        "url": "http://170.83.16.50/BAND_NEWS/index.m3u8",
+        "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/brazil/band-news-br.png",
+        "categoria": "📺 TV Aberta Brasil",
+        "tags": ["aberta", "vip", "noticias"],
+        "qualidade": "Fibra Leve",
+        "latencia": 38,
+        "pais": "🇧🇷 Brasil",
+        "pais_codigo": "BR",
+        "regiao": "Nacional / Grupo Bandeirantes",
         "status": "ATIVO",
         "cors_star": 1
     },
@@ -258,7 +286,7 @@ canais_tv_aberta_brasil = [
     },
     {
         "nome": "SBT Interior HD",
-        "url": "https://cdn.jmvstream.com/w/LVW-10801/LVW10801_Xvg4R0u57n/playlist.m3u8",
+        "url": "https://cdn.jmvstream.com/w/LVW-10801/LVW10801_Xvg4R0u57n/chunklist.m3u8",
         "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/brazil/sbt-br.png",
         "categoria": "📺 TV Aberta Brasil",
         "tags": ["aberta", "nacional"],
@@ -407,6 +435,76 @@ canais_tv_aberta_brasil = [
         "pais": "🇧🇷 Brasil",
         "pais_codigo": "BR",
         "regiao": "São Paulo",
+        "status": "ATIVO",
+        "cors_star": 1
+    },
+    {
+        "nome": "TV A Crítica HD",
+        "url": "https://cdn.live.br1.jmvstream.com/w/LVW-20715/LVW20715_50E3x2MCm2/playlist.m3u8",
+        "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/brazil/tv-a-critica-br.png",
+        "categoria": "📺 TV Aberta Brasil",
+        "tags": ["aberta", "entretenimento"],
+        "qualidade": "Digital Leve",
+        "latencia": 44,
+        "pais": "🇧🇷 Brasil",
+        "pais_codigo": "BR",
+        "regiao": "Manaus / Nacional",
+        "status": "ATIVO",
+        "cors_star": 1
+    },
+    {
+        "nome": "TV Câmara HD",
+        "url": "http://170.83.49.66:8083/TVCAMARAHD/index.m3u8",
+        "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/brazil/tv-camara-br.png",
+        "categoria": "📺 TV Aberta Brasil",
+        "tags": ["aberta", "noticias"],
+        "qualidade": "Fibra Leve",
+        "latencia": 42,
+        "pais": "🇧🇷 Brasil",
+        "pais_codigo": "BR",
+        "regiao": "Brasília / Nacional",
+        "status": "ATIVO",
+        "cors_star": 1
+    },
+    {
+        "nome": "Canal Rural HD",
+        "url": "http://170.83.49.66:8083/CANALRURALHD/index.m3u8",
+        "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/brazil/canal-rural-br.png",
+        "categoria": "📺 TV Aberta Brasil",
+        "tags": ["aberta", "noticias"],
+        "qualidade": "Fibra Leve",
+        "latencia": 43,
+        "pais": "🇧🇷 Brasil",
+        "pais_codigo": "BR",
+        "regiao": "Nacional",
+        "status": "ATIVO",
+        "cors_star": 1
+    },
+    {
+        "nome": "Rede CNT HD",
+        "url": "http://170.83.49.66:8083/REDECNTHD/index.m3u8",
+        "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/brazil/rede-cnt-br.png",
+        "categoria": "📺 TV Aberta Brasil",
+        "tags": ["aberta"],
+        "qualidade": "Fibra Leve",
+        "latencia": 44,
+        "pais": "🇧🇷 Brasil",
+        "pais_codigo": "BR",
+        "regiao": "Nacional",
+        "status": "ATIVO",
+        "cors_star": 1
+    },
+    {
+        "nome": "SESC TV HD",
+        "url": "http://170.83.49.66:8083/SESCTVHD/index.m3u8",
+        "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/brazil/sesc-tv-br.png",
+        "categoria": "📺 TV Aberta Brasil",
+        "tags": ["aberta", "historia", "shows"],
+        "qualidade": "Fibra Leve",
+        "latencia": 44,
+        "pais": "🇧🇷 Brasil",
+        "pais_codigo": "BR",
+        "regiao": "Nacional",
         "status": "ATIVO",
         "cors_star": 1
     }
@@ -707,6 +805,132 @@ canais_vip_fibra = [
         "regiao": "Nacional / TV a Cabo",
         "status": "ATIVO",
         "cors_star": 1
+    },
+    {
+        "nome": "Sony Movies (Digital Leve)",
+        "url": "http://170.83.16.50/SONY_MOVIES/index.m3u8",
+        "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/brazil/sony-movies-br.png",
+        "categoria": "⭐ VIP Fibra",
+        "tags": ["vip", "filmes"],
+        "qualidade": "Digital",
+        "latencia": 45,
+        "pais": "🇧🇷 Brasil",
+        "pais_codigo": "BR",
+        "regiao": "Nacional / TV a Cabo",
+        "status": "ATIVO",
+        "cors_star": 1
+    },
+    {
+        "nome": "AMC Brasil HD",
+        "url": "http://170.83.49.66:8083/AMCHD/index.m3u8",
+        "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/brazil/amc-br.png",
+        "categoria": "⭐ VIP Fibra",
+        "tags": ["vip", "filmes", "series"],
+        "qualidade": "Digital",
+        "latencia": 44,
+        "pais": "🇧🇷 Brasil",
+        "pais_codigo": "BR",
+        "regiao": "Nacional / TV a Cabo",
+        "status": "ATIVO",
+        "cors_star": 1
+    },
+    {
+        "nome": "TV Rá Tim Bum HD",
+        "url": "http://170.83.49.66:8083/TVRATIMBUMHD/index.m3u8",
+        "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/brazil/tv-ra-tim-bum-br.png",
+        "categoria": "⭐ VIP Fibra",
+        "tags": ["vip", "infantil"],
+        "qualidade": "Digital",
+        "latencia": 43,
+        "pais": "🇧🇷 Brasil",
+        "pais_codigo": "BR",
+        "regiao": "Nacional / TV a Cabo",
+        "status": "ATIVO",
+        "cors_star": 1
+    },
+    {
+        "nome": "Fish TV (Fibra Leve)",
+        "url": "http://170.83.16.50/FISH_TV/index.m3u8",
+        "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/brazil/fish-tv-br.png",
+        "categoria": "⭐ VIP Fibra",
+        "tags": ["vip", "esportes"],
+        "qualidade": "Digital",
+        "latencia": 45,
+        "pais": "🇧🇷 Brasil",
+        "pais_codigo": "BR",
+        "regiao": "Nacional / TV a Cabo",
+        "status": "ATIVO",
+        "cors_star": 1
+    },
+    {
+        "nome": "WooHoo (Fibra Leve)",
+        "url": "http://170.83.16.50/WOOHOO/index.m3u8",
+        "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/brazil/woohoo-br.png",
+        "categoria": "⭐ VIP Fibra",
+        "tags": ["vip", "esportes", "entretenimento"],
+        "qualidade": "Digital",
+        "latencia": 44,
+        "pais": "🇧🇷 Brasil",
+        "pais_codigo": "BR",
+        "regiao": "Nacional / TV a Cabo",
+        "status": "ATIVO",
+        "cors_star": 1
+    },
+    {
+        "nome": "Travel Box Brazil HD",
+        "url": "http://170.83.49.66:8083/TRAVELBOXHD/index.m3u8",
+        "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/brazil/travel-box-brazil-br.png",
+        "categoria": "⭐ VIP Fibra",
+        "tags": ["vip", "entretenimento", "historia"],
+        "qualidade": "Digital",
+        "latencia": 44,
+        "pais": "🇧🇷 Brasil",
+        "pais_codigo": "BR",
+        "regiao": "Nacional / TV a Cabo",
+        "status": "ATIVO",
+        "cors_star": 1
+    },
+    {
+        "nome": "Box Kids TV HD",
+        "url": "http://170.83.49.66:8083/BOXKIDSHD/index.m3u8",
+        "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/brazil/box-kids-tv-br.png",
+        "categoria": "⭐ VIP Fibra",
+        "tags": ["vip", "infantil"],
+        "qualidade": "Digital",
+        "latencia": 44,
+        "pais": "🇧🇷 Brasil",
+        "pais_codigo": "BR",
+        "regiao": "Nacional / TV a Cabo",
+        "status": "ATIVO",
+        "cors_star": 1
+    },
+    {
+        "nome": "Music Box Brazil HD",
+        "url": "http://170.83.49.66:8083/MUSICBOXBRASILHD/index.m3u8",
+        "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/brazil/music-box-brazil-br.png",
+        "categoria": "⭐ VIP Fibra",
+        "tags": ["vip", "shows", "musica"],
+        "qualidade": "Digital",
+        "latencia": 44,
+        "pais": "🇧🇷 Brasil",
+        "pais_codigo": "BR",
+        "regiao": "Nacional / TV a Cabo",
+        "status": "ATIVO",
+        "cors_star": 1
+    },
+    {
+        "nome": "Jovem Pan News HD",
+        "url": "http://170.83.49.66:8083/JOVEMPANNEWSHD/index.m3u8",
+        "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/brazil/jovem-pan-news-br.png",
+        "categoria": "⭐ VIP Fibra",
+        "tags": ["vip", "noticias"],
+        "qualidade": "Digital",
+        "latencia": 42,
+        "pais": "🇧🇷 Brasil",
+        "pais_codigo": "BR",
+        "regiao": "Nacional / TV a Cabo",
+        "status": "ATIVO",
+        "cors_star": 1
     }
 ]
 
@@ -801,45 +1025,53 @@ c.execute("""
             WHEN nome LIKE '%TV Cultura SP (Fibra Leve)%' THEN 2
             WHEN nome LIKE '%Canal Futura (Grupo Globo Fibra)%' THEN 3
             WHEN nome LIKE '%RecordTV Juara HD%' THEN 4
-            WHEN nome LIKE '%Band TV RBA HD%' THEN 5
-            WHEN nome LIKE '%RedeTV! (Fibra Leve)%' THEN 6
-            WHEN nome LIKE '%TV Brasil (EBC Oficial HD)%' THEN 7
-            WHEN nome LIKE '%TV Gazeta SP (NuvemPlay)%' THEN 8
-            WHEN nome LIKE '%Record News (Fibra Leve)%' THEN 9
-            WHEN nome LIKE '%BandSports (Fibra Leve)%' THEN 10
-            WHEN nome LIKE '%TV Cultura SP Oficial (UOL)%' THEN 11
-            WHEN nome LIKE '%TV Cultura Fast (FPA)%' THEN 12
-            WHEN nome LIKE '%TV Cultura SP (WiseStream HD)%' THEN 13
-            WHEN nome LIKE '%SBT Interior HD%' THEN 14
-            WHEN nome LIKE '%Rede Brasil HD%' THEN 15
-            WHEN nome LIKE '%TV Aparecida (Fibra Leve)%' THEN 16
-            WHEN nome LIKE '%Canção Nova (Fibra Leve)%' THEN 17
-            WHEN nome LIKE '%TV Senado (Fibra Leve)%' THEN 18
-            WHEN nome LIKE '%TV Justiça (Fibra Leve)%' THEN 19
-            WHEN nome LIKE '%Terra Viva (Fibra Leve)%' THEN 20
-            WHEN nome LIKE '%Canal do Boi (Fibra Leve)%' THEN 21
-            WHEN url LIKE '%170.83.16.50%' AND nome LIKE '%Discovery Kids%' THEN 22
-            WHEN url LIKE '%170.83.16.50%' AND nome LIKE '%Discovery Channel%' THEN 23
-            WHEN url LIKE '%170.83.16.50%' AND nome LIKE '%Discovery Turbo%' THEN 24
-            WHEN url LIKE '%170.83.16.50%' AND nome LIKE '%Discovery Home & Health%' THEN 25
-            WHEN url LIKE '%170.83.16.50%' AND nome LIKE '%Discovery Science%' THEN 26
-            WHEN url LIKE '%170.83.16.50%' AND nome LIKE '%Discovery World%' THEN 27
-            WHEN url LIKE '%170.83.16.50%' AND nome LIKE '%Discovery Theater%' THEN 28
-            WHEN url LIKE '%170.83.16.50%' AND nome LIKE '%Investigation Discovery%' THEN 29
-            WHEN url LIKE '%170.83.16.50%' AND nome LIKE '%Animal Planet%' THEN 30
-            WHEN url LIKE '%170.83.16.50%' AND nome LIKE '%TLC%' THEN 31
-            WHEN url LIKE '%170.83.16.50%' AND nome LIKE '%HGTV%' THEN 32
-            WHEN url LIKE '%170.83.16.50%' AND nome LIKE '%History Channel%' THEN 33
-            WHEN url LIKE '%170.83.16.50%' AND nome LIKE '%Cartoon Network%' THEN 34
-            WHEN url LIKE '%170.83.16.50%' AND nome LIKE '%TNT%' THEN 35
-            WHEN url LIKE '%170.83.16.50%' AND nome LIKE '%Space%' THEN 36
-            WHEN url LIKE '%170.83.16.50%' AND nome LIKE '%AXN%' THEN 37
-            WHEN url LIKE '%170.83.16.50%' AND nome LIKE '%Sony Channel%' THEN 38
-            WHEN url LIKE '%170.83.16.50%' AND nome LIKE '%ESPN%' THEN 39
-            WHEN url LIKE '%170.83.16.50%' AND nome LIKE '%CNN Brasil%' THEN 40
-            WHEN url LIKE '%170.83.16.50%' AND nome LIKE '%Lifetime%' THEN 41
-            WHEN url LIKE '%170.83.16.50%' THEN 42
-            WHEN pais LIKE '%Brasil%' THEN 50
+            WHEN nome LIKE '%Band TV HD (Ao Vivo)%' THEN 5
+            WHEN nome LIKE '%BandNews TV (Fibra Leve)%' THEN 6
+            WHEN nome LIKE '%RedeTV! (Fibra Leve)%' THEN 7
+            WHEN nome LIKE '%TV Brasil (EBC Oficial HD)%' THEN 8
+            WHEN nome LIKE '%TV Gazeta SP (NuvemPlay)%' THEN 9
+            WHEN nome LIKE '%Record News (Fibra Leve)%' THEN 10
+            WHEN nome LIKE '%BandSports (Fibra Leve)%' THEN 11
+            WHEN nome LIKE '%TV Cultura SP Oficial (UOL)%' THEN 12
+            WHEN nome LIKE '%TV Cultura Fast (FPA)%' THEN 13
+            WHEN nome LIKE '%TV Cultura SP (WiseStream HD)%' THEN 14
+            WHEN nome LIKE '%SBT Interior HD%' THEN 15
+            WHEN nome LIKE '%Rede Brasil HD%' THEN 16
+            WHEN nome LIKE '%TV Aparecida (Fibra Leve)%' THEN 17
+            WHEN nome LIKE '%Canção Nova (Fibra Leve)%' THEN 18
+            WHEN nome LIKE '%TV Senado (Fibra Leve)%' THEN 19
+            WHEN nome LIKE '%TV Justiça (Fibra Leve)%' THEN 20
+            WHEN nome LIKE '%Terra Viva (Fibra Leve)%' THEN 21
+            WHEN nome LIKE '%Canal do Boi (Fibra Leve)%' THEN 22
+            WHEN nome LIKE '%TV A Crítica HD%' THEN 23
+            WHEN nome LIKE '%TV Câmara HD%' THEN 24
+            WHEN nome LIKE '%Canal Rural HD%' THEN 25
+            WHEN nome LIKE '%Rede CNT HD%' THEN 26
+            WHEN nome LIKE '%SESC TV HD%' THEN 27
+            WHEN url LIKE '%170.83.16.50%' AND nome LIKE '%Discovery Kids%' THEN 28
+            WHEN url LIKE '%170.83.16.50%' AND nome LIKE '%Discovery Channel%' THEN 29
+            WHEN url LIKE '%170.83.16.50%' AND nome LIKE '%Discovery Turbo%' THEN 30
+            WHEN url LIKE '%170.83.16.50%' AND nome LIKE '%Discovery Home & Health%' THEN 31
+            WHEN url LIKE '%170.83.16.50%' AND nome LIKE '%Discovery Science%' THEN 32
+            WHEN url LIKE '%170.83.16.50%' AND nome LIKE '%Discovery World%' THEN 33
+            WHEN url LIKE '%170.83.16.50%' AND nome LIKE '%Discovery Theater%' THEN 34
+            WHEN url LIKE '%170.83.16.50%' AND nome LIKE '%Investigation Discovery%' THEN 35
+            WHEN url LIKE '%170.83.16.50%' AND nome LIKE '%Animal Planet%' THEN 36
+            WHEN url LIKE '%170.83.16.50%' AND nome LIKE '%TLC%' THEN 37
+            WHEN url LIKE '%170.83.16.50%' AND nome LIKE '%HGTV%' THEN 38
+            WHEN url LIKE '%170.83.16.50%' AND nome LIKE '%History Channel%' THEN 39
+            WHEN url LIKE '%170.83.16.50%' AND nome LIKE '%Cartoon Network%' THEN 40
+            WHEN url LIKE '%170.83.16.50%' AND nome LIKE '%TNT%' THEN 41
+            WHEN url LIKE '%170.83.16.50%' AND nome LIKE '%Space%' THEN 42
+            WHEN url LIKE '%170.83.16.50%' AND nome LIKE '%AXN%' THEN 43
+            WHEN url LIKE '%170.83.16.50%' AND nome LIKE '%Sony Channel%' THEN 44
+            WHEN url LIKE '%170.83.16.50%' AND nome LIKE '%Sony Movies%' THEN 45
+            WHEN url LIKE '%170.83.16.50%' AND nome LIKE '%ESPN%' THEN 46
+            WHEN url LIKE '%170.83.16.50%' AND nome LIKE '%CNN Brasil%' THEN 47
+            WHEN url LIKE '%170.83.16.50%' AND nome LIKE '%Lifetime%' THEN 48
+            WHEN url LIKE '%170.83.16.50%' THEN 49
+            WHEN url LIKE '%170.83.49.66%' THEN 50
+            WHEN pais LIKE '%Brasil%' THEN 55
             WHEN pais LIKE '%Portugal%' THEN 60
             WHEN pais LIKE '%América Latina%' THEN 70
             ELSE 80
@@ -899,8 +1131,8 @@ for r in rows:
     # Tag ABERTA (TV Aberta Brasil Nacional e Regional: SBT, Globo, Cultura, Record, Band, RedeTV!, TV Brasil, Gazeta, etc.)
     if any(k in nome_lower for k in [
         "sbt", "cultura", "futura", "globo", "record", "band ", "bandeirantes", 
-        "redetv", "gazeta", "tv brasil", "ebc", "aparecida", "cancao nova", "senado", "justica", 
-        "camara", "terra viva", "canal do boi", "rede brasil", "cnt", "tv escola", "ideal tv"
+        "redetv", "gazeta", "tv brasil", "ebc", "aparecida", "cancao nova", "canção nova", "senado", "justica", "justiça", 
+        "camara", "câmara", "terra viva", "canal do boi", "rede brasil", "cnt", "tv escola", "ideal tv", "tv a crítica", "tv a critica", "sesc tv", "canal rural"
     ]) or cat_db == "📺 TV Aberta Brasil":
         tags.append("aberta")
         contagem_tags["aberta"] += 1
@@ -1001,7 +1233,7 @@ for r in rows:
     # Tag ENTRETENIMENTO (Variedades, Reality Shows, Lifestyle, Festivais)
     if any(k in nome_lower for k in [
         "entretenimento", "reality", "catfish", "dating", "shore", 
-        "are you the one", "masterchef", "gshow", "viva", "lifestyle", "bake off",
+        "are you the one", "masterchef", "gshow", "canal viva", "lifestyle", "bake off",
         "cozinha", "culinaria", "chef", "moda", "decoracao", "famosos", "celebridades",
         "fofoca", "talk show", "entrevista", "game show", "quiz", "talent", "the voice",
         "idol", "got talent", "shark tank", "drag", "rupaul", "survivor", "soltos",
@@ -1012,7 +1244,7 @@ for r in rows:
 
     # Tag ESPORTES (Futebol, Vôlei, Basquete, F1, Ligas)
     if any(k in nome_lower for k in [
-        "esporte", "esportes", "sport", "sports", "futebol", "fut", "espn", "sportv",
+        "esporte", "esportes", "sport", "sports", "futebol", "fut ", "espn", "sportv",
         "fox sports", "band sports", "bandsports", "premiere", "tnt sports", "dazn",
         "nba", "nfl", "formula 1", "f1", "nascar", "motogp", "corrida", "automobilismo", "turbo"
     ]) or "esportes" in cat_lower:
@@ -1023,13 +1255,15 @@ for r in rows:
     if any(k in nome_lower for k in [
         "noticia", "noticias", "news", "jornal", "cnn", "globonews", "bandnews",
         "jovem pan news", "record news", "bloomberg", "reuters", "al jazeera",
-        "euronews", "bbc", "climatempo", "uol", "bm&c"
+        "euronews", "bbc", "climatempo", "canal uol", "uol noticias", "bm&c"
     ]) or "notícias" in cat_lower:
         tags.append("noticias")
         contagem_tags["noticias"] += 1
 
     # Categoria primária visual rigorosamente separada
-    if "infantil" in tags:
+    if cat_db == "📺 TV Aberta Brasil" and not any(k in nome_lower for k in ["news", "bandnews", "record news", "jovem pan news"]):
+        cat_final = "📺 TV Aberta"
+    elif "infantil" in tags:
         cat_final = "🧸 Infantil & Desenhos"
     elif tem_nome_serie or ("series" in tags and not "filmes" in tags):
         cat_final = "🍿 Séries & Maratona"
@@ -2910,6 +3144,24 @@ html_code = f"""<!DOCTYPE html>
             }};
         }}
 
+        const EH_AMBIENTE_LOCAL = ['localhost', '127.0.0.1'].includes(window.location.hostname) ||
+            /^(192\\.168\\.|10\\.|172\\.(1[6-9]|2[0-9]|3[01])\\.)/.test(window.location.hostname) ||
+            window.location.protocol === 'file:';
+
+        let LOCAL_PROXY_ATIVO = false;
+        if (!EH_AMBIENTE_LOCAL) {{
+            fetch('http://localhost:8080/api/ip_local', {{ mode: 'cors' }})
+                .then(r => {{ if (r.ok) LOCAL_PROXY_ATIVO = true; }})
+                .catch(() => {{}});
+        }}
+
+        const MAPA_FALLBACK_HTTPS_NUVEM = {{
+            'http://170.83.16.50/CULTURA/tracks-v1a1/mono.m3u8': 'https://player-tvcultura.stream.uol.com.br/live/tvcultura.m3u8',
+            'http://170.83.16.50/REDE_TV/index.m3u8': 'https://cdn.live.br1.jmvstream.com/webtv/AVJ-15235/playlist/playlist.m3u8',
+            'http://170.83.16.50/RECORD_NEWS/index.m3u8': 'https://rnw-rn-samsungtvplus.otteravision.com/rnw/rn/rnw_rn.m3u8',
+            'http://170.83.16.50/TV_APARECIDA/index.m3u8': 'https://cdn.jmvstream.com/w/LVW-9716/LVW9716_HbtQtezcaw/master.m3u8'
+        }};
+
         function sintonizar(idx) {{
             if (idx < 0) idx = TODOS_CANAIS.length - 1;
             if (idx >= TODOS_CANAIS.length) idx = 0;
@@ -2938,23 +3190,77 @@ html_code = f"""<!DOCTYPE html>
 
             mostrarHUD(`⚡ Sintonizando CH #${{c.numero_str}}: ${{c.nome}}`);
 
-            // Notificar status atual e EPG para o controle remoto no celular
-            const epgAtualStr = `${{epg.faixa}} • ${{epg.titulo}}`;
-            const epgProxStr = `A seguir (${{epg.proximaFaixa.split(' - ')[0]}}): ${{epg.proximoTitulo}}`;
-            fetch(`/api/status_tv?canal_numero=${{c.numero}}&canal_nome=${{encodeURIComponent(c.nome)}}&epg_atual=${{encodeURIComponent(epgAtualStr)}}&epg_proximo=${{encodeURIComponent(epgProxStr)}}`).catch(() => {{}});
-
-            // Roteamento inteligente de fluxo com aceleração HTTP local
-            const PROXY_ORIGIN = window.location.protocol.startsWith('http') ? window.location.origin : 'http://localhost:8080';
-            let streamUrl = c.url;
-            if (c.url.includes('170.83.16.50')) {{
-                // Fibra nativa direta com CORS *
-                streamUrl = c.url;
-            }} else {{
-                streamUrl = PROXY_ORIGIN + '/proxy?url=' + encodeURIComponent(c.url);
+            // Notificar status atual e EPG apenas quando rodando conectado ao servidor local
+            if (EH_AMBIENTE_LOCAL) {{
+                const epgAtualStr = `${{epg.faixa}} • ${{epg.titulo}}`;
+                const epgProxStr = `A seguir (${{epg.proximaFaixa.split(' - ')[0]}}): ${{epg.proximoTitulo}}`;
+                fetch(`/api/status_tv?canal_numero=${{c.numero}}&canal_nome=${{encodeURIComponent(c.nome)}}&epg_atual=${{encodeURIComponent(epgAtualStr)}}&epg_proximo=${{encodeURIComponent(epgProxStr)}}`).catch(() => {{}});
             }}
 
             if (hls) {{
                 hls.destroy();
+                hls = null;
+            }}
+            video.onerror = null;
+
+            // Roteamento híbrido inteligente: Local (proxy Python 8080) vs Nuvem (HTTPS direto / fallback CORS)
+            let urlBase = c.url;
+            if (!EH_AMBIENTE_LOCAL && !LOCAL_PROXY_ATIVO && MAPA_FALLBACK_HTTPS_NUVEM[c.url]) {{
+                urlBase = MAPA_FALLBACK_HTTPS_NUVEM[c.url];
+            }}
+
+            let streamUrl = urlBase;
+            if (EH_AMBIENTE_LOCAL) {{
+                const PROXY_ORIGIN = window.location.protocol.startsWith('http') ? window.location.origin : 'http://localhost:8080';
+                if (urlBase.includes('170.83.16.50')) {{
+                    // Fibra nativa direta com CORS *
+                    streamUrl = urlBase;
+                }} else {{
+                    streamUrl = PROXY_ORIGIN + '/proxy?url=' + encodeURIComponent(urlBase);
+                }}
+            }} else if (LOCAL_PROXY_ATIVO) {{
+                if (urlBase.includes('170.83.16.50')) {{
+                    streamUrl = urlBase;
+                }} else {{
+                    streamUrl = 'http://localhost:8080/proxy?url=' + encodeURIComponent(urlBase);
+                }}
+            }} else {{
+                // Modo Nuvem Puro (Netlify/HTTPS): usa stream HTTPS direto sem depender de /proxy
+                if (window.location.protocol === 'https:' && urlBase.startsWith('http://')) {{
+                    mostrarHUD('⚠️ Canal HTTP local indisponível na nuvem sem servidor ativo. Pulando para próximo canal HTTPS...');
+                    clearTimeout(window.autoZapTimer);
+                    window.autoZapTimer = setTimeout(() => sintonizar(canalAtualIndex + 1), 2200);
+                    destacarCanalAtivo();
+                    return;
+                }}
+                streamUrl = urlBase;
+            }}
+
+            const ehRadioDireta = !urlBase.includes('.m3u8') && (
+                (c.categoria && c.categoria.includes('Rádios')) ||
+                /streamtheworld|crossradio|brasilstream|fabricahost|fox\\.srv\\.br/i.test(urlBase)
+            );
+
+            if (ehRadioDireta) {{
+                video.src = urlBase;
+                playOverlay.classList.add('hidden');
+                tentativasErro = 0;
+                const playRadio = video.play();
+                if (playRadio !== undefined) {{
+                    playRadio.catch(() => {{
+                        video.muted = true;
+                        video.play().then(() => {{
+                            unmutePill.style.display = 'flex';
+                        }}).catch(() => {{}});
+                    }});
+                }}
+                video.onerror = () => {{
+                    mostrarHUD('⚠️ Rádio temporariamente indisponível. Pulando...');
+                    clearTimeout(window.autoZapTimer);
+                    window.autoZapTimer = setTimeout(() => sintonizar(canalAtualIndex + 1), 2500);
+                }};
+                destacarCanalAtivo();
+                return;
             }}
 
             if (Hls.isSupported()) {{
@@ -3526,7 +3832,11 @@ html_code = f"""<!DOCTYPE html>
             remoteModal.classList.add('open');
             if (!qrCodeInstancia) {{
                 try {{
-                    const resp = await fetch('/api/ip_local');
+                    if (!EH_AMBIENTE_LOCAL && !LOCAL_PROXY_ATIVO) {{
+                        throw new Error('Controle Wi-Fi disponível apenas com o servidor local ligado');
+                    }}
+                    const apiBase = EH_AMBIENTE_LOCAL ? '' : 'http://localhost:8080';
+                    const resp = await fetch(apiBase + '/api/ip_local');
                     const data = await resp.json();
                     const url = data.url_controle;
                     document.getElementById('remoteUrlDisplay').textContent = url;
@@ -3541,7 +3851,9 @@ html_code = f"""<!DOCTYPE html>
                         correctLevel: QRCode.CorrectLevel.M
                     }});
                 }} catch (err) {{
-                    const fallbackUrl = `http://${{window.location.hostname || '192.168.100.210'}}:8080/controle.html`;
+                    const fallbackUrl = EH_AMBIENTE_LOCAL
+                        ? `http://${{window.location.hostname || '192.168.100.210'}}:8080/controle.html`
+                        : 'Disponível apenas no modo servidor local (PC na mesma rede Wi-Fi)';
                     document.getElementById('remoteUrlDisplay').textContent = fallbackUrl;
                 }}
             }}
@@ -3561,8 +3873,9 @@ html_code = f"""<!DOCTYPE html>
             }});
         }});
 
-        // ESCUTADOR EM TEMPO REAL DE COMANDOS DO CELULAR (POLLING SUAVE A CADA 350ms)
+        // ESCUTADOR EM TEMPO REAL DE COMANDOS DO CELULAR (SOMENTE EM AMBIENTE LOCAL)
         async function ouvirComandosRemotos() {{
+            if (!EH_AMBIENTE_LOCAL) return;
             try {{
                 const resp = await fetch('/api/ouvir_comandos');
                 if (resp.ok) {{
@@ -3573,7 +3886,9 @@ html_code = f"""<!DOCTYPE html>
                 }}
             }} catch (err) {{}}
         }}
-        setInterval(ouvirComandosRemotos, 350);
+        if (EH_AMBIENTE_LOCAL) {{
+            setInterval(ouvirComandosRemotos, 350);
+        }}
 
         function executarComandoRemoto(cmd, val) {{
             switch (cmd) {{

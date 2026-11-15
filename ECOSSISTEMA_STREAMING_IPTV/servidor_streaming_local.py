@@ -9,7 +9,27 @@ import re
 import socket
 import json
 import threading
+import gzip
+import zlib
 from pathlib import Path
+
+def decodificar_manifesto(raw_bytes, content_encoding=''):
+    """Decodifica bytes de playlist HLS tratando gzip/deflate quando presentes."""
+    enc = (content_encoding or '').lower()
+    if raw_bytes[:2] == b'\x1f\x8b' or 'gzip' in enc:
+        try:
+            raw_bytes = gzip.decompress(raw_bytes)
+        except Exception:
+            pass
+    elif 'deflate' in enc:
+        try:
+            raw_bytes = zlib.decompress(raw_bytes)
+        except Exception:
+            try:
+                raw_bytes = zlib.decompress(raw_bytes, -zlib.MAX_WBITS)
+            except Exception:
+                pass
+    return raw_bytes.decode('utf-8', errors='ignore')
 
 PORT = 8080
 DIRETORIO_SAIDA = Path(__file__).parent / "saida"
@@ -117,6 +137,7 @@ class ServidorMultithreadStreaming(http.server.SimpleHTTPRequestHandler):
 
             headers = {
                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
+                'Accept-Encoding': 'identity',
                 'Referer': base_url,
                 'Origin': f"{parsed_target.scheme}://{parsed_target.netloc}"
             }
@@ -150,7 +171,7 @@ class ServidorMultithreadStreaming(http.server.SimpleHTTPRequestHandler):
                     
                     # 1. Se for playlist M3U8, reescrevemos segmentos e tags #EXT-X-MAP / #EXT-X-KEY
                     if 'mpegurl' in content_type.lower() or target_url.endswith('.m3u8') or '.m3u8?' in target_url or final_url.endswith('.m3u8') or '.m3u8?' in final_url:
-                        manifest = resp.read().decode('utf-8', errors='ignore')
+                        manifest = decodificar_manifesto(resp.read(), resp.headers.get('Content-Encoding', ''))
 
                         # Se for Master Playlist simples (#EXT-X-STREAM-INF sem áudio demuxado nem Pluto TV), achatamos para a sub-playlist ativa
                         if '#EXT-X-STREAM-INF' in manifest and '#EXT-X-MEDIA:' not in manifest and 'pluto' not in final_url.lower():
@@ -163,9 +184,11 @@ class ServidorMultithreadStreaming(http.server.SimpleHTTPRequestHandler):
                                     req_sub = urllib.request.Request(sub_target, headers=headers)
                                     with urllib.request.urlopen(req_sub, context=ctx, timeout=8) as resp_sub:
                                         final_sub_url = resp_sub.geturl()
-                                        manifest = resp_sub.read().decode('utf-8', errors='ignore')
-                                        base_url = final_sub_url.rsplit('/', 1)[0] + '/'
-                                        parsed_final = urllib.parse.urlparse(final_sub_url)
+                                        sub_manifest = decodificar_manifesto(resp_sub.read(), resp_sub.headers.get('Content-Encoding', ''))
+                                        if '#EXTM3U' in sub_manifest:
+                                            manifest = sub_manifest
+                                            base_url = final_sub_url.rsplit('/', 1)[0] + '/'
+                                            parsed_final = urllib.parse.urlparse(final_sub_url)
                                 except Exception:
                                     pass
                         
