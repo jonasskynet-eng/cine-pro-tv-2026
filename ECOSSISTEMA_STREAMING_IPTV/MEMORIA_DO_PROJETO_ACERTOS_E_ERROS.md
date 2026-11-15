@@ -71,7 +71,7 @@ Transformamos uma busca caótica de listas da internet em um **ecossistema profi
 ### 📌 Atualização 15/11/2026 — Lançamento Oficial da Versão 03 (v3.0 Híbrida Nuvem & Local)
 1. **Roteamento Híbrido Nuvem & Local (`atualizar_central_pro.py`):**
    - Implementada detecção automática de ambiente (`EH_AMBIENTE_LOCAL` + sonda assíncrona `LOCAL_PROXY_ATIVO` em `http://localhost:8080/api/ip_local`) e o mapa `MAPA_FALLBACK_HTTPS_NUVEM` para converter canais HTTP locais (TV Cultura, RedeTV!, Record News e TV Aparecida) para streams `https://` com `CORS: *` liberado.
-   - Na nuvem (`https://glittery-entremet-d4b633.netlify.app`), os canais `https://` tocam diretamente sem chamar `/proxy` inexistente (que antes retornava Erro 404 na hospedagem estática), e as consultas locais (`/api/status_tv`, `/api/ouvir_comandos`) foram isoladas para rodar apenas no servidor local.
+   - Na nuvem (`https://fancy-hummingbird-5b24db.netlify.app`), os canais `https://` tocam diretamente sem chamar `/proxy` inexistente (que antes retornava Erro 404 na hospedagem estática), e as consultas locais (`/api/status_tv`, `/api/ouvir_comandos`) foram isoladas para rodar apenas no servidor local.
 2. **Correção do Proxy Local para Manifestos GZIP (`servidor_streaming_local.py`):**
    - Adicionado cabeçalho `'Accept-Encoding': 'identity'` e helper `decodificar_manifesto` (suporte a `gzip` e `deflate`), eliminando falhas de leitura de playlists HLS compactadas.
 3. **Auditoria de Grade, Restauração da Band, Rádios Ao Vivo e UI:**
