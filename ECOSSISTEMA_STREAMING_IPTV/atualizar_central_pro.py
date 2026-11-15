@@ -741,6 +741,44 @@ for vip in canais_vip_fibra:
             cors_star=1
     """, (vip["nome"], vip["url"], vip["logo"], vip["categoria"], vip["qualidade"], vip["latencia"], vip["status"], vip["pais"], vip["regiao"]))
 
+# Lista Oficial das Principais Rádios FM do Brasil (Extraídas do radiosaovivo.net)
+radios_brasil_oficiais = [
+    {"nome": "Rádio Mix FM 106.3 SP", "url": "https://playerservices.streamtheworld.com/api/livestream-redirect/MIXFM_SAOPAULOAAC_SC", "logo": "https://cdn.instant.audio/images/logos/radiosaovivo-net/mix-fm.png", "categoria": "📻 Rádios & Música", "qualidade": "Áudio HD", "latencia": 25, "pais": "🇧🇷 Brasil", "regiao": "São Paulo"},
+    {"nome": "89 A Rádio Rock 89.1 SP", "url": "https://playerservices.streamtheworld.com/api/livestream-redirect/RADIO_89FM_SC", "logo": "https://cdn.instant.audio/images/logos/radiosaovivo-net/89-a-rock.png", "categoria": "📻 Rádios & Música", "qualidade": "Áudio HD", "latencia": 25, "pais": "🇧🇷 Brasil", "regiao": "São Paulo"},
+    {"nome": "Alpha FM 101.7 SP", "url": "https://playerservices.streamtheworld.com/api/livestream-redirect/RADIO_ALPHAFMAAC_SC", "logo": "https://cdn.instant.audio/images/logos/radiosaovivo-net/alpha-sp.png", "categoria": "📻 Rádios & Música", "qualidade": "Áudio HD", "latencia": 25, "pais": "🇧🇷 Brasil", "regiao": "São Paulo"},
+    {"nome": "Rádio Antena 1 94.7 SP", "url": "https://antenaone.crossradio.com.br/stream/1/", "logo": "https://cdn.instant.audio/images/logos/radiosaovivo-net/antena.png", "categoria": "📻 Rádios & Música", "qualidade": "Áudio HD", "latencia": 25, "pais": "🇧🇷 Brasil", "regiao": "São Paulo"},
+    {"nome": "Band FM 96.1 SP", "url": "https://playerservices.streamtheworld.com/api/livestream-redirect/BANDFM_SPAAC_SC", "logo": "https://cdn.instant.audio/images/logos/radiosaovivo-net/band.png", "categoria": "📻 Rádios & Música", "qualidade": "Áudio HD", "latencia": 25, "pais": "🇧🇷 Brasil", "regiao": "São Paulo"},
+    {"nome": "BandNews FM 96.9 SP", "url": "https://playerservices.streamtheworld.com/api/livestream-redirect/BANDNEWSFM_SPAAC_SC", "logo": "https://cdn.instant.audio/images/logos/radiosaovivo-net/news-sp.png", "categoria": "📻 Rádios & Música", "qualidade": "Áudio HD", "latencia": 25, "pais": "🇧🇷 Brasil", "regiao": "São Paulo"},
+    {"nome": "Kiss FM 92.5 SP", "url": "https://playerservices.streamtheworld.com/api/livestream-redirect/RADIO_KISSFM_ADP_SC", "logo": "https://cdn.instant.audio/images/logos/radiosaovivo-net/kiss.png", "categoria": "📻 Rádios & Música", "qualidade": "Áudio HD", "latencia": 25, "pais": "🇧🇷 Brasil", "regiao": "São Paulo"},
+    {"nome": "Energia 97 FM SP", "url": "https://playerservices.streamtheworld.com/api/livestream-redirect/ENERGIA_97_FM_SC", "logo": "https://cdn.instant.audio/images/logos/radiosaovivo-net/energia.png", "categoria": "📻 Rádios & Música", "qualidade": "Áudio HD", "latencia": 25, "pais": "🇧🇷 Brasil", "regiao": "São Paulo"},
+    {"nome": "Rádio Disney 91.3 SP", "url": "https://playerservices.streamtheworld.com/api/livestream-redirect/DISNEY_BRA_SP_SC", "logo": "https://cdn.instant.audio/images/logos/radiosaovivo-net/disney.png", "categoria": "📻 Rádios & Música", "qualidade": "Áudio HD", "latencia": 25, "pais": "🇧🇷 Brasil", "regiao": "São Paulo"},
+    {"nome": "Metropolitana FM 98.5 SP", "url": "https://ice.fabricahost.com.br/metropolitana985sp", "logo": "https://cdn.instant.audio/images/logos/radiosaovivo-net/metropolitana-online.png", "categoria": "📻 Rádios & Música", "qualidade": "Áudio HD", "latencia": 25, "pais": "🇧🇷 Brasil", "regiao": "São Paulo"},
+    {"nome": "Dumont FM 104.3 SP", "url": "https://8402.brasilstream.com.br/stream?origem=radioaovivo", "logo": "https://cdn.instant.audio/images/logos/radiosaovivo-net/dumont-sp.png", "categoria": "📻 Rádios & Música", "qualidade": "Áudio HD", "latencia": 25, "pais": "🇧🇷 Brasil", "regiao": "São Paulo"},
+    {"nome": "NovaBrasil FM 89.7 SP", "url": "https://playerservices.streamtheworld.com/api/livestream-redirect/NOVABRASIL_SPAAC_SC", "logo": "https://cdn.instant.audio/images/logos/radiosaovivo-net/novabrasil.png", "categoria": "📻 Rádios & Música", "qualidade": "Áudio HD", "latencia": 25, "pais": "🇧🇷 Brasil", "regiao": "São Paulo"},
+    {"nome": "CBN FM 90.5 SP", "url": "https://playerservices.streamtheworld.com/api/livestream-redirect/CBN_SPAAC_SC", "logo": "https://cdn.instant.audio/images/logos/radiosaovivo-net/cbn.png", "categoria": "📻 Rádios & Música", "qualidade": "Áudio HD", "latencia": 25, "pais": "🇧🇷 Brasil", "regiao": "São Paulo"},
+    {"nome": "Top FM 104.1 SP", "url": "https://ice.fabricahost.com.br/topfm1041sp", "logo": "https://cdn.instant.audio/images/logos/radiosaovivo-net/top-fm.png", "categoria": "📻 Rádios & Música", "qualidade": "Áudio HD", "latencia": 25, "pais": "🇧🇷 Brasil", "regiao": "São Paulo"},
+    {"nome": "Saudade FM 99.7 Santos", "url": "https://playerservices.streamtheworld.com/api/livestream-redirect/SAUDADE_FMAAC_SC", "logo": "https://cdn.instant.audio/images/logos/radiosaovivo-net/saudade.png", "categoria": "📻 Rádios & Música", "qualidade": "Áudio HD", "latencia": 25, "pais": "🇧🇷 Brasil", "regiao": "Santos / Litoral SP"},
+    {"nome": "Feliz FM 92.9 SP", "url": "https://streaming.fox.srv.br:8140/stream/1/", "logo": "https://cdn.instant.audio/images/logos/radiosaovivo-net/feliz.png", "categoria": "📻 Rádios & Música", "qualidade": "Áudio HD", "latencia": 25, "pais": "🇧🇷 Brasil", "regiao": "São Paulo"},
+    {"nome": "Alvorada FM 94.9 BH", "url": "https://playerservices.streamtheworld.com/api/livestream-redirect/RADIO_ALVORADAAAC_SC", "logo": "https://cdn.instant.audio/images/logos/radiosaovivo-net/alvorada-bh.png", "categoria": "📻 Rádios & Música", "qualidade": "Áudio HD", "latencia": 25, "pais": "🇧🇷 Brasil", "regiao": "Belo Horizonte / MG"},
+    {"nome": "Clube FM 105.5 Brasília", "url": "https://8157.brasilstream.com.br/stream?origem=radiosaovivo", "logo": "https://cdn.instant.audio/images/logos/radiosaovivo-net/clube-brasilia.png", "categoria": "📻 Rádios & Música", "qualidade": "Áudio HD", "latencia": 25, "pais": "🇧🇷 Brasil", "regiao": "Brasília / DF"},
+    {"nome": "Melodia FM 97.5 RJ", "url": "https://playerservices.streamtheworld.com/api/livestream-redirect/MELODIAFMAAC_SC", "logo": "https://cdn.instant.audio/images/logos/radiosaovivo-net/melodia-rj.png", "categoria": "📻 Rádios & Música", "qualidade": "Áudio HD", "latencia": 25, "pais": "🇧🇷 Brasil", "regiao": "Rio de Janeiro"},
+    {"nome": "Rádio 93 FM RJ", "url": "https://playerservices.streamtheworld.com/api/livestream-redirect/FM93_SC", "logo": "https://cdn.instant.audio/images/logos/radiosaovivo-net/93-fm.png", "categoria": "📻 Rádios & Música", "qualidade": "Áudio HD", "latencia": 25, "pais": "🇧🇷 Brasil", "regiao": "Rio de Janeiro"}
+]
+
+for rad in radios_brasil_oficiais:
+    c.execute("""
+        INSERT INTO canais (nome, url, logo, categoria, qualidade, latencia_ms, status, pais, regiao, web_ok, cors_star)
+        VALUES (?, ?, ?, ?, ?, ?, 'ATIVO', ?, ?, 1, 1)
+        ON CONFLICT(url) DO UPDATE SET
+            nome=excluded.nome,
+            logo=excluded.logo,
+            categoria=excluded.categoria,
+            status='ATIVO',
+            latencia_ms=excluded.latencia_ms,
+            web_ok=1,
+            cors_star=1
+    """, (rad["nome"], rad["url"], rad["logo"], rad["categoria"], rad["qualidade"], rad["latencia"], rad["pais"], rad["regiao"]))
+
 conn.commit()
 
 # Buscar TODOS os canais ATIVOS do banco com prioridade total para os VIPs da Fibra Brasileira
