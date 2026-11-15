@@ -2097,7 +2097,8 @@ html_code = f"""<!DOCTYPE html>
         }}
         .sidebar-top-actions {{
             display: flex;
-            flex-direction: column;
+            flex-direction: row;
+            align-items: center;
             gap: 6px;
             padding: 8px 10px;
             background: #090e1a;
@@ -2106,17 +2107,37 @@ html_code = f"""<!DOCTYPE html>
         }}
         .btn-minimize-sidebar,
         .btn-toggle-filters {{
-            width: 100%;
+            flex: 1;
+            min-width: 0;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 8px;
-            padding: 7px 10px;
+            gap: 6px;
+            padding: 7px 9px;
             border-radius: 8px;
-            font-size: 11.5px;
+            font-size: 11px;
             font-weight: 800;
             cursor: pointer;
+            white-space: nowrap;
+            overflow: hidden;
             transition: all 0.15s;
+        }}
+        .mobile-search-box {{
+            padding: 8px 10px 4px;
+            background: #090e1a;
+        }}
+        .mobile-search-input {{
+            width: 100%;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 7px 10px;
+            color: #fff;
+            font-size: 12px;
+            outline: none;
+        }}
+        .mobile-search-input:focus {{
+            border-color: var(--emerald);
         }}
         .btn-minimize-sidebar {{
             background: rgba(16, 185, 129, 0.14);
@@ -2863,89 +2884,138 @@ html_code = f"""<!DOCTYPE html>
             line-height: 1.4;
         }}
 
-        /* RESPONSIVIDADE COMPLETA PARA CELULAR EM PÉ (9:16) */
+        /* RESPONSIVIDADE COMPLETA PARA CELULAR EM PÉ (9:16) ESTILO APP NATIVO */
         @media (max-width: 900px) {{
             body {{
                 height: 100vh;
                 height: 100dvh;
             }}
             header {{
-                padding: 8px 12px;
+                height: 44px;
+                min-height: 44px;
+                padding: 4px 10px;
                 gap: 8px;
             }}
             .brand-logo-svg svg {{
-                width: 140px;
-                height: 28px;
+                width: 132px;
+                height: 26px;
             }}
             .brand-substatus,
             .search-wrapper,
-            .header-controls button:not(#btnQrRemote) {{
+            .header-controls button:not(#btnQrRemote),
+            .btn-floating-expand {{
                 display: none !important;
+            }}
+            #btnQrRemote {{
+                padding: 5px 10px;
+                font-size: 11px;
+                white-space: nowrap;
             }}
             .main-stage {{
                 flex-direction: column !important;
+                justify-content: flex-start !important;
             }}
             .player-viewport {{
                 flex: none !important;
                 width: 100% !important;
                 height: auto !important;
-                padding: 4px 6px !important;
+                padding: 6px 8px !important;
+                justify-content: flex-start !important;
             }}
             body.channels-minimized .player-viewport {{
-                flex: 1 !important;
-                justify-content: space-between !important;
-                padding: 8px 8px 10px !important;
+                flex: none !important;
+                justify-content: flex-start !important;
+                padding: 6px 8px 10px !important;
             }}
             .screen-stage-wrapper {{
+                flex: none !important;
                 width: 100% !important;
                 height: auto !important;
-            }}
-            body.channels-minimized .screen-stage-wrapper {{
-                flex: 1 !important;
             }}
             .screen-container {{
                 width: 100% !important;
                 max-width: 100% !important;
                 height: auto !important;
                 aspect-ratio: 16 / 9 !important;
-                max-height: 38vh !important;
+                max-height: 29vh !important;
+                border-radius: 10px !important;
+                border-width: 1px !important;
             }}
             body.channels-minimized .screen-container {{
-                max-height: 56vh !important;
+                max-height: 36vh !important;
+            }}
+            .pulse-play-circle {{
+                width: 52px;
+                height: 52px;
+                font-size: 22px;
+                margin-bottom: 8px;
+            }}
+            .click-overlay h2 {{
+                font-size: 14px;
+                margin-bottom: 4px;
+                text-align: center;
+                padding: 0 10px;
+            }}
+            .click-overlay p {{
+                font-size: 11px;
+                text-align: center;
+                padding: 0 14px;
+            }}
+            .audio-pill {{
+                top: 8px;
+                padding: 5px 12px;
+                font-size: 11px;
+                white-space: nowrap;
+                max-width: 94%;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }}
+            .hud-toast {{
+                top: 8px;
+                right: 8px;
+                left: 8px;
+                padding: 6px 10px;
+                font-size: 11px;
+                justify-content: center;
             }}
             .player-info-dock {{
                 margin-top: 6px;
                 padding: 6px 8px;
                 gap: 6px;
                 flex-wrap: wrap;
+                border-radius: 10px;
             }}
             .channel-zapper-pill {{
                 width: 100%;
                 max-width: 100%;
+                padding: 3px 4px;
+                gap: 6px;
             }}
             .zapper-arrow-btn {{
-                width: 36px;
+                width: 38px;
                 height: 36px;
                 font-size: 14px;
             }}
             .player-actions {{
                 width: 100%;
-                justify-content: space-between;
+                display: grid;
+                grid-template-columns: auto 1fr auto;
+                gap: 6px;
             }}
             .icon-btn-text {{
-                flex: 1;
                 justify-content: center;
                 height: 34px;
-                padding: 0 8px;
+                padding: 0 10px;
                 font-size: 11px;
+                white-space: nowrap;
             }}
             .cur-ch-num {{
-                font-size: 12px;
+                font-size: 11.5px;
                 padding: 3px 6px;
             }}
             .cur-ch-logo {{
-                width: 30px;
-                height: 30px;
+                width: 28px;
+                height: 28px;
             }}
             .cur-ch-meta h2 {{
                 font-size: 12px;
@@ -2953,14 +3023,27 @@ html_code = f"""<!DOCTYPE html>
             .collapsed-channels-bar {{
                 margin-top: 6px;
                 padding: 9px 12px;
-                font-size: 12px;
+                font-size: 11.5px;
             }}
             .sidebar-channels {{
                 width: 100% !important;
                 min-width: 100% !important;
                 flex: 1 !important;
+                min-height: 0 !important;
                 border-left: none !important;
                 border-top: 1px solid var(--border);
+            }}
+            .sidebar-top-actions {{
+                padding: 6px 8px;
+                gap: 6px;
+            }}
+            .btn-minimize-sidebar,
+            .btn-toggle-filters {{
+                padding: 6px 8px;
+                font-size: 11px;
+            }}
+            .category-pills {{
+                max-height: 105px;
             }}
             body.channels-minimized .sidebar-channels {{
                 display: none !important;
@@ -3094,7 +3177,7 @@ html_code = f"""<!DOCTYPE html>
 
             <!-- BARRA COMPACTA QUANDO OS CANAIS ESTÃO MINIMIZADOS -->
             <div id="collapsedChannelsBar" class="collapsed-channels-bar" onclick="alternarGavetaCanais(event)" title="Clique para abrir a lista completa de canais">
-                <span>📋 <strong>Ver Todos os Canais</strong> ({total_canais} disponíveis)</span>
+                <span>📋 <strong>Ver Todos os Canais</strong> (<span id="collapsedTotalCount">{total_canais}</span> disponíveis)</span>
                 <span class="collapsed-bar-arrow">Abrir Lista ▼</span>
             </div>
         </div>
@@ -3103,16 +3186,19 @@ html_code = f"""<!DOCTYPE html>
         <div class="sidebar-channels">
             <div class="sidebar-top-actions">
                 <button type="button" id="btnMinimizeSidebar" class="btn-minimize-sidebar" onclick="alternarGavetaCanais(event)">
-                    <span>▲ Minimizar Todos os Canais</span>
-                    <span class="sidebar-total-pill">{total_canais}</span>
+                    <span>▲ Minimizar</span>
+                    <span class="sidebar-total-pill" id="sidebarTotalPill">{total_canais}</span>
                 </button>
                 <button type="button" id="btnToggleFilters" class="btn-toggle-filters" onclick="alternarPainelFiltros(event)">
-                    <span>🎛️ Filtrar Categorias & Países</span>
+                    <span>🎛️ Categorias</span>
                     <span id="filtersToggleArrow">▼</span>
                 </button>
             </div>
 
             <div id="sidebarFiltersBox" class="sidebar-filters-box">
+                <div class="mobile-search-box">
+                    <input type="text" id="mobileSearchInput" class="mobile-search-input" placeholder="🔍 Buscar canal por nome ou número (#001)...">
+                </div>
                 <!-- ABAS DE PAÍSES COM CONTAGEM -->
                 <div class="country-tabs">
                     <button class="country-tab-btn active" data-country="ALL">
@@ -3384,7 +3470,12 @@ html_code = f"""<!DOCTYPE html>
         let LOCAL_PROXY_ATIVO = false;
         if (!EH_AMBIENTE_LOCAL) {{
             fetch('http://localhost:8080/api/ip_local', {{ mode: 'cors' }})
-                .then(r => {{ if (r.ok) LOCAL_PROXY_ATIVO = true; }})
+                .then(r => {{
+                    if (r.ok) {{
+                        LOCAL_PROXY_ATIVO = true;
+                        aplicarFiltros(true);
+                    }}
+                }})
                 .catch(() => {{}});
         }}
 
@@ -3606,9 +3697,14 @@ html_code = f"""<!DOCTYPE html>
         }}
 
         function aplicarFiltros(resetScroll = true) {{
-            const termo = searchInput.value.toLowerCase().trim();
+            const mobileSearchInput = document.getElementById('mobileSearchInput');
+            const termoRaw = (searchInput && searchInput.value ? searchInput.value : (mobileSearchInput ? mobileSearchInput.value : ''));
+            const termo = termoRaw.toLowerCase().trim();
 
             canaisFiltradosCache = TODOS_CANAIS.filter(c => {{
+                // Em nuvem HTTPS sem proxy local, exibe apenas canais e rádios compatíveis
+                if (!ehCanalDisponivelAgora(c)) return false;
+
                 // Filtro de Favoritos
                 if (apenasFavoritos && !favoritos.includes(c.id)) return false;
 
@@ -3633,6 +3729,10 @@ html_code = f"""<!DOCTYPE html>
             }});
 
             searchCountBadge.textContent = `${{canaisFiltradosCache.length}} canais`;
+            const collapsedCountEl = document.getElementById('collapsedTotalCount');
+            const sidebarPillEl = document.getElementById('sidebarTotalPill');
+            if (collapsedCountEl) collapsedCountEl.textContent = canaisFiltradosCache.length;
+            if (sidebarPillEl) sidebarPillEl.textContent = canaisFiltradosCache.length;
 
             if (resetScroll) {{
                 listBody.innerHTML = '';
@@ -3985,7 +4085,16 @@ html_code = f"""<!DOCTYPE html>
             }});
         }});
 
+        const mobileSearchInputEl = document.getElementById('mobileSearchInput');
+        if (mobileSearchInputEl) {{
+            mobileSearchInputEl.addEventListener('input', () => {{
+                if (searchInput) searchInput.value = mobileSearchInputEl.value;
+                aplicarFiltros(true);
+            }});
+        }}
+
         searchInput.addEventListener('input', () => {{
+            if (mobileSearchInputEl) mobileSearchInputEl.value = searchInput.value;
             aplicarFiltros(true);
             if (searchInput.value.trim().length > 0 && document.body.classList.contains('channels-minimized')) {{
                 alternarGavetaCanais(null, true);
