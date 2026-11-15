@@ -1725,7 +1725,7 @@ html_code = f"""<!DOCTYPE html>
 
         /* LATERAL DIREITA DE CANAIS (COM SEPARAÇÃO POR PAÍS E CATEGORIA) */
         .sidebar-channels {{
-            width: 400px;
+            width: 420px;
             background: var(--bg-surface);
             border-left: 1px solid var(--border);
             display: flex;
@@ -1734,43 +1734,37 @@ html_code = f"""<!DOCTYPE html>
             transition: opacity 0.3s;
         }}
 
-        /* ABAS DE PAÍSES COM CONTAGEM */
+        /* ABAS DE PAÍSES COM CONTAGEM (100% VISÍVEIS SEM CORTES) */
         .country-tabs {{
             display: flex;
             background: #090e1a;
             border-bottom: 1px solid var(--border);
-            padding: 8px 12px;
-            gap: 6px;
-            overflow-x: auto;
-        }}
-        .country-tabs::-webkit-scrollbar {{
-            height: 4px;
-        }}
-        .country-tabs::-webkit-scrollbar-thumb {{
-            background: #1e293b;
-            border-radius: 2px;
+            padding: 8px 10px;
+            gap: 5px;
+            flex-wrap: wrap;
         }}
         .country-tab-btn {{
             background: transparent;
-            border: 1px solid transparent;
+            border: 1px solid var(--border);
             color: var(--text-muted);
-            padding: 6px 12px;
-            border-radius: 8px;
+            padding: 5px 9px;
+            border-radius: 6px;
             font-size: 11px;
             font-weight: 700;
             cursor: pointer;
             white-space: nowrap;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 4px;
             transition: all 0.2s;
         }}
         .country-tab-btn:hover {{
             color: #fff;
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(255, 255, 255, 0.08);
+            border-color: var(--border-hover);
         }}
         .country-tab-btn.active {{
-            background: rgba(16, 185, 129, 0.15);
+            background: rgba(16, 185, 129, 0.2);
             border-color: var(--emerald);
             color: #6ee7b7;
         }}
@@ -1778,33 +1772,38 @@ html_code = f"""<!DOCTYPE html>
             background: #0f172a;
             border: 1px solid var(--border);
             font-size: 10px;
-            padding: 1px 6px;
+            padding: 1px 5px;
             border-radius: 10px;
             color: inherit;
         }}
 
-        /* PILULAS DE CATEGORIAS (HISTÓRIA, COMBATE, COMÉDIA, SHOWS EM DESTAQUE) */
+        /* PILULAS DE CATEGORIAS: GRADE INTELIGENTE 100% VISÍVEL (ZERO CORTES) */
         .category-pills {{
             display: flex;
-            padding: 8px 12px;
-            gap: 6px;
-            overflow-x: auto;
+            flex-wrap: wrap;
+            padding: 8px 10px;
+            gap: 5px;
             background: var(--bg-surface);
             border-bottom: 1px solid var(--border);
+            max-height: 125px;
+            overflow-y: auto;
         }}
         .category-pills::-webkit-scrollbar {{
-            height: 4px;
+            width: 6px;
+        }}
+        .category-pills::-webkit-scrollbar-track {{
+            background: #090e1a;
         }}
         .category-pills::-webkit-scrollbar-thumb {{
-            background: #1e293b;
-            border-radius: 2px;
+            background: #10b981;
+            border-radius: 3px;
         }}
         .cat-pill {{
             background: var(--bg-card);
             border: 1px solid var(--border);
             color: var(--text-muted);
-            padding: 6px 11px;
-            border-radius: 20px;
+            padding: 5px 9px;
+            border-radius: 14px;
             font-size: 11px;
             font-weight: 700;
             cursor: pointer;
@@ -1817,9 +1816,10 @@ html_code = f"""<!DOCTYPE html>
             border-color: var(--border-hover);
         }}
         .cat-pill.active {{
-            background: rgba(16, 185, 129, 0.2);
+            background: rgba(16, 185, 129, 0.25);
             border-color: var(--emerald);
             color: #6ee7b7;
+            box-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
         }}
         .cat-pill.pill-series.active {{
             background: rgba(239, 68, 68, 0.25);
@@ -1906,14 +1906,20 @@ html_code = f"""<!DOCTYPE html>
             gap: 6px;
         }}
         .channel-list::-webkit-scrollbar {{
-            width: 6px;
+            width: 8px;
+        }}
+        .channel-list::-webkit-scrollbar-track {{
+            background: #090e1a;
+            border-radius: 4px;
         }}
         .channel-list::-webkit-scrollbar-thumb {{
-            background: #1e293b;
-            border-radius: 3px;
+            background: #10b981;
+            border-radius: 4px;
+            box-shadow: 0 0 8px rgba(16, 185, 129, 0.4);
         }}
         .channel-list::-webkit-scrollbar-thumb:hover {{
-            background: #334155;
+            background: #34d399;
+            box-shadow: 0 0 12px rgba(52, 211, 153, 0.7);
         }}
 
         .channel-card {{
