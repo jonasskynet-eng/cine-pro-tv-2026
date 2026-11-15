@@ -1607,8 +1607,8 @@ html_code = f"""<!DOCTYPE html>
         .screen-container {{
             width: 100%;
             height: 100%;
-            max-width: min(100%, calc((100vh - 175px) * (16 / 9)));
-            max-height: calc(100vh - 175px);
+            max-width: min(100%, calc((100vh - 190px) * (16 / 9)));
+            max-height: calc(100vh - 190px);
             aspect-ratio: 16 / 9;
             position: relative;
             background: #020617;
@@ -1769,23 +1769,69 @@ html_code = f"""<!DOCTYPE html>
             transform: translateY(0);
         }}
 
-        /* PAINEL INFERIOR DE INFORMAÇÕES DO CANAL */
+        /* PAINEL INFERIOR MINIMALISTA DE INFORMAÇÕES E SETINHAS DE CANAL */
         .player-info-dock {{
-            margin-top: 10px;
+            margin-top: 8px;
             background: var(--bg-surface);
             border: 1px solid var(--border);
             border-radius: 12px;
-            padding: 10px 18px;
+            padding: 8px 14px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 14px;
+            gap: 12px;
+            flex-shrink: 0;
+        }}
+        .channel-zapper-pill {{
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(9, 14, 26, 0.85);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 4px 6px;
+            min-width: 0;
+            flex: 1;
+            max-width: 560px;
+        }}
+        .zapper-arrow-btn {{
+            width: 40px;
+            height: 40px;
+            border-radius: 9px;
+            background: rgba(16, 185, 129, 0.14);
+            border: 1px solid rgba(16, 185, 129, 0.4);
+            color: #6ee7b7;
+            font-size: 16px;
+            font-weight: 900;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            flex-shrink: 0;
+            transition: all 0.15s ease;
+        }}
+        .zapper-arrow-btn:hover {{
+            background: #10b981;
+            color: #060913;
+            transform: scale(1.05);
+            box-shadow: 0 0 14px rgba(16, 185, 129, 0.45);
+        }}
+        .zapper-arrow-btn:active {{
+            transform: scale(0.94);
         }}
         .cur-channel-box {{
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
             min-width: 0;
+            flex: 1;
+            cursor: pointer;
+            padding: 2px 6px;
+            border-radius: 8px;
+            transition: background 0.15s;
+        }}
+        .cur-channel-box:hover {{
+            background: rgba(255, 255, 255, 0.04);
         }}
         .cur-ch-num {{
             font-size: 17px;
@@ -1985,15 +2031,125 @@ html_code = f"""<!DOCTYPE html>
             color: #6ee7b7;
         }}
 
-        /* LATERAL DIREITA DE CANAIS (COM SEPARAÇÃO POR PAÍS E CATEGORIA) */
+        /* LATERAL DIREITA DE CANAIS (COM GAVETA RECOLHÍVEL E FILTRO COM SETINHA) */
         .sidebar-channels {{
             width: 420px;
+            min-width: 320px;
             background: var(--bg-surface);
             border-left: 1px solid var(--border);
             display: flex;
             flex-direction: column;
             overflow: hidden;
-            transition: opacity 0.3s;
+            transition: width 0.25s ease, min-width 0.25s ease, opacity 0.2s ease;
+        }}
+        body.channels-minimized .sidebar-channels {{
+            width: 0 !important;
+            min-width: 0 !important;
+            border-left: none !important;
+            opacity: 0;
+            pointer-events: none;
+        }}
+        .btn-drawer-toggle {{
+            background: rgba(16, 185, 129, 0.14);
+            border-color: rgba(16, 185, 129, 0.45);
+            color: #6ee7b7;
+        }}
+        .btn-drawer-toggle:hover {{
+            background: rgba(16, 185, 129, 0.26);
+        }}
+        .btn-drawer-toggle.open {{
+            background: rgba(16, 185, 129, 0.28);
+            border-color: var(--emerald);
+            color: #fff;
+        }}
+        .collapsed-channels-bar {{
+            display: none;
+            margin-top: 8px;
+            background: linear-gradient(90deg, rgba(12, 19, 34, 0.96), rgba(16, 185, 129, 0.14));
+            border: 1px solid rgba(16, 185, 129, 0.35);
+            border-radius: 10px;
+            padding: 8px 14px;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            cursor: pointer;
+            font-size: 12.5px;
+            color: #e2e8f0;
+            flex-shrink: 0;
+            transition: all 0.2s ease;
+        }}
+        .collapsed-channels-bar:hover {{
+            border-color: var(--emerald);
+            background: linear-gradient(90deg, rgba(16, 185, 129, 0.2), rgba(6, 182, 212, 0.16));
+        }}
+        body.channels-minimized .collapsed-channels-bar {{
+            display: flex;
+        }}
+        .collapsed-bar-arrow {{
+            font-size: 11px;
+            font-weight: 800;
+            color: #6ee7b7;
+            background: rgba(16, 185, 129, 0.15);
+            border: 1px solid rgba(16, 185, 129, 0.35);
+            padding: 3px 10px;
+            border-radius: 999px;
+            white-space: nowrap;
+        }}
+        .sidebar-top-actions {{
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            padding: 8px 10px;
+            background: #090e1a;
+            border-bottom: 1px solid var(--border);
+            flex-shrink: 0;
+        }}
+        .btn-minimize-sidebar,
+        .btn-toggle-filters {{
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            padding: 7px 10px;
+            border-radius: 8px;
+            font-size: 11.5px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.15s;
+        }}
+        .btn-minimize-sidebar {{
+            background: rgba(16, 185, 129, 0.14);
+            border: 1px solid rgba(16, 185, 129, 0.4);
+            color: #6ee7b7;
+        }}
+        .btn-minimize-sidebar:hover {{
+            background: rgba(16, 185, 129, 0.26);
+        }}
+        .btn-toggle-filters {{
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+        }}
+        .btn-toggle-filters:hover {{
+            border-color: var(--emerald);
+            color: #6ee7b7;
+        }}
+        .sidebar-total-pill {{
+            background: #0f172a;
+            border: 1px solid rgba(16, 185, 129, 0.35);
+            color: #6ee7b7;
+            padding: 1px 8px;
+            border-radius: 999px;
+            font-size: 10.5px;
+        }}
+        .sidebar-filters-box {{
+            display: none;
+            flex-direction: column;
+            border-bottom: 1px solid var(--border);
+        }}
+        .sidebar-filters-box.open {{
+            display: flex;
         }}
 
         /* ABAS DE PAÍSES COM CONTAGEM (100% VISÍVEIS SEM CORTES) */
@@ -2735,9 +2891,17 @@ html_code = f"""<!DOCTYPE html>
                 height: auto !important;
                 padding: 4px 6px !important;
             }}
+            body.channels-minimized .player-viewport {{
+                flex: 1 !important;
+                justify-content: space-between !important;
+                padding: 8px 8px 10px !important;
+            }}
             .screen-stage-wrapper {{
                 width: 100% !important;
                 height: auto !important;
+            }}
+            body.channels-minimized .screen-stage-wrapper {{
+                flex: 1 !important;
             }}
             .screen-container {{
                 width: 100% !important;
@@ -2746,40 +2910,66 @@ html_code = f"""<!DOCTYPE html>
                 aspect-ratio: 16 / 9 !important;
                 max-height: 38vh !important;
             }}
+            body.channels-minimized .screen-container {{
+                max-height: 56vh !important;
+            }}
             .player-info-dock {{
                 margin-top: 6px;
-                padding: 6px 10px;
-                gap: 8px;
+                padding: 6px 8px;
+                gap: 6px;
+                flex-wrap: wrap;
+            }}
+            .channel-zapper-pill {{
+                width: 100%;
+                max-width: 100%;
+            }}
+            .zapper-arrow-btn {{
+                width: 36px;
+                height: 36px;
+                font-size: 14px;
+            }}
+            .player-actions {{
+                width: 100%;
+                justify-content: space-between;
+            }}
+            .icon-btn-text {{
+                flex: 1;
+                justify-content: center;
+                height: 34px;
+                padding: 0 8px;
+                font-size: 11px;
             }}
             .cur-ch-num {{
-                font-size: 13px;
+                font-size: 12px;
                 padding: 3px 6px;
             }}
             .cur-ch-logo {{
-                width: 32px;
-                height: 32px;
+                width: 30px;
+                height: 30px;
             }}
             .cur-ch-meta h2 {{
                 font-size: 12px;
             }}
-            .epg-dock-card {{
-                min-width: unset;
-                padding: 4px 8px;
-            }}
-            .epg-title, .epg-next-title {{
-                font-size: 10px;
+            .collapsed-channels-bar {{
+                margin-top: 6px;
+                padding: 9px 12px;
+                font-size: 12px;
             }}
             .sidebar-channels {{
                 width: 100% !important;
+                min-width: 100% !important;
                 flex: 1 !important;
                 border-left: none !important;
                 border-top: 1px solid var(--border);
+            }}
+            body.channels-minimized .sidebar-channels {{
+                display: none !important;
             }}
         }}
 
     </style>
 </head>
-<body>
+<body class="channels-minimized">
 
     <!-- CABEÇALHO PROFISSIONAL COM GLASSMORPHISM -->
     <header>
@@ -2873,77 +3063,92 @@ html_code = f"""<!DOCTYPE html>
                 </div>
             </div>
 
-            <!-- DOCK INFERIOR SLIM & LIMPO (SÓ O ESSENCIAL DO CANAL) -->
+            <!-- DOCK INFERIOR MINIMALISTA: SETINHAS DE CANAL + AÇÕES ESSENCIAIS -->
             <div class="player-info-dock">
-                <div class="cur-channel-box">
-                    <div class="cur-ch-num" id="dockChNum">#001</div>
-                    <div class="cur-ch-logo" id="dockLogo">⚡</div>
-                    <div class="cur-ch-meta">
-                        <h2>
-                            <span id="dockName">Discovery Kids (Digital Leve)</span>
-                        </h2>
+                <div class="channel-zapper-pill">
+                    <button type="button" class="zapper-arrow-btn" id="btnZapPrev" title="Canal Anterior (Seta Cima / P)">◀</button>
+                    <div class="cur-channel-box" onclick="alternarGavetaCanais(event)" title="Clique para abrir ou minimizar a lista de canais">
+                        <div class="cur-ch-num" id="dockChNum">#001</div>
+                        <div class="cur-ch-logo" id="dockLogo">⚡</div>
+                        <div class="cur-ch-meta">
+                            <h2>
+                                <span id="dockName">SBT Nacional HD</span>
+                            </h2>
+                        </div>
                     </div>
-                </div>
-
-                <div class="epg-dock-card" id="epgDockCard">
-                    <div class="epg-top-row">
-                        <div class="epg-live-badge"><span class="live-pulse-dot"></span> NO AR</div>
-                        <span class="epg-clock" id="epgTimeBadge">14:00 - 15:30</span>
-                        <span class="epg-title" id="epgProgBadge">Programação Ao Vivo</span>
-                    </div>
-                    <div class="epg-bottom-row" style="margin-top: 3px;">
-                        <span class="epg-next-tag">A SEGUIR:</span>
-                        <span class="epg-next-title" id="epgNextBadge">15:30 • Cinema Studio HD</span>
-                    </div>
+                    <button type="button" class="zapper-arrow-btn" id="btnZapNext" title="Próximo Canal (Seta Baixo / N)">▶</button>
                 </div>
 
                 <div class="player-actions">
-                    <button class="icon-btn" id="btnZapPrev" title="Canal Anterior (Seta Cima / P)">⏮</button>
-                    <button class="icon-btn" id="btnZapNext" title="Próximo Canal (Seta Baixo / N)">⏭</button>
+                    <button type="button" class="icon-btn-text" id="epgDockCard" onclick="abrirModalEpg(event)" title="Ver guia de programação do canal">
+                        <span>📅</span> <span>Guia</span>
+                    </button>
+                    <button type="button" class="icon-btn-text btn-drawer-toggle" id="btnToggleChannelsDrawer" onclick="alternarGavetaCanais(event)" title="Mostrar ou minimizar todos os canais">
+                        <span>📋</span> <span id="drawerToggleText">Todos os Canais</span> <span id="drawerToggleArrow">▼</span>
+                    </button>
                     <button type="button" class="icon-btn-text" id="btnFull" onclick="alternarTelaCheia(event)" title="Expandir Tela Toda (Atalho: Tecla F ou 2 Cliques no Vídeo)">
                         <span>⛶</span> <span id="fullDockLabel">Tela Toda</span>
                     </button>
                 </div>
             </div>
+
+            <!-- BARRA COMPACTA QUANDO OS CANAIS ESTÃO MINIMIZADOS -->
+            <div id="collapsedChannelsBar" class="collapsed-channels-bar" onclick="alternarGavetaCanais(event)" title="Clique para abrir a lista completa de canais">
+                <span>📋 <strong>Ver Todos os Canais</strong> ({total_canais} disponíveis)</span>
+                <span class="collapsed-bar-arrow">Abrir Lista ▼</span>
+            </div>
         </div>
 
-        <!-- BARRA LATERAL (SEPARAÇÃO POR PAÍS, CATEGORIAS E NÚMEROS) -->
+        <!-- BARRA LATERAL RECOLHÍVEL (MINIMIZADA POR PADRÃO COM SETINHA) -->
         <div class="sidebar-channels">
-            <!-- ABAS DE PAÍSES COM CONTAGEM -->
-            <div class="country-tabs">
-                <button class="country-tab-btn active" data-country="ALL">
-                    ⚡ Todos <span class="tab-count">{total_canais}</span>
+            <div class="sidebar-top-actions">
+                <button type="button" id="btnMinimizeSidebar" class="btn-minimize-sidebar" onclick="alternarGavetaCanais(event)">
+                    <span>▲ Minimizar Todos os Canais</span>
+                    <span class="sidebar-total-pill">{total_canais}</span>
                 </button>
-                <button class="country-tab-btn" data-country="BR">
-                    🇧🇷 Brasil <span class="tab-count">{contagem_paises['BR']}</span>
-                </button>
-                <button class="country-tab-btn" data-country="PT">
-                    🇵🇹 Portugal <span class="tab-count">{contagem_paises['PT']}</span>
-                </button>
-                <button class="country-tab-btn" data-country="LATAM">
-                    🌎 Am. Latina <span class="tab-count">{contagem_paises['LATAM']}</span>
-                </button>
-                <button class="country-tab-btn" data-country="GLOBAL">
-                    🌐 Global <span class="tab-count">{contagem_paises['GLOBAL']}</span>
+                <button type="button" id="btnToggleFilters" class="btn-toggle-filters" onclick="alternarPainelFiltros(event)">
+                    <span>🎛️ Filtrar Categorias & Países</span>
+                    <span id="filtersToggleArrow">▼</span>
                 </button>
             </div>
 
-            <!-- FILTROS DE CATEGORIA COM OS 4 GÊNEROS FAVORITOS DO JONAS EM DESTAQUE -->
-            <div class="category-pills">
-                <button class="cat-pill active" data-cat="all">Todos</button>
-                <button class="cat-pill pill-aberta" data-cat="aberta">📺 TV Aberta ({contagem_tags['aberta']})</button>
-                <button class="cat-pill pill-filmes" data-cat="filmes">🎬 Filmes ({contagem_tags['filmes']})</button>
-                <button class="cat-pill pill-series" data-cat="series">🍿 Séries ({contagem_tags['series']})</button>
-                <button class="cat-pill pill-infantil" data-cat="infantil">🧸 Desenhos & Kids ({contagem_tags['infantil']})</button>
-                <button class="cat-pill pill-musica" data-cat="musica">📻 Rádios & Música ({contagem_tags['musica']})</button>
-                <button class="cat-pill pill-vip" data-cat="vip">⭐ VIP Fibra ({contagem_tags['vip']})</button>
-                <button class="cat-pill pill-esportes" data-cat="esportes">⚽ Esportes ({contagem_tags['esportes']})</button>
-                <button class="cat-pill pill-shows" data-cat="shows">🎸 Shows ({contagem_tags['shows']})</button>
-                <button class="cat-pill pill-historia" data-cat="historia">📜 Documentários ({contagem_tags['historia']})</button>
-                <button class="cat-pill pill-comedia" data-cat="comedia">😂 Comédia ({contagem_tags['comedia']})</button>
-                <button class="cat-pill pill-combate" data-cat="combate">🥊 Combate ({contagem_tags['combate']})</button>
-                <button class="cat-pill pill-entretenimento" data-cat="entretenimento">🎭 Reality ({contagem_tags['entretenimento']})</button>
-                <button class="cat-pill pill-noticias" data-cat="noticias">📰 Notícias ({contagem_tags['noticias']})</button>
+            <div id="sidebarFiltersBox" class="sidebar-filters-box">
+                <!-- ABAS DE PAÍSES COM CONTAGEM -->
+                <div class="country-tabs">
+                    <button class="country-tab-btn active" data-country="ALL">
+                        ⚡ Todos <span class="tab-count">{total_canais}</span>
+                    </button>
+                    <button class="country-tab-btn" data-country="BR">
+                        🇧🇷 Brasil <span class="tab-count">{contagem_paises['BR']}</span>
+                    </button>
+                    <button class="country-tab-btn" data-country="PT">
+                        🇵🇹 Portugal <span class="tab-count">{contagem_paises['PT']}</span>
+                    </button>
+                    <button class="country-tab-btn" data-country="LATAM">
+                        🌎 Am. Latina <span class="tab-count">{contagem_paises['LATAM']}</span>
+                    </button>
+                    <button class="country-tab-btn" data-country="GLOBAL">
+                        🌐 Global <span class="tab-count">{contagem_paises['GLOBAL']}</span>
+                    </button>
+                </div>
+
+                <!-- FILTROS DE CATEGORIA COM OS 4 GÊNEROS FAVORITOS DO JONAS EM DESTAQUE -->
+                <div class="category-pills">
+                    <button class="cat-pill active" data-cat="all">Todos</button>
+                    <button class="cat-pill pill-aberta" data-cat="aberta">📺 TV Aberta ({contagem_tags['aberta']})</button>
+                    <button class="cat-pill pill-filmes" data-cat="filmes">🎬 Filmes ({contagem_tags['filmes']})</button>
+                    <button class="cat-pill pill-series" data-cat="series">🍿 Séries ({contagem_tags['series']})</button>
+                    <button class="cat-pill pill-infantil" data-cat="infantil">🧸 Desenhos & Kids ({contagem_tags['infantil']})</button>
+                    <button class="cat-pill pill-musica" data-cat="musica">📻 Rádios & Música ({contagem_tags['musica']})</button>
+                    <button class="cat-pill pill-vip" data-cat="vip">⭐ VIP Fibra ({contagem_tags['vip']})</button>
+                    <button class="cat-pill pill-esportes" data-cat="esportes">⚽ Esportes ({contagem_tags['esportes']})</button>
+                    <button class="cat-pill pill-shows" data-cat="shows">🎸 Shows ({contagem_tags['shows']})</button>
+                    <button class="cat-pill pill-historia" data-cat="historia">📜 Documentários ({contagem_tags['historia']})</button>
+                    <button class="cat-pill pill-comedia" data-cat="comedia">😂 Comédia ({contagem_tags['comedia']})</button>
+                    <button class="cat-pill pill-combate" data-cat="combate">🥊 Combate ({contagem_tags['combate']})</button>
+                    <button class="cat-pill pill-entretenimento" data-cat="entretenimento">🎭 Reality ({contagem_tags['entretenimento']})</button>
+                    <button class="cat-pill pill-noticias" data-cat="noticias">📰 Notícias ({contagem_tags['noticias']})</button>
+                </div>
             </div>
 
             <!-- LISTA ULTRA-LEVE DE CANAIS COM RENDERIZAÇÃO PROGRESSIVA -->
@@ -3211,9 +3416,11 @@ html_code = f"""<!DOCTYPE html>
             }}
 
             const epg = obterEpgDinamico(c);
-            document.getElementById('epgTimeBadge').textContent = epg.faixa;
-            document.getElementById('epgProgBadge').textContent = epg.titulo;
+            const epgTimeEl = document.getElementById('epgTimeBadge');
+            const epgProgEl = document.getElementById('epgProgBadge');
             const epgNext = document.getElementById('epgNextBadge');
+            if (epgTimeEl) epgTimeEl.textContent = epg.faixa;
+            if (epgProgEl) epgProgEl.textContent = epg.titulo;
             if (epgNext) epgNext.textContent = `${{epg.proximaFaixa.split(' - ')[0]}} • ${{epg.proximoTitulo}}`;
 
             mostrarHUD(`⚡ Sintonizando CH #${{c.numero_str}}: ${{c.nome}}`);
@@ -3257,7 +3464,7 @@ html_code = f"""<!DOCTYPE html>
                 if (window.location.protocol === 'https:' && urlBase.startsWith('http://')) {{
                     mostrarHUD('⚠️ Canal HTTP local indisponível na nuvem sem servidor ativo. Pulando para próximo canal HTTPS...');
                     clearTimeout(window.autoZapTimer);
-                    window.autoZapTimer = setTimeout(() => sintonizar(canalAtualIndex + 1), 2200);
+                    window.autoZapTimer = setTimeout(() => navegarCanal(1), 2200);
                     destacarCanalAtivo();
                     return;
                 }}
@@ -3285,7 +3492,7 @@ html_code = f"""<!DOCTYPE html>
                 video.onerror = () => {{
                     mostrarHUD('⚠️ Rádio temporariamente indisponível. Pulando...');
                     clearTimeout(window.autoZapTimer);
-                    window.autoZapTimer = setTimeout(() => sintonizar(canalAtualIndex + 1), 2500);
+                    window.autoZapTimer = setTimeout(() => navegarCanal(1), 2500);
                 }};
                 destacarCanalAtivo();
                 return;
@@ -3341,7 +3548,7 @@ html_code = f"""<!DOCTYPE html>
                                     mostrarHUD('⚠️ Sinal com instabilidade de rede. Avançando para o próximo canal em 2s...');
                                     clearTimeout(window.autoZapTimer);
                                     window.autoZapTimer = setTimeout(() => {{
-                                        sintonizar(canalAtualIndex + 1);
+                                        navegarCanal(1);
                                     }}, 2000);
                                 }} else {{
                                     mostrarHUD('⚠️ Reconectando sinal ao vivo...');
@@ -3356,7 +3563,7 @@ html_code = f"""<!DOCTYPE html>
                                 mostrarHUD('⚠️ Canal indisponível. Mudando para o próximo canal...');
                                 clearTimeout(window.autoZapTimer);
                                 window.autoZapTimer = setTimeout(() => {{
-                                    sintonizar(canalAtualIndex + 1);
+                                    navegarCanal(1);
                                 }}, 2000);
                                 break;
                         }}
@@ -3540,11 +3747,73 @@ html_code = f"""<!DOCTYPE html>
             }}
         }});
 
-        // AÇÕES DO DOCK
+        // AÇÕES DO DOCK E CONTROLE DA GAVETA DE CANAIS
+        function alternarGavetaCanais(ev, forcarAbrir = null) {{
+            if (ev && ev.stopPropagation) ev.stopPropagation();
+            const atualmenteMinimizado = document.body.classList.contains('channels-minimized');
+            const novoMinimizado = forcarAbrir === true ? false : (forcarAbrir === false ? true : !atualmenteMinimizado);
+            document.body.classList.toggle('channels-minimized', novoMinimizado);
+
+            const btnDrawer = document.getElementById('btnToggleChannelsDrawer');
+            const drawerArrow = document.getElementById('drawerToggleArrow');
+            const drawerText = document.getElementById('drawerToggleText');
+            if (btnDrawer) btnDrawer.classList.toggle('open', !novoMinimizado);
+            if (drawerArrow) drawerArrow.textContent = novoMinimizado ? '▼' : '▲';
+            if (drawerText) drawerText.textContent = novoMinimizado ? 'Todos os Canais' : 'Minimizar';
+            mostrarHUD(novoMinimizado ? '🔽 Lista de canais minimizada' : '📋 Todos os canais exibidos');
+        }}
+        window.alternarGavetaCanais = alternarGavetaCanais;
+
+        function alternarPainelFiltros(ev) {{
+            if (ev && ev.stopPropagation) ev.stopPropagation();
+            const box = document.getElementById('sidebarFiltersBox');
+            const arrow = document.getElementById('filtersToggleArrow');
+            if (!box) return;
+            const aberto = box.classList.toggle('open');
+            if (arrow) arrow.textContent = aberto ? '▲' : '▼';
+        }}
+        window.alternarPainelFiltros = alternarPainelFiltros;
+
+        function ehCanalDisponivelAgora(c) {{
+            if (!c) return false;
+            if (!EH_AMBIENTE_LOCAL && !LOCAL_PROXY_ATIVO && window.location.protocol === 'https:') {{
+                const urlResolvida = MAPA_FALLBACK_HTTPS_NUVEM[c.url] || c.url;
+                if (urlResolvida.startsWith('http://')) return false;
+            }}
+            return true;
+        }}
+
+        function navegarCanal(direcao = 1) {{
+            const listaBase = (canaisFiltradosCache && canaisFiltradosCache.length > 0) ? canaisFiltradosCache : TODOS_CANAIS;
+            if (!listaBase || listaBase.length === 0) return;
+
+            const canalAtualObj = TODOS_CANAIS[canalAtualIndex];
+            let pos = listaBase.findIndex(item => item.id === (canalAtualObj && canalAtualObj.id));
+            if (pos === -1) pos = direcao > 0 ? -1 : 0;
+
+            for (let passo = 1; passo <= listaBase.length; passo++) {{
+                const candidatoPos = (pos + direcao * passo + listaBase.length * 4) % listaBase.length;
+                const candidato = listaBase[candidatoPos];
+                if (ehCanalDisponivelAgora(candidato)) {{
+                    const realIdx = TODOS_CANAIS.findIndex(x => x.id === candidato.id);
+                    if (realIdx !== -1) {{
+                        if (realIdx >= canaisRenderizadosQtd) {{
+                            canaisRenderizadosQtd = Math.min(TODOS_CANAIS.length, realIdx + 20);
+                            renderizarMaisCanais();
+                        }}
+                        sintonizar(realIdx);
+                        return;
+                    }}
+                }}
+            }}
+            sintonizar(canalAtualIndex + direcao);
+        }}
+        window.navegarCanal = navegarCanal;
+
         const btnPrev = document.getElementById('btnZapPrev');
-        if (btnPrev) btnPrev.addEventListener('click', () => sintonizar(canalAtualIndex - 1));
+        if (btnPrev) btnPrev.addEventListener('click', (e) => {{ e.stopPropagation(); navegarCanal(-1); }});
         const btnNext = document.getElementById('btnZapNext');
-        if (btnNext) btnNext.addEventListener('click', () => sintonizar(canalAtualIndex + 1));
+        if (btnNext) btnNext.addEventListener('click', (e) => {{ e.stopPropagation(); navegarCanal(1); }});
         
         const btnPipEl = document.getElementById('btnPip');
         if (btnPipEl) {{
@@ -3690,6 +3959,9 @@ html_code = f"""<!DOCTYPE html>
             apenasFavoritos = !apenasFavoritos;
             btnFavFilter.classList.toggle('active', apenasFavoritos);
             aplicarFiltros(true);
+            if (apenasFavoritos && document.body.classList.contains('channels-minimized')) {{
+                alternarGavetaCanais(null, true);
+            }}
             mostrarHUD(apenasFavoritos ? '⭐ Exibindo apenas favoritos' : '⚡ Exibindo todos os canais');
         }});
 
@@ -3713,7 +3985,12 @@ html_code = f"""<!DOCTYPE html>
             }});
         }});
 
-        searchInput.addEventListener('input', () => aplicarFiltros(true));
+        searchInput.addEventListener('input', () => {{
+            aplicarFiltros(true);
+            if (searchInput.value.trim().length > 0 && document.body.classList.contains('channels-minimized')) {{
+                alternarGavetaCanais(null, true);
+            }}
+        }});
 
         // CONTROLE REMOTO NUMÉRICO INTELIGENTE (0 a 9)
         let bufferNumeroCanal = '';
@@ -3805,13 +4082,13 @@ html_code = f"""<!DOCTYPE html>
                 case 'n':
                 case 'N':
                     e.preventDefault();
-                    sintonizar(canalAtualIndex + 1);
+                    navegarCanal(1);
                     break;
                 case 'ArrowUp':
                 case 'p':
                 case 'P':
                     e.preventDefault();
-                    sintonizar(canalAtualIndex - 1);
+                    navegarCanal(-1);
                     break;
                 case 'ArrowRight':
                     e.preventDefault();
@@ -3923,10 +4200,10 @@ html_code = f"""<!DOCTYPE html>
         function executarComandoRemoto(cmd, val) {{
             switch (cmd) {{
                 case 'proximo':
-                    sintonizar(canalAtualIndex + 1);
+                    navegarCanal(1);
                     break;
                 case 'anterior':
-                    sintonizar(canalAtualIndex - 1);
+                    navegarCanal(-1);
                     break;
                 case 'playpause':
                     if (video.paused) {{ video.play(); mostrarHUD('▶ Reproduzindo (via Celular)'); }}
@@ -3993,7 +4270,8 @@ html_code = f"""<!DOCTYPE html>
         // INICIALIZAÇÃO AUTOMÁTICA
         aplicarEnquadramento(enquadramentoIndex, false);
         aplicarFiltros(true);
-        sintonizar(0);
+        const primeiroCanalValidoIdx = TODOS_CANAIS.findIndex(c => ehCanalDisponivelAgora(c));
+        sintonizar(primeiroCanalValidoIdx >= 0 ? primeiroCanalValidoIdx : 0);
     </script>
 </body>
 </html>
