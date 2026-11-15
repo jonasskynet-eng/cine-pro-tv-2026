@@ -1,5 +1,6 @@
 import sqlite3
 import json
+import re
 import shutil
 from pathlib import Path
 
@@ -83,6 +84,26 @@ termos_estrangeiros_br = [
 ]
 for termo in termos_estrangeiros_br:
     c.execute("UPDATE canais SET status = 'INATIVO' WHERE LOWER(nome) LIKE ? AND pais LIKE '%Brasil%'", (termo,))
+
+# Varredura automática contra canais estrangeiros infiltrados como Brasil (por domínio, país no título ou rede estrangeira)
+padrao_url_estrangeira_br = re.compile(
+    r"\.(nl|ar|cl|co|pe|mx|es|uy|py|ec|ve|bo|cr|pa|do|gt|hn|sv|ni|cu|pr|de|fr|it|ru|pl|tr|gr|ro|hu|cz|sk|bg|rs|hr|si|ua|by|kz|uz|az|ge|am|il|ae|sa|eg|ma|dz|tn|za|ng|ke|gh|in|pk|bd|lk|np|th|vn|id|my|sg|ph|kr|jp|cn|tw|hk|au|nz|uk)(/|:|$|\?)",
+    re.I,
+)
+padrao_nome_estrangeiro_br = re.compile(
+    r"(\|\s*(EUA|USA|ESP|MEX|ARG|COL|CHL|PER|VEN|ECU|URU|PAR|BOL|CRI|PAN|DOM|GTM|HND|SLV|NIC|CUB|PRI|ALE|GER|FRA|ITA|RUS|UK|ING|CAN|JPN|KOR|CHN|IND|M[eé]xico|Costa Rica|espanhol|ingl[eê]s|franc[eê]s))"
+    r"|(\b(COSTA RICA:|nieuwsradio|azahares|bibel tv|dasding|dmf|brescia|giornale radio|kronehit|m[aá]s fm|cumbia mix|shockmedia|playoutcenter|usastreams|triple-it|solumedia|tvomix|alsolnet|BRAVO WALT|Beach TV - Panama City|EWTN Espa[nñ]a|FIFA\+ Spain|Kpop Mix|Urban Mix|La 1 Canarias|MyTime Movie Network|Arirang|BR Fernsehen|Balabol|Brat TV|CVN TV|Cadena TV|Canal 4 Posadas|Catamarca|CineLife|Cinepride|Circle|Colosal TV|Dorama|FilmUA|First Channel|Goldmines|INSTITUCIONAL TV|Imperial Television|NHK World|Jenny Live|Lacco Ameno|Lider TV|Master TV|Mir 24|Mireasa|Misiones Cuatro|Muzhskoy|NDR Fernsehen|NTK TV|Nevskiy|OAN Opinion|Palitra|Peques TV|Perviy otdel|Popular TV Cantabria|Power Max Radio|Primocanale|Public Movies|Punjabi Shorts|PursuitUP|Qollasuyo|ROCK FM|RTC Quarta|RTV Diocesana|RTV Drenthe|RTV Maastricht|RTV Noord|RTV Utrecht|RUN:TIME|Radio Alfa|Radio Conexion|Radio Iglesias|Radio NBC Milano|Radio Stereo 5|Radio UP|Retr[oô] TV|Revry|Rossini|Saarland|Shef|Shemaroo|SideWalks|Simon|Skoraya|Smotrim|Star Cinema|Star Family|Studio 100|Studio Pasco|Suriyan|TV BRICS|TV Kujawy|TV\+ Chincha|TVL|TeleTusciaSabina|Telekanal RAI|Teleleonessa|Teleuniverso|Umbria Tv|VR Canal 21|Very Local|Vouli Tileorasi|VoxAfrica|White Channel)\b)",
+    re.I,
+)
+c.execute("SELECT id, nome, url FROM canais WHERE status = 'ATIVO' AND pais LIKE '%Brasil%'")
+ids_estrangeiros_br = []
+for row_id, row_nome, row_url in c.fetchall():
+    url_chk = (row_url or "").replace("jmp2.uk", "")
+    if padrao_url_estrangeira_br.search(url_chk) or padrao_nome_estrangeiro_br.search(row_nome or "") or padrao_nome_estrangeiro_br.search(url_chk):
+        ids_estrangeiros_br.append((row_id,))
+if ids_estrangeiros_br:
+    c.executemany("UPDATE canais SET status = 'INATIVO' WHERE id = ?", ids_estrangeiros_br)
+    print(f"Expurgo automático de estrangeiros marcados como BR: {len(ids_estrangeiros_br)} removidos")
 
 
 
@@ -944,6 +965,8 @@ for ab in canais_tv_aberta_brasil:
             nome=excluded.nome,
             logo=excluded.logo,
             categoria=excluded.categoria,
+            pais=excluded.pais,
+            regiao=excluded.regiao,
             status='ATIVO',
             latencia_ms=excluded.latencia_ms,
             web_ok=1,
@@ -959,6 +982,8 @@ for vip in canais_vip_fibra:
             nome=excluded.nome,
             logo=excluded.logo,
             categoria=excluded.categoria,
+            pais=excluded.pais,
+            regiao=excluded.regiao,
             status='ATIVO',
             latencia_ms=excluded.latencia_ms,
             web_ok=1,
@@ -997,6 +1022,8 @@ for rad in radios_brasil_oficiais:
             nome=excluded.nome,
             logo=excluded.logo,
             categoria=excluded.categoria,
+            pais=excluded.pais,
+            regiao=excluded.regiao,
             status='ATIVO',
             latencia_ms=excluded.latencia_ms,
             web_ok=1,
@@ -1071,6 +1098,7 @@ c.execute("""
             WHEN url LIKE '%170.83.16.50%' AND nome LIKE '%Lifetime%' THEN 48
             WHEN url LIKE '%170.83.16.50%' THEN 49
             WHEN url LIKE '%170.83.49.66%' THEN 50
+            WHEN categoria LIKE '%Rádios%' AND (url LIKE '%streamtheworld%' OR url LIKE '%crossradio%' OR url LIKE '%brasilstream%' OR url LIKE '%fabricahost%' OR url LIKE '%fox.srv.br%') THEN 51
             WHEN pais LIKE '%Brasil%' THEN 55
             WHEN pais LIKE '%Portugal%' THEN 60
             WHEN pais LIKE '%América Latina%' THEN 70

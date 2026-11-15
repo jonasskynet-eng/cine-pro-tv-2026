@@ -13,7 +13,7 @@
 ## 📌 Visão Geral do Projeto
 
 Este repositório reúne o ecossistema completo desenvolvido por **Jonas**, integrando:
-1. **Central de TV Digital Pro 2026 (CinePro TV — v3.0 Híbrida):** Plataforma web autônoma e acelerada para streaming de TV aberta, filmes, séries, desenhos e rádios ao vivo (**920 canais estruturados e auditados**: 833 BR, 63 PT, 10 LATAM e 14 Globais + **20 Rádios Brasileiras Ao Vivo**), funcionando tanto no servidor local (`localhost:8080`) quanto 24h na nuvem ([glittery-entremet-d4b633.netlify.app](https://glittery-entremet-d4b633.netlify.app)).
+1. **Central de TV Digital Pro 2026 (CinePro TV — v3.0 Híbrida):** Plataforma web autônoma e acelerada para streaming de TV aberta, filmes, séries, desenhos e rádios ao vivo (**783 canais estruturados e auditados**: 698 BR, 62 PT, 9 LATAM e 14 Globais + **20 Rádios Brasileiras Ao Vivo**), funcionando tanto no servidor local (`localhost:8080`) quanto 24h na nuvem ([glittery-entremet-d4b633.netlify.app](https://glittery-entremet-d4b633.netlify.app)).
 2. **Núcleo de Estudos de Engenharia, TI & Logística (UNINTER):** Materiais completos de revisão, plataformas interativas de audiobooks, pré-cálculo e gestão da cadeia de suprimentos.
 
 ---
@@ -24,7 +24,7 @@ Este repositório reúne o ecossistema completo desenvolvido por **Jonas**, inte
 | :---: | :---: | :--- |
 | **v1.0** | `v1.0` | Inicialização do ecossistema, banco SQLite, proxy HTTP local e scripts de sincronização GitHub. |
 | **v2.0** | `v2.0` | Controle remoto por celular via QR Code Wi-Fi, PWA instalável, tela vertical 9:16 mobile e pacote nuvem. |
-| **v3.0** | `v3.0` | **Edição Híbrida Nuvem & Local:** Roteamento inteligente HTTPS direto + fallback CORS na nuvem, proxy Python com decodificação GZIP/deflate, restauração da Band TV HD (`#005`), 20 rádios brasileiras do `radiosaovivo.net`, barra de categorias `flex-wrap` sem cortes com scrollbar esmeralda, QR Code híbrido funcional na nuvem e **920 canais limpos e auditados**. |
+| **v3.0** | `v3.0` | **Edição Híbrida Nuvem & Local:** Roteamento inteligente HTTPS direto + fallback CORS na nuvem, proxy Python com decodificação GZIP/deflate, restauração da Band TV HD (`#005`), 20 rádios brasileiras agrupadas do `radiosaovivo.net`, expurgo automático de 137 canais estrangeiros infiltrados em BR, barra de categorias `flex-wrap` sem cortes com scrollbar esmeralda, QR Code híbrido funcional na nuvem e **783 canais limpos e auditados**. |
 
 ---
 
@@ -32,7 +32,7 @@ Este repositório reúne o ecossistema completo desenvolvido por **Jonas**, inte
 
 ### ✨ Principais Recursos
 
-- **Grade Nacional Limpa & Auditada (920 Canais):** Emissoras abertas brasileiras no topo (SBT Nacional, TV Cultura, RecordTV, Band TV HD, BandNews TV, RedeTV!, TV Brasil, Record News), filmes, séries, desenhos infantis e **20 Rádios Brasileiras Ao Vivo** com reprodução direta (`ehRadioDireta`).
+- **Grade Nacional Limpa & Auditada (783 Canais):** Emissoras abertas brasileiras no topo (SBT Nacional, TV Cultura, RecordTV, Band TV HD, BandNews TV, RedeTV!, TV Brasil, Record News), filmes, séries, desenhos infantis e **20 Rádios Brasileiras Ao Vivo** agrupadas (`#057` a `#076`) com reprodução direta (`ehRadioDireta`).
 - **Modo Híbrido Inteligente (Nuvem + PC Local):** Detecção automática de ambiente (`EH_AMBIENTE_LOCAL` + sonda `LOCAL_PROXY_ATIVO`) com `MAPA_FALLBACK_HTTPS_NUVEM` para rodar direto no navegador em **HTTPS** na nuvem sem depender de `/proxy`, mantendo aceleração máxima no proxy local em `localhost:8080`.
 - **Proxy Local com Decodificação GZIP (`servidor_streaming_local.py`):** Cabeçalho `Accept-Encoding: identity` e `decodificar_manifesto` automático para evitar quebra de listas HLS compactadas.
 - **Barra de Categorias Visível Sem Cortes:** Grade `flex-wrap` organizada com barra de rolagem esmeralda destacada para acesso rápido a TV Aberta, Filmes, Séries, Desenhos e Rádios.
@@ -100,7 +100,7 @@ projeto-de-estudo/
 │   ├── atualizar_central_pro.py               # Compilador mestre da interface e filtros
 │   ├── servidor_streaming_local.py            # Servidor HTTP proxy multi-threading
 │   ├── saida/
-│   │   ├── banco_iptv.db                      # Banco SQLite com 920 canais estruturados e auditados
+│   │   ├── banco_iptv.db                      # Banco SQLite com 783 canais estruturados e auditados
 │   │   ├── canais_leves.json                  # Catálogo em JSON estruturado
 │   │   └── index.html                         # Interface do player web compilado
 │   └── ...                                    # Scripts de auditoria e playlists
