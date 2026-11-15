@@ -1,38 +1,64 @@
 @echo off
 chcp 65001 > nul
-title Enviar Ecossistema para o GitHub
+title Enviar Ecossistema Versao 03 (v3.0) para o GitHub
+cd /d "c:\Users\jonas\Downloads\projeto de estudo"
+
 echo =====================================================================
-echo    🚀 SINCRONIZADOR OFICIAL DO ECOSSISTEMA COM O GITHUB
+echo    🚀 SINCRONIZADOR OFICIAL — VERSAO 03 (v3.0) NO GITHUB
 echo =====================================================================
 echo.
-echo [1/3] Verificando status do Git local...
+echo [1/4] Verificando repositório local, tags e último commit...
 git status --short
 echo.
-echo [2/3] Verificando login no GitHub...
-gh auth status > nul 2>&1
-if %errorlevel% neq 0 (
-    echo.
-    echo ⚠️ Você ainda não fez login no GitHub CLI nesta máquina.
-    echo Vamos abrir o navegador para você autorizar em 1 clique:
-    echo.
-    gh auth login --web -h github.com -p https
-)
-
+git tag -n
 echo.
-echo [3/3] Criando repositório remoto e enviando arquivos...
+git log -n 1 --oneline
+echo.
+
+echo [2/4] Verificando login no GitHub CLI...
+gh auth status > nul 2>&1
+if %errorlevel% equ 0 goto :JA_LOGADO
+echo.
+echo ⚠️ Você ainda não fez login no GitHub CLI nesta máquina.
+echo Vamos abrir o navegador para você autorizar em 1 clique:
+echo.
+gh auth login --web -h github.com -p https
+
+:JA_LOGADO
+echo.
+echo [3/4] Publicando repositório e versões (v1.0, v2.0, v3.0)...
+git branch -M main > nul 2>&1
+gh repo view jonasskynet-eng/central-tv-iptv-pro > nul 2>&1
+if %errorlevel% equ 0 goto :REPO_EXISTE
+
+git remote remove origin > nul 2>&1
 gh repo create jonasskynet-eng/central-tv-iptv-pro --public --source=. --remote=origin --push
+if %errorlevel% equ 0 goto :ENVIAR_TAGS
 
-if %errorlevel% neq 0 (
-    echo.
-    echo Tentando push direto caso o repositório já exista...
-    git remote add origin https://github.com/jonasskynet-eng/central-tv-iptv-pro.git > nul 2>&1
-    git branch -M main
-    git push -u origin main
-)
+:REPO_EXISTE
+git remote remove origin > nul 2>&1
+git remote add origin https://github.com/jonasskynet-eng/central-tv-iptv-pro.git > nul 2>&1
+git push -u origin main --tags
+goto :CRIAR_RELEASE
 
+:ENVIAR_TAGS
+git push origin --tags
+
+:CRIAR_RELEASE
+echo.
+echo [4/4] Publicando Release Oficial v3.0 com pacote ZIP da nuvem...
+gh release view v3.0 -R jonasskynet-eng/central-tv-iptv-pro > nul 2>&1
+if %errorlevel% equ 0 goto :RELEASE_EXISTE
+gh release create v3.0 "C:\Users\jonas\Desktop\iptv\CINEPRO_TV_NUVEM_PRONTO.zip" -R jonasskynet-eng/central-tv-iptv-pro --title "Versão 03 (v3.0) — CinePro TV 2026 Híbrida (Nuvem + Local)" --notes "Versão 03 Oficial: 920 canais auditados, 20 rádios brasileiras ao vivo, roteamento híbrido Nuvem HTTPS + Local e QR Code funcional."
+goto :FIM
+
+:RELEASE_EXISTE
+echo ℹ️ Release v3.0 já existe no repositório remoto.
+
+:FIM
 echo.
 echo =====================================================================
-echo ✅ PROJETO SALVO NO GITHUB COM SUCESSO!
+echo ✅ PROJETO E VERSAO 03 PUBLICADOS NO GITHUB COM SUCESSO!
 echo Acesse em: https://github.com/jonasskynet-eng/central-tv-iptv-pro
 echo =====================================================================
 pause
