@@ -1513,8 +1513,8 @@
             line-height: 1.4;
         }
 
-        /* RESPONSIVIDADE COMPLETA PARA CELULAR EM PÉ (9:16) ESTILO APP NATIVO */
-        @media (max-width: 900px) {
+        /* RESPONSIVIDADE DEDICADA: CELULAR EM PÉ (RETRATO) */
+        @media (max-width: 900px) and (orientation: portrait) {
             body {
                 height: 100vh;
                 height: 100dvh;
@@ -1566,12 +1566,9 @@
                 max-width: 100% !important;
                 height: auto !important;
                 aspect-ratio: 16 / 9 !important;
-                max-height: 29vh !important;
+                max-height: none !important;
                 border-radius: 10px !important;
                 border-width: 1px !important;
-            }
-            body.channels-minimized .screen-container {
-                max-height: 36vh !important;
             }
             .pulse-play-circle {
                 width: 52px;
@@ -1676,6 +1673,166 @@
             }
             body.channels-minimized .sidebar-channels {
                 display: none !important;
+            }
+        }
+
+        /* RESPONSIVIDADE DEDICADA: CELULAR DEITADO (PAISAGEM / LANDSCAPE) */
+        @media (max-height: 560px) and (orientation: landscape) {
+            body {
+                height: 100vh;
+                height: 100dvh;
+            }
+            header,
+            .collapsed-channels-bar,
+            .btn-floating-expand {
+                display: none !important;
+            }
+            .main-stage {
+                flex-direction: row !important;
+                width: 100% !important;
+                height: 100dvh !important;
+            }
+            .player-viewport {
+                flex: 1 !important;
+                min-width: 0 !important;
+                width: auto !important;
+                height: 100dvh !important;
+                padding: 4px 6px !important;
+                display: flex !important;
+                flex-direction: column !important;
+                justify-content: space-between !important;
+                gap: 4px !important;
+            }
+            .screen-stage-wrapper {
+                flex: 1 !important;
+                min-height: 0 !important;
+                width: 100% !important;
+                height: auto !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+            }
+            .screen-container {
+                width: 100% !important;
+                height: calc(100dvh - 50px) !important;
+                max-width: 100% !important;
+                max-height: calc(100dvh - 50px) !important;
+                aspect-ratio: unset !important;
+                border-radius: 8px !important;
+                border-width: 1px !important;
+            }
+            .pulse-play-circle {
+                width: 52px;
+                height: 52px;
+                font-size: 22px;
+                margin-bottom: 6px;
+            }
+            .click-overlay h2 {
+                font-size: 14px;
+                margin-bottom: 3px;
+                text-align: center;
+                padding: 0 12px;
+            }
+            .click-overlay p {
+                font-size: 11px;
+                text-align: center;
+                padding: 0 14px;
+            }
+            .audio-pill {
+                top: 8px;
+                padding: 4px 12px;
+                font-size: 11px;
+                white-space: nowrap;
+                max-width: 92%;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+            .hud-toast {
+                top: 8px;
+                right: 10px;
+                padding: 5px 10px;
+                font-size: 11px;
+            }
+            .player-info-dock {
+                margin-top: 0 !important;
+                height: 40px !important;
+                min-height: 40px !important;
+                padding: 3px 6px !important;
+                gap: 6px !important;
+                flex-wrap: nowrap !important;
+                border-radius: 8px !important;
+            }
+            .channel-zapper-pill {
+                flex: 1 !important;
+                min-width: 0 !important;
+                max-width: none !important;
+                padding: 2px 4px !important;
+                gap: 6px !important;
+            }
+            .zapper-arrow-btn {
+                width: 32px !important;
+                height: 30px !important;
+                font-size: 13px !important;
+                border-radius: 6px !important;
+            }
+            .cur-channel-box {
+                padding: 0 4px !important;
+                gap: 6px !important;
+            }
+            .cur-ch-num {
+                font-size: 11px !important;
+                padding: 2px 5px !important;
+            }
+            .cur-ch-logo {
+                width: 24px !important;
+                height: 24px !important;
+                border-radius: 6px !important;
+            }
+            .cur-ch-meta h2 {
+                font-size: 12px !important;
+            }
+            .player-actions {
+                width: auto !important;
+                display: flex !important;
+                align-items: center !important;
+                gap: 4px !important;
+                flex-shrink: 0 !important;
+            }
+            .icon-btn-text {
+                height: 32px !important;
+                padding: 0 8px !important;
+                font-size: 11px !important;
+                gap: 4px !important;
+                white-space: nowrap !important;
+            }
+            body:not(.channels-minimized) .sidebar-channels {
+                width: 46vw !important;
+                min-width: 260px !important;
+                max-width: 360px !important;
+                height: 100dvh !important;
+                border-left: 1px solid var(--border) !important;
+                border-top: none !important;
+                flex: none !important;
+            }
+            body.channels-minimized .sidebar-channels {
+                width: 0 !important;
+                min-width: 0 !important;
+                display: none !important;
+            }
+            .sidebar-top-actions {
+                padding: 6px 8px;
+                gap: 5px;
+            }
+            .btn-minimize-sidebar,
+            .btn-toggle-filters {
+                padding: 5px 8px;
+                font-size: 10.5px;
+            }
+            .category-pills {
+                max-height: 92px;
+            }
+            .channel-card {
+                padding: 6px 8px;
             }
         }
 
@@ -2390,7 +2547,12 @@
                 const card = document.createElement('div');
                 card.className = `channel-card ${isSelected ? 'active' : ''}`;
                 card.setAttribute('data-idx', realIndex);
-                card.onclick = () => sintonizar(realIndex);
+                card.onclick = () => {
+                    sintonizar(realIndex);
+                    if ((window.innerWidth <= 950 || window.innerHeight <= 560) && !document.body.classList.contains('channels-minimized')) {
+                        alternarGavetaCanais(null, false);
+                    }
+                };
 
                 const safeName = c.nome.replace(/'/g, "\'");
                 const logoHtml = c.logo ? `<img src="${c.logo}" alt="${c.nome}" onerror="this.outerHTML=obterBadgeSvgCliente('${safeName}')">` : obterBadgeSvgCliente(c.nome);
