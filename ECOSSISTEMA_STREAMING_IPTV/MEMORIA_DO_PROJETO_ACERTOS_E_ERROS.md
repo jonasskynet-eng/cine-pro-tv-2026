@@ -66,3 +66,16 @@ Transformamos uma busca caótica de listas da internet em um **ecossistema profi
    - **Suporte Dual Player:** Inclusão de mpegts.js para canais em MPEG-TS direto (.ts) e Hls.js para manifests adaptativos (.m3u8).
    - **Redirecionamento Automático:** Se ASSISTIR_TV.html for aberto via duplo clique (ile:///), ele detecta o servidor ativo e redireciona instantaneamente para http://localhost:8080/.
    - **12 Canais Discovery 100% Confirmados:** Discovery Channel FHD, Discovery Kids 4K, Discovery Turbo 4K, Discovery H&H 4K, Animal Planet 4K, ID FHD, Discovery Science 4K, Discovery Theater 4K, Discovery World 4K, Food Network 4K, TLC 4K e HGTV 4K.
+
+---
+### 📌 Atualização 15/11/2026 — Lançamento Oficial da Versão 03 (v3.0 Híbrida Nuvem & Local)
+1. **Roteamento Híbrido Nuvem & Local (`atualizar_central_pro.py`):**
+   - Implementada detecção automática de ambiente (`EH_AMBIENTE_LOCAL` + sonda assíncrona `LOCAL_PROXY_ATIVO` em `http://localhost:8080/api/ip_local`) e o mapa `MAPA_FALLBACK_HTTPS_NUVEM` para converter canais HTTP locais (TV Cultura, RedeTV!, Record News e TV Aparecida) para streams `https://` com `CORS: *` liberado.
+   - Na nuvem (`https://glittery-entremet-d4b633.netlify.app`), os canais `https://` tocam diretamente sem chamar `/proxy` inexistente (que antes retornava Erro 404 na hospedagem estática), e as consultas locais (`/api/status_tv`, `/api/ouvir_comandos`) foram isoladas para rodar apenas no servidor local.
+2. **Correção do Proxy Local para Manifestos GZIP (`servidor_streaming_local.py`):**
+   - Adicionado cabeçalho `'Accept-Encoding': 'identity'` e helper `decodificar_manifesto` (suporte a `gzip` e `deflate`), eliminando falhas de leitura de playlists HLS compactadas.
+3. **Auditoria de Grade, Restauração da Band, Rádios Ao Vivo e UI:**
+   - Substituído o sinal morto da Band pelo canal ao vivo **#005 Band TV HD (Ao Vivo)** + **#006 BandNews TV (Fibra Leve)**, expurgados links mortos e canais estrangeiros marcados indevidamente como `BR`, chegando a **920 canais estruturados e limpos** (`BR: 833`, `PT: 63`, `LATAM: 10`, `GLOBAL: 14`).
+   - Integradas **20 Rádios Brasileiras Ao Vivo** (`radiosaovivo.net`) com reprodução direta (`ehRadioDireta`), barra de categorias em grade `flex-wrap` visível com scrollbar esmeralda sem cortes horizontais e inicialização automática no Windows Startup (`Servidor_IPTV_Automatico.vbs`).
+4. **QR Code Funcional na Nuvem (`renderizarQr`):**
+   - Garantido que o modal de QR Code sempre renderiza o código mesmo acessado na nuvem sem o PC local ligado, apontando para `window.location.origin`.

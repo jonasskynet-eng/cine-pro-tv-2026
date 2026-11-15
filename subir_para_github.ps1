@@ -20,14 +20,16 @@ if ($LASTEXITCODE -ne 0) {
 }
 
 Write-Host ""
-Write-Host "[3/3] Criando repositório e enviando arquivos para a nuvem..." -ForegroundColor Yellow
+Write-Host "[3/3] Criando repositório e enviando arquivos e tags para a nuvem..." -ForegroundColor Yellow
 gh repo create jonasskynet-eng/central-tv-iptv-pro --public --source=. --remote=origin --push
 
 if ($LASTEXITCODE -ne 0) {
     Write-Host "Tentando envio direto para o repositório remoto..." -ForegroundColor Yellow
     git remote add origin https://github.com/jonasskynet-eng/central-tv-iptv-pro.git 2>$null
     git branch -M main
-    git push -u origin main
+    git push -u origin main --tags
+} else {
+    git push origin --tags
 }
 
 Write-Host ""

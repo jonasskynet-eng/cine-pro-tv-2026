@@ -1,8 +1,10 @@
-# 🚀 Central de TV Digital Pro 2026 & Ecossistema de Estudos
+# 🚀 Central de TV Digital Pro 2026 — Versão 03 (v3.0 Híbrida Nuvem & Local)
 
+![Versão](https://img.shields.io/badge/Vers%C3%A3o-v3.0%20Oficial-emerald?style=for-the-badge)
 ![Status](https://img.shields.io/badge/Status-100%25%20Funcional-10b981?style=for-the-badge)
+![Nuvem](https://img.shields.io/badge/Nuvem-Netlify%2024h%20Online-00C7B7?style=for-the-badge&logo=netlify&logoColor=white)
 ![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?style=for-the-badge&logo=python&logoColor=white)
-![HLS](https://img.shields.io/badge/Streaming-HLS%20Live-orange?style=for-the-badge)
+![HLS](https://img.shields.io/badge/Streaming-HLS%20%2B%20R%C3%A1dios%20Live-orange?style=for-the-badge)
 ![SQLite](https://img.shields.io/badge/Banco-SQLite%203-003B57?style=for-the-badge&logo=sqlite&logoColor=white)
 ![Interface](https://img.shields.io/badge/Design-Glassmorphism%20Pro-6366f1?style=for-the-badge)
 
@@ -11,21 +13,31 @@
 ## 📌 Visão Geral do Projeto
 
 Este repositório reúne o ecossistema completo desenvolvido por **Jonas**, integrando:
-1. **Central de TV Digital Pro (Cinema Studio 2026):** Plataforma web autônoma e acelerada para streaming de TV aberta e por assinatura, com mais de 2.060 canais ativos, latência ultrabaixa (< 50ms), servidor proxy integrado para contorno de CORS e enquadramento de vídeo cinematográfico.
-2. **Núcleo de Estudos de Engenharia, TI & Logística (UNINTER):** Materiais completos de revisão, plataformas interativas de audiobooks e cadernos técnicos de pré-cálculo e gestão da cadeia de suprimentos.
+1. **Central de TV Digital Pro 2026 (CinePro TV — v3.0 Híbrida):** Plataforma web autônoma e acelerada para streaming de TV aberta, filmes, séries, desenhos e rádios ao vivo (**920 canais estruturados e auditados**: 833 BR, 63 PT, 10 LATAM e 14 Globais + **20 Rádios Brasileiras Ao Vivo**), funcionando tanto no servidor local (`localhost:8080`) quanto 24h na nuvem ([glittery-entremet-d4b633.netlify.app](https://glittery-entremet-d4b633.netlify.app)).
+2. **Núcleo de Estudos de Engenharia, TI & Logística (UNINTER):** Materiais completos de revisão, plataformas interativas de audiobooks, pré-cálculo e gestão da cadeia de suprimentos.
 
 ---
 
-## 📺 Módulo 1: Central de TV Digital Pro 2026
+## 🏷️ Histórico de Versões (Roadmap Oficial)
+
+| Versão | Tag Git | Marcos e Evolução |
+| :---: | :---: | :--- |
+| **v1.0** | `v1.0` | Inicialização do ecossistema, banco SQLite, proxy HTTP local e scripts de sincronização GitHub. |
+| **v2.0** | `v2.0` | Controle remoto por celular via QR Code Wi-Fi, PWA instalável, tela vertical 9:16 mobile e pacote nuvem. |
+| **v3.0** | `v3.0` | **Edição Híbrida Nuvem & Local:** Roteamento inteligente HTTPS direto + fallback CORS na nuvem, proxy Python com decodificação GZIP/deflate, restauração da Band TV HD (`#005`), 20 rádios brasileiras do `radiosaovivo.net`, barra de categorias `flex-wrap` sem cortes com scrollbar esmeralda, QR Code híbrido funcional na nuvem e **920 canais limpos e auditados**. |
+
+---
+
+## 📺 Módulo 1: Central de TV Digital Pro 2026 (v3.0)
 
 ### ✨ Principais Recursos
 
-- **Grade Nacional Prioritária (#001 a #024):** Emissoras abertas do Brasil no topo absoluto (SBT, TV Cultura, Canal Futura / Grupo Globo, RecordTV, Band, RedeTV!, TV Brasil, TV Gazeta, etc.).
-- **Pacotes VIP Fibra:** Discovery Channel, Discovery Kids, Animal Planet, Cartoon Network, TNT, Space, AXN, Sony Channel, ESPN e BandSports com rota direta por fibra óptica brasileira.
-- **Filtros por Tags Multigênero:** Botões dinâmicos para seleção instantânea de **TV Aberta Brasil**, **História**, **Combate & Lutas**, **Comédia & Humor**, **Shows & Música**, **Filmes & Séries** e **Esportes**.
-- **Enquadramento Fixo 16:9 / 21:9 / 4:3:** Fim das distorções de tela com ajuste inteligente pelo botão de proporção ou tecla **`A`**.
-- **Servidor Streaming com Resolução 302:** Proxy inteligente em Python (`servidor_streaming_local.py`) com resolução dinâmica de URLs redirecionadas e entrega de playlists master e segmentos AES-128 sem bloqueios.
-- **Modo Cinema com Glassmorphism:** Ocultação suave de barras laterais para imersão total com um clique.
+- **Grade Nacional Limpa & Auditada (920 Canais):** Emissoras abertas brasileiras no topo (SBT Nacional, TV Cultura, RecordTV, Band TV HD, BandNews TV, RedeTV!, TV Brasil, Record News), filmes, séries, desenhos infantis e **20 Rádios Brasileiras Ao Vivo** com reprodução direta (`ehRadioDireta`).
+- **Modo Híbrido Inteligente (Nuvem + PC Local):** Detecção automática de ambiente (`EH_AMBIENTE_LOCAL` + sonda `LOCAL_PROXY_ATIVO`) com `MAPA_FALLBACK_HTTPS_NUVEM` para rodar direto no navegador em **HTTPS** na nuvem sem depender de `/proxy`, mantendo aceleração máxima no proxy local em `localhost:8080`.
+- **Proxy Local com Decodificação GZIP (`servidor_streaming_local.py`):** Cabeçalho `Accept-Encoding: identity` e `decodificar_manifesto` automático para evitar quebra de listas HLS compactadas.
+- **Barra de Categorias Visível Sem Cortes:** Grade `flex-wrap` organizada com barra de rolagem esmeralda destacada para acesso rápido a TV Aberta, Filmes, Séries, Desenhos e Rádios.
+- **QR Code Híbrido & Controle Remoto Wi-Fi:** Modal inteligente que gera o QR Code do controle remoto no PC local (`http://192.168.100.210:8080/controle.html`) e o QR Code da URL oficial da nuvem quando acessado online.
+- **Enquadramento Fixo 16:9 / Preencher / Esticar:** Ajuste pelo botão de proporção ou tecla **`A`**, além de inicialização automática no Windows (`Servidor_IPTV_Automatico.vbs`).
 
 ### ⌨️ Atalhos de Controle Remoto pelo Teclado
 
@@ -34,11 +46,11 @@ Este repositório reúne o ecossistema completo desenvolvido por **Jonas**, inte
 | **`Espaço`** | Pausar / Reproduzir transmissão |
 | **`↓` / `N`** | Próximo canal |
 | **`↑` / `P`** | Canal anterior |
-| **`A`** | Alternar proporção de tela (Padrão 16:9 ➔ Expandido ➔ Cinema 21:9 ➔ Clássico 4:3) |
+| **`A`** | Alternar proporção de tela (16:9 Cinema ➔ Preencher Tela ➔ Esticar 100%) |
 | **`M`** | Ligar / Desligar som (Mudo) |
 | **`F`** | Modo Tela Cheia |
 | **`C`** | Alternar Modo Cinema |
-| **`1` a `9`** | Sintonizar canais de 1 a 9 diretamente |
+| **`1` a `9`** | Sintonizar canais diretamente pelo número |
 | **`?`** | Abrir painel de atalhos e ajuda |
 
 ---
@@ -88,7 +100,7 @@ projeto-de-estudo/
 │   ├── atualizar_central_pro.py               # Compilador mestre da interface e filtros
 │   ├── servidor_streaming_local.py            # Servidor HTTP proxy multi-threading
 │   ├── saida/
-│   │   ├── banco_iptv.db                      # Banco SQLite com 2.063 canais validados
+│   │   ├── banco_iptv.db                      # Banco SQLite com 920 canais estruturados e auditados
 │   │   ├── canais_leves.json                  # Catálogo em JSON estruturado
 │   │   └── index.html                         # Interface do player web compilado
 │   └── ...                                    # Scripts de auditoria e playlists
