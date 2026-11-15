@@ -3831,14 +3831,7 @@ html_code = f"""<!DOCTYPE html>
         btnQrRemote.addEventListener('click', async () => {{
             remoteModal.classList.add('open');
             if (!qrCodeInstancia) {{
-                try {{
-                    if (!EH_AMBIENTE_LOCAL && !LOCAL_PROXY_ATIVO) {{
-                        throw new Error('Controle Wi-Fi disponível apenas com o servidor local ligado');
-                    }}
-                    const apiBase = EH_AMBIENTE_LOCAL ? '' : 'http://localhost:8080';
-                    const resp = await fetch(apiBase + '/api/ip_local');
-                    const data = await resp.json();
-                    const url = data.url_controle;
+                const renderizarQr = (url) => {{
                     document.getElementById('remoteUrlDisplay').textContent = url;
                     const container = document.getElementById('qrcodeContainer');
                     container.innerHTML = '';
@@ -3850,11 +3843,20 @@ html_code = f"""<!DOCTYPE html>
                         colorLight: "#ffffff",
                         correctLevel: QRCode.CorrectLevel.M
                     }});
+                }};
+                try {{
+                    if (!EH_AMBIENTE_LOCAL && !LOCAL_PROXY_ATIVO) {{
+                        throw new Error('Modo nuvem');
+                    }}
+                    const apiBase = EH_AMBIENTE_LOCAL ? '' : 'http://localhost:8080';
+                    const resp = await fetch(apiBase + '/api/ip_local');
+                    const data = await resp.json();
+                    renderizarQr(data.url_controle);
                 }} catch (err) {{
                     const fallbackUrl = EH_AMBIENTE_LOCAL
                         ? `http://${{window.location.hostname || '192.168.100.210'}}:8080/controle.html`
-                        : 'Disponível apenas no modo servidor local (PC na mesma rede Wi-Fi)';
-                    document.getElementById('remoteUrlDisplay').textContent = fallbackUrl;
+                        : window.location.origin;
+                    renderizarQr(fallbackUrl);
                 }}
             }}
         }});
