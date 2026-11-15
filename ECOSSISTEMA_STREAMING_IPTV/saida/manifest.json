@@ -2,11 +2,11 @@
   "name": "CinePro TV Digital 2026",
   "short_name": "CinePro TV",
   "description": "Central de TV Digital em Fibra Óptica",
-  "start_url": "/index.html",
+  "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#060913",
   "theme_color": "#10b981",
-  "orientation": "landscape-primary",
+  "orientation": "any",
   "icons": [
     {
       "src": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/brazil/sbt-br.png",

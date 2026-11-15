@@ -1377,7 +1377,7 @@ html_code = f"""<!DOCTYPE html>
     <meta name="theme-color" content="#060913">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="manifest" href="/manifest.json">
+    <link rel="manifest" href="manifest.json">
     <title>CENTRAL DE TV DIGITAL PRO - Cinema Studio 2026</title>
     <script>
         // Se aberto direto pelo arquivo no Desktop, redireciona para o servidor acelerado local
@@ -4302,7 +4302,7 @@ html_code = f"""<!DOCTYPE html>
 
         // CONTROLE REMOTO PELO TECLADO
         window.addEventListener('keydown', (e) => {{
-            if (e.target === searchInput) return;
+            if (e.target === searchInput || (e.target && e.target.id === 'mobileSearchInput')) return;
 
             // Sintonização rápida por teclado numérico (0 a 9)
             if (/^[0-9]$/.test(e.key)) {{
@@ -4431,7 +4431,7 @@ html_code = f"""<!DOCTYPE html>
                 }} catch (err) {{
                     const fallbackUrl = EH_AMBIENTE_LOCAL
                         ? `http://${{window.location.hostname || '192.168.100.210'}}:8080/controle.html`
-                        : window.location.origin;
+                        : window.location.href.split('#')[0].split('?')[0];
                     renderizarQr(fallbackUrl);
                 }}
             }}
@@ -4550,8 +4550,12 @@ html_code = f"""<!DOCTYPE html>
 
 html_saida_path = SAIDA_DIR / "index.html"
 html_desktop_path = DESKTOP_DIR / "ASSISTIR_TV.html"
+docs_dir = BASE_DIR.parent / "docs"
+docs_dir.mkdir(parents=True, exist_ok=True)
+html_docs_path = docs_dir / "index.html"
 
 html_saida_path.write_text(html_code, encoding="utf-8")
 shutil.copyfile(html_saida_path, html_desktop_path)
+shutil.copyfile(html_saida_path, html_docs_path)
 
 print("ATUALIZAÇÃO COM PADRÃO 16:9 FIXO, ENQUADRAMENTO E ZERO TRAVAMENTO FINALIZADA COM SUCESSO!")

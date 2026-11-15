@@ -6,7 +6,7 @@
     <meta name="theme-color" content="#060913">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="manifest" href="/manifest.json">
+    <link rel="manifest" href="manifest.json">
     <title>CENTRAL DE TV DIGITAL PRO - Cinema Studio 2026</title>
     <script>
         // Se aberto direto pelo arquivo no Desktop, redireciona para o servidor acelerado local
@@ -2931,7 +2931,7 @@
 
         // CONTROLE REMOTO PELO TECLADO
         window.addEventListener('keydown', (e) => {
-            if (e.target === searchInput) return;
+            if (e.target === searchInput || (e.target && e.target.id === 'mobileSearchInput')) return;
 
             // Sintonização rápida por teclado numérico (0 a 9)
             if (/^[0-9]$/.test(e.key)) {
@@ -3060,7 +3060,7 @@
                 } catch (err) {
                     const fallbackUrl = EH_AMBIENTE_LOCAL
                         ? `http://${window.location.hostname || '192.168.100.210'}:8080/controle.html`
-                        : window.location.origin;
+                        : window.location.href.split('#')[0].split('?')[0];
                     renderizarQr(fallbackUrl);
                 }
             }
