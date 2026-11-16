@@ -2345,15 +2345,78 @@
             /^(192\.168\.|10\.|172\.(1[6-9]|2[0-9]|3[01])\.)/.test(window.location.hostname) ||
             window.location.protocol === 'file:';
 
+        const DEFAULT_CLOUDFLARE_PROXY_URL = '';
         let LOCAL_PROXY_ATIVO = false;
         let NUVEM_PROXY_ATIVO = false;
+        let NUVEM_PROXY_ENDPOINT = '/.netlify/functions/proxy?url=';
+
+        function obterUrlPonteConfigurada() {
+            try {
+                const params = new URLSearchParams(window.location.search);
+                const paramProxy = (params.get('proxy') || '').trim();
+                if (paramProxy.startsWith('https://')) {
+                    const limpa = paramProxy.replace(/\/+$/, '');
+                    localStorage.setItem('cinepro_proxy_nuvem_url', limpa);
+                    return limpa;
+                }
+                const salva = (localStorage.getItem('cinepro_proxy_nuvem_url') || '').trim();
+                if (salva.startsWith('https://')) return salva.replace(/\/+$/, '');
+            } catch (_) {}
+            return DEFAULT_CLOUDFLARE_PROXY_URL ? DEFAULT_CLOUDFLARE_PROXY_URL.replace(/\/+$/, '') : '';
+        }
+
+        function testarEAtivarPonteNuvem(baseUrl) {
+            if (!baseUrl) return Promise.resolve(false);
+            return fetch(baseUrl, { mode: 'cors' })
+                .then(r => r.json())
+                .then(data => {
+                    if (data && data.ok) {
+                        NUVEM_PROXY_ATIVO = true;
+                        NUVEM_PROXY_ENDPOINT = baseUrl + '/?url=';
+                        aplicarFiltros(true);
+                        mostrarHUD('📡 Ponte na nuvem ativa! Todos os canais liberados.');
+                        return true;
+                    }
+                    return false;
+                })
+                .catch(() => false);
+        }
+
+        function configurarPonteNuvem() {
+            const atual = obterUrlPonteConfigurada();
+            const nova = prompt('Cole a URL da sua Ponte Cloudflare Workers (ex: https://cinepro-tv-proxy.sua-conta.workers.dev).\nDeixe vazio para remover:', atual);
+            if (nova === null) return;
+            const limpa = nova.trim().replace(/\/+$/, '');
+            if (!limpa) {
+                localStorage.removeItem('cinepro_proxy_nuvem_url');
+                NUVEM_PROXY_ATIVO = false;
+                aplicarFiltros(true);
+                mostrarHUD('🔌 Ponte personalizada removida.');
+                return;
+            }
+            if (!limpa.startsWith('https://')) {
+                mostrarHUD('⚠️ Use um endereço que comece com https://');
+                return;
+            }
+            localStorage.setItem('cinepro_proxy_nuvem_url', limpa);
+            testarEAtivarPonteNuvem(limpa).then(ok => {
+                if (!ok) mostrarHUD('⚠️ Ponte salva, mas não respondeu ao teste agora.');
+            });
+        }
+        window.configurarPonteNuvem = configurarPonteNuvem;
+
         if (!EH_AMBIENTE_LOCAL) {
+            const ponteCustom = obterUrlPonteConfigurada();
+            if (ponteCustom) {
+                testarEAtivarPonteNuvem(ponteCustom);
+            }
             if (window.location.protocol === 'https:') {
                 fetch('/.netlify/functions/proxy')
                     .then(r => r.text().then(txt => ({ status: r.status, txt })))
                     .then(({ status, txt }) => {
-                        if (status === 400 || txt.includes('Missing url parameter')) {
+                        if (!NUVEM_PROXY_ATIVO && (status === 400 || txt.includes('Missing url parameter'))) {
                             NUVEM_PROXY_ATIVO = true;
+                            NUVEM_PROXY_ENDPOINT = '/.netlify/functions/proxy?url=';
                             aplicarFiltros(true);
                         }
                     })
@@ -2458,7 +2521,7 @@
                     urlBase.includes('pluto.tv') ||
                     !c.cors
                 );
-                streamUrl = precisaProxyNuvem ? ('/.netlify/functions/proxy?url=' + encodeURIComponent(urlBase)) : urlBase;
+                streamUrl = precisaProxyNuvem ? (NUVEM_PROXY_ENDPOINT + encodeURIComponent(urlBase)) : urlBase;
             } else {
                 // Modo Nuvem Puro (sem proxy): usa stream HTTPS direto
                 if (window.location.protocol === 'https:' && urlBase.startsWith('http://')) {
@@ -2709,7 +2772,7 @@
                 listBody.innerHTML = '';
                 canaisRenderizadosQtd = 0;
                 if (!EH_AMBIENTE_LOCAL && !LOCAL_PROXY_ATIVO && !NUVEM_PROXY_ATIVO && window.location.protocol === 'https:' && (catFiltro === 'discovery' || termo.includes('discovery'))) {
-                    listBody.innerHTML = '<div style="margin:8px 10px; padding:10px 12px; border-radius:10px; background:rgba(56,189,248,0.12); border:1px solid rgba(56,189,248,0.35); color:#bae6fd; font-size:11.5px; line-height:1.45;">📡 <b>Canais Discovery (12 canais Fibra)</b> usam sinal HTTP e precisam do <b>Servidor Local</b> (PC) ou do <b>Proxy na Nuvem</b> (Netlify conectado ao GitHub). Abaixo estão os canais de Ciência e Documentários em HTTPS direto:</div>';
+                    listBody.innerHTML = '<div style="margin:8px 10px; padding:10px 12px; border-radius:10px; background:rgba(56,189,248,0.12); border:1px solid rgba(56,189,248,0.35); color:#bae6fd; font-size:11.5px; line-height:1.45;">📡 <b>Canais Discovery (12 canais Fibra)</b> usam sinal HTTP e precisam do <b>Servidor Local</b> (PC) ou da <b>Ponte na Nuvem</b> (Cloudflare). Abaixo estão os canais de Ciência e Documentários em HTTPS direto:<div style="margin-top:8px;"><button type="button" onclick="configurarPonteNuvem()" style="background:#0ea5e9; color:#04101f; border:none; border-radius:6px; padding:5px 10px; font-weight:800; font-size:11px; cursor:pointer;">🔌 Configurar Ponte na Nuvem</button></div></div>';
                 }
             }
 
