@@ -961,6 +961,48 @@ canais_vip_fibra = [
         "regiao": "Nacional / TV a Cabo",
         "status": "ATIVO",
         "cors_star": 1
+    },
+    {
+        "nome": "Space Today TV | Brasil (HTTPS Nuvem)",
+        "url": "https://service.webvideocore.net/CL1olYogIrDWvwqiIKK7eHbBxDyYany25g-L4QOVH5_l5daXY9tfEZPDJS0YHgpW/a_50acwl5q0f0g.m3u8",
+        "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/brazil/discovery-science-br.png",
+        "categoria": "🔬 Discovery & Ciência",
+        "tags": ["discovery", "historia"],
+        "qualidade": "Digital",
+        "latencia": 40,
+        "pais": "🇧🇷 Brasil",
+        "pais_codigo": "BR",
+        "regiao": "Nacional / Ciência & Astronomia",
+        "status": "ATIVO",
+        "cors_star": 1
+    },
+    {
+        "nome": "NASA TV Espaço HD (HTTPS Nuvem)",
+        "url": "https://ntv1.akamaized.net/hls/live/2014075/NASA-NTV1-HLS/master.m3u8",
+        "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/NASA_logo.svg/240px-NASA_logo.svg.png",
+        "categoria": "🔬 Discovery & Ciência",
+        "tags": ["discovery", "historia"],
+        "qualidade": "Digital",
+        "latencia": 42,
+        "pais": "🌐 Internacional",
+        "pais_codigo": "GLOBAL",
+        "regiao": "Global / Espaço",
+        "status": "ATIVO",
+        "cors_star": 1
+    },
+    {
+        "nome": "Wild Earth Safári Ao Vivo (HTTPS Nuvem)",
+        "url": "https://wildearth-plex.amagi.tv/playlist.m3u8",
+        "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/brazil/animal-planet-br.png",
+        "categoria": "🔬 Discovery & Ciência",
+        "tags": ["discovery", "historia"],
+        "qualidade": "Digital",
+        "latencia": 45,
+        "pais": "🌐 Internacional",
+        "pais_codigo": "GLOBAL",
+        "regiao": "Global / Vida Selvagem",
+        "status": "ATIVO",
+        "cors_star": 1
     }
 ]
 
@@ -1254,7 +1296,8 @@ hosts_br_whitelist = (
     "amg00740-sofa-amg00740c8", "klicgo.net/esportsmax", "extremakids", "tvcnbamerican", "streampool.net",
     "network_id=6178", "network_id=6128", "network_id=292", "network_id=294", "45.185.15.154",
     "dfr80qz435crc.cloudfront.net/efgh/amagi/globo", "ondaradioweb", "rodrigo2364",
-    "d1si3n1st4nkgb.cloudfront.net/10502/88886011", "streaming.onnethn.com/cinemax", "paroquiavianney", "cancaonova"
+    "d1si3n1st4nkgb.cloudfront.net/10502/88886011", "streaming.onnethn.com/cinemax", "paroquiavianney", "cancaonova",
+    "service.webvideocore.net/cl1olyogir", "rt-rtd.rttv.com/live/rtdoc"
 )
 nomes_br_whitelist = (
     "brasil", "brazil", "pt-br", "portuguese", "português", "portugues", "dublado", "sbt", "globo", "record",
@@ -1271,7 +1314,7 @@ nomes_br_whitelist = (
     "despertar tv", "tv maná", "kuriakos", "araruna", "sptv", "sic tv", "tv aliança", "tv aldeia",
     "tv alternativa", "tv curuçá", "tv+pet", "unisul", "tv difusão", "tvitapé", "latinasat", "sim são mateus",
     "tv cidade", "demais tv", "telecine", "cine romântico", "cinemax", "comedy central brasil", "loading tv",
-    "tv séries", "geekdot", "retrô cartoon", "nickonline", "o dia tv", "conecta mais"
+    "tv séries", "geekdot", "retrô cartoon", "nickonline", "o dia tv", "conecta mais", "space today", "rakuten document"
 )
 proibidos_br_re = re.compile(
     r"([\u0400-\u04FF\u0600-\u06FF]|🇧🇪|🇮🇶|🇲🇦|🇻🇪|🇨🇱|🇦🇷|🇲🇽|🇪🇸|🇩🇪|🇮🇹|🇫🇷|🇷🇺|🇺🇦|🇮🇳|🇹🇷|🇬🇧|🇺🇸|"
@@ -1340,7 +1383,8 @@ for r in rows:
     # Tag DISCOVERY (Agrupando canais Discovery, Natureza, Ciência e Investigação)
     eh_discovery = any(k in nome_lower for k in [
         "discovery", "animal planet", "investigation discovery", "history", "national geographic",
-        "nat geo", "tlc", "hgtv"
+        "nat geo", "tlc", "hgtv", "pluto tv investigac", "pluto tv natureza", "space today",
+        "rakuten document", "nasa tv", "wild earth"
     ])
     if eh_discovery:
         tags.append("discovery")
@@ -3914,7 +3958,9 @@ html_code = f"""<!DOCTYPE html>
                 `Sessão Principal • ${{nomeLimpo}}`,
                 `Maratona Ao Vivo • ${{nomeLimpo}}`
             ];
-            if (cat.includes('esporte')) {{
+            if (cat.includes('discovery') || cat.includes('ciência') || cat.includes('ciencia') || cat.includes('document') || nomeLimpo.toLowerCase().includes('discovery') || nomeLimpo.toLowerCase().includes('animal planet') || nomeLimpo.toLowerCase().includes('history') || nomeLimpo.toLowerCase().includes('space today') || nomeLimpo.toLowerCase().includes('natureza')) {{
+                grade = [`Largados & Expedição • ${{nomeLimpo}}`, `Ciência & Mistérios HD`, `Planeta Selvagem Ao Vivo`, `Arquivos da Investigação`];
+            }} else if (cat.includes('esporte')) {{
                 grade = [`Arena Ao Vivo • ${{nomeLimpo}}`, `Debate Esportivo`, `Gols & Melhores Momentos`, `Transmissão Especial`];
             }} else if (cat.includes('jornalismo') || cat.includes('not')) {{
                 grade = [`Jornal Ao Vivo • ${{nomeLimpo}}`, `Análise & Bastidores`, `Plantão de Notícias`, `Resumo do Dia`];
@@ -3946,7 +3992,19 @@ html_code = f"""<!DOCTYPE html>
             window.location.protocol === 'file:';
 
         let LOCAL_PROXY_ATIVO = false;
+        let NUVEM_PROXY_ATIVO = false;
         if (!EH_AMBIENTE_LOCAL) {{
+            if (window.location.protocol === 'https:') {{
+                fetch('/.netlify/functions/proxy')
+                    .then(r => r.text().then(txt => ({{ status: r.status, txt }})))
+                    .then(({{ status, txt }}) => {{
+                        if (status === 400 || txt.includes('Missing url parameter')) {{
+                            NUVEM_PROXY_ATIVO = true;
+                            aplicarFiltros(true);
+                        }}
+                    }})
+                    .catch(() => {{}});
+            }}
             fetch('http://localhost:8080/api/ip_local', {{ mode: 'cors' }})
                 .then(r => {{
                     if (r.ok) {{
@@ -4017,9 +4075,9 @@ html_code = f"""<!DOCTYPE html>
             }}
             video.onerror = null;
 
-            // Roteamento híbrido inteligente: Local (proxy Python 8080) vs Nuvem (HTTPS direto / fallback CORS)
+            // Roteamento híbrido inteligente: Local (proxy Python 8080) vs Nuvem (Netlify Proxy / HTTPS direto)
             let urlBase = c.url;
-            if (!EH_AMBIENTE_LOCAL && !LOCAL_PROXY_ATIVO && MAPA_FALLBACK_HTTPS_NUVEM[c.url]) {{
+            if (!EH_AMBIENTE_LOCAL && !LOCAL_PROXY_ATIVO && !NUVEM_PROXY_ATIVO && MAPA_FALLBACK_HTTPS_NUVEM[c.url]) {{
                 urlBase = MAPA_FALLBACK_HTTPS_NUVEM[c.url];
             }}
 
@@ -4033,13 +4091,22 @@ html_code = f"""<!DOCTYPE html>
                     streamUrl = PROXY_ORIGIN + '/proxy?url=' + encodeURIComponent(urlBase);
                 }}
             }} else if (LOCAL_PROXY_ATIVO) {{
-                if (urlBase.includes('170.83.16.50')) {{
+                if (urlBase.includes('170.83.16.50') && window.location.protocol !== 'https:') {{
                     streamUrl = urlBase;
                 }} else {{
                     streamUrl = 'http://localhost:8080/proxy?url=' + encodeURIComponent(urlBase);
                 }}
+            }} else if (NUVEM_PROXY_ATIVO) {{
+                const precisaProxyNuvem = (
+                    urlBase.startsWith('http://') ||
+                    urlBase.includes('jmp2.uk') ||
+                    urlBase.includes('embedplayer2.xyz') ||
+                    urlBase.includes('pluto.tv') ||
+                    !c.cors
+                );
+                streamUrl = precisaProxyNuvem ? ('/.netlify/functions/proxy?url=' + encodeURIComponent(urlBase)) : urlBase;
             }} else {{
-                // Modo Nuvem Puro (Netlify/HTTPS): usa stream HTTPS direto sem depender de /proxy
+                // Modo Nuvem Puro (sem proxy): usa stream HTTPS direto
                 if (window.location.protocol === 'https:' && urlBase.startsWith('http://')) {{
                     mostrarHUD('⚠️ Canal HTTP local indisponível na nuvem sem servidor ativo. Pulando para próximo canal HTTPS...');
                     clearTimeout(window.autoZapTimer);
@@ -4287,10 +4354,13 @@ html_code = f"""<!DOCTYPE html>
             if (resetScroll) {{
                 listBody.innerHTML = '';
                 canaisRenderizadosQtd = 0;
+                if (!EH_AMBIENTE_LOCAL && !LOCAL_PROXY_ATIVO && !NUVEM_PROXY_ATIVO && window.location.protocol === 'https:' && (catFiltro === 'discovery' || termo.includes('discovery'))) {{
+                    listBody.innerHTML = '<div style="margin:8px 10px; padding:10px 12px; border-radius:10px; background:rgba(56,189,248,0.12); border:1px solid rgba(56,189,248,0.35); color:#bae6fd; font-size:11.5px; line-height:1.45;">📡 <b>Canais Discovery (12 canais Fibra)</b> usam sinal HTTP e precisam do <b>Servidor Local</b> (PC) ou do <b>Proxy na Nuvem</b> (Netlify conectado ao GitHub). Abaixo estão os canais de Ciência e Documentários em HTTPS direto:</div>';
+                }}
             }}
 
             if (canaisFiltradosCache.length === 0) {{
-                listBody.innerHTML = '<div style="padding:30px; text-align:center; color:#64748b; font-size:13px;">Nenhum canal encontrado para este filtro.</div>';
+                listBody.innerHTML += '<div style="padding:30px; text-align:center; color:#64748b; font-size:13px;">Nenhum canal encontrado para este filtro.</div>';
                 return;
             }}
 
@@ -4433,7 +4503,7 @@ html_code = f"""<!DOCTYPE html>
 
         function ehCanalDisponivelAgora(c) {{
             if (!c) return false;
-            if (!EH_AMBIENTE_LOCAL && !LOCAL_PROXY_ATIVO && window.location.protocol === 'https:') {{
+            if (!EH_AMBIENTE_LOCAL && !LOCAL_PROXY_ATIVO && !NUVEM_PROXY_ATIVO && window.location.protocol === 'https:') {{
                 const urlResolvida = MAPA_FALLBACK_HTTPS_NUVEM[c.url] || c.url;
                 if (
                     urlResolvida.startsWith('http://') ||
