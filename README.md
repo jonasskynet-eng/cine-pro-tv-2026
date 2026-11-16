@@ -13,7 +13,7 @@
 ## 📌 Visão Geral do Projeto
 
 Este repositório reúne o ecossistema completo desenvolvido por **Jonas**, integrando:
-1. **Central de TV Digital Pro 2026 (CinePro TV — v3.0 Híbrida):** Plataforma web autônoma e acelerada para streaming de TV aberta, filmes, séries, desenhos e rádios ao vivo (**783 canais estruturados e auditados**: 698 BR, 62 PT, 9 LATAM e 14 Globais + **20 Rádios Brasileiras Ao Vivo**), funcionando tanto no servidor local (`localhost:8080`) quanto 24h na nuvem ([fancy-hummingbird-5b24db.netlify.app](https://fancy-hummingbird-5b24db.netlify.app)).
+1. **Central de TV Digital Pro 2026 (CinePro TV — v3.0 Híbrida):** Plataforma web autônoma e acelerada para streaming de TV aberta, filmes, séries, desenhos e rádios ao vivo (**783 canais estruturados e auditados**: 698 BR, 62 PT, 9 LATAM e 14 Globais + **20 Rádios Brasileiras Ao Vivo**), funcionando tanto no servidor local (`localhost:8080`) quanto 24h na nuvem ([cineprotvv6-0628b4.netlify.app](https://cineprotvv6-0628b4.netlify.app)).
 2. **Núcleo de Estudos de Engenharia, TI & Logística (UNINTER):** Materiais completos de revisão, plataformas interativas de audiobooks, pré-cálculo e gestão da cadeia de suprimentos.
 
 ---
