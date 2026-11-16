@@ -2857,7 +2857,7 @@
             /^(192\.168\.|10\.|172\.(1[6-9]|2[0-9]|3[01])\.)/.test(window.location.hostname) ||
             window.location.protocol === 'file:';
 
-        const DEFAULT_CLOUDFLARE_PROXY_URL = '';
+        const DEFAULT_CLOUDFLARE_PROXY_URL = 'https://cinepro-tv-proxy.jonasskynet.workers.dev';
         let LOCAL_PROXY_ATIVO = false;
         let NUVEM_PROXY_ATIVO = false;
         let NUVEM_PROXY_ENDPOINT = '/.netlify/functions/proxy?url=';
@@ -3010,9 +3010,9 @@
             }
             video.onerror = null;
 
-            // Roteamento híbrido inteligente: Local (proxy Python 8080) vs Nuvem (Netlify Proxy / HTTPS direto)
+            // Roteamento híbrido inteligente: Local (proxy Python 8080) vs Nuvem (Cloudflare Ponte / HTTPS direto)
             let urlBase = c.url;
-            if (!EH_AMBIENTE_LOCAL && !LOCAL_PROXY_ATIVO && !NUVEM_PROXY_ATIVO && MAPA_FALLBACK_HTTPS_NUVEM[c.url]) {
+            if (!EH_AMBIENTE_LOCAL && !LOCAL_PROXY_ATIVO && MAPA_FALLBACK_HTTPS_NUVEM[c.url]) {
                 urlBase = MAPA_FALLBACK_HTTPS_NUVEM[c.url];
             }
 
@@ -3468,8 +3468,14 @@
 
         function ehCanalDisponivelAgora(c) {
             if (!c) return false;
-            if (!EH_AMBIENTE_LOCAL && !LOCAL_PROXY_ATIVO && !NUVEM_PROXY_ATIVO && window.location.protocol === 'https:') {
+            if (!EH_AMBIENTE_LOCAL && !LOCAL_PROXY_ATIVO && window.location.protocol === 'https:') {
                 const urlResolvida = MAPA_FALLBACK_HTTPS_NUVEM[c.url] || c.url;
+                if (NUVEM_PROXY_ATIVO) {
+                    if (NUVEM_PROXY_ENDPOINT.includes('workers.dev') && /^https?:\/\/\d+\.\d+\.\d+\.\d+/i.test(urlResolvida)) {
+                        return false;
+                    }
+                    return true;
+                }
                 if (
                     urlResolvida.startsWith('http://') ||
                     urlResolvida.includes('jmp2.uk') ||
