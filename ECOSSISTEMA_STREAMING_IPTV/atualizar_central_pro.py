@@ -1084,9 +1084,34 @@ canais_novos_verificados = [
     {"nome": "SOU TV Brasil HD", "url": "https://video10.logicahost.com.br/soutv/soutv/playlist.m3u8", "logo": "https://i.ibb.co/8cKmCNm/ezgif-com-gif-maker.png", "categoria": "📺 TV Aberta Brasil", "pais": "🇧🇷 Brasil", "regiao": "São Paulo"},
     {"nome": "Petlovers TV Brasil", "url": "https://video04.logicahost.com.br/petloverstv/petloverstv/playlist.m3u8", "logo": "", "categoria": "🎭 Entretenimento & Reality", "pais": "🇧🇷 Brasil", "regiao": "Nacional / Pets"},
     {"nome": "TV UFOP 1080p", "url": "https://app.tvufop.com.br/hls/tvufop.m3u8", "logo": "https://raw.githubusercontent.com/daniloroxette/tvufop/refs/heads/main/images/tvufop_logo.png", "categoria": "📺 TV Aberta Brasil", "pais": "🇧🇷 Brasil", "regiao": "Minas Gerais"},
-    {"nome": "TV Brasil Oeste HD", "url": "https://5ad482a77183d.streamlock.net/operacaotbomt.com/operacaotbomt.com/playlist.m3u8", "logo": "https://i.imgur.com/noqGfuy.png", "categoria": "📺 TV Aberta Brasil", "pais": "🇧🇷 Brasil", "regiao": "Mato Grosso"},
     {"nome": "Catve2 HD", "url": "https://5b33b873179a2.streamlock.net:1443/catve2/catve2/playlist.m3u8", "logo": "", "categoria": "📺 TV Aberta Brasil", "pais": "🇧🇷 Brasil", "regiao": "Paraná / Cascavel"},
-    {"nome": "TV Fronteira Paulista", "url": "https://tvfronteira.brasilstream.com.br/hls/tvfronteira/index.m3u8", "logo": "https://i.imgur.com/NtcoW6G.png", "categoria": "📺 TV Aberta Brasil", "pais": "🇧🇷 Brasil", "regiao": "Interior SP"}
+    {"nome": "TV Fronteira Paulista", "url": "https://tvfronteira.brasilstream.com.br/hls/tvfronteira/index.m3u8", "logo": "https://i.imgur.com/NtcoW6G.png", "categoria": "📺 TV Aberta Brasil", "pais": "🇧🇷 Brasil", "regiao": "Interior SP"},
+    # 25 Canais Brasileiros Extras (Religiosos, Regionais e Musicais)
+    {"nome": "TV Canção Nova Oficial HD", "url": "https://5c65286fc6ace.streamlock.net/cancaonova/CancaoNova.stream/playlist.m3u8", "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/brazil/cancao-nova-tv-br.png", "categoria": "⛪ Religiosos", "pais": "🇧🇷 Brasil", "regiao": "São Paulo / Nacional"},
+    {"nome": "Despertar TV HD", "url": "https://br.conectmy.com.br/DespertarTV/index.m3u8", "logo": "", "categoria": "⛪ Religiosos", "pais": "🇧🇷 Brasil", "regiao": "Nacional"},
+    {"nome": "TV Padre Cícero HD", "url": "https://video01.logicahost.com.br/tvpadrecicero/tvpadrecicero/playlist.m3u8", "logo": "", "categoria": "⛪ Religiosos", "pais": "🇧🇷 Brasil", "regiao": "Ceará / Juazeiro do Norte"},
+    {"nome": "TV Maná Brasil HD", "url": "https://w1.manasat.com/tvmana-brasil/smil:tvmana-brasil.smil/playlist.m3u8", "logo": "", "categoria": "⛪ Religiosos", "pais": "🇧🇷 Brasil", "regiao": "Nacional"},
+    {"nome": "Kuriakos TV HD", "url": "https://w1.manasat.com/ktv/smil:ktv.smil/playlist.m3u8", "logo": "", "categoria": "⛪ Religiosos", "pais": "🇧🇷 Brasil", "regiao": "Lusófono / Cristão"},
+    {"nome": "TV Vianney HD", "url": "https://58c8a6b3c74e2.streamlock.net:1936/paroquiavianney/smil:paroquiavianney.smil/playlist.m3u8", "logo": "", "categoria": "⛪ Religiosos", "pais": "🇧🇷 Brasil", "regiao": "São Paulo"},
+    {"nome": "Araruna TV HD", "url": "https://video05.logicahost.com.br/ararunatv/ararunatv/playlist.m3u8", "logo": "", "categoria": "📺 TV Aberta Brasil", "pais": "🇧🇷 Brasil", "regiao": "Paraíba"},
+    {"nome": "Rede SPTV Brasil", "url": "https://video01.logicahost.com.br/websptv/websptv/playlist.m3u8", "logo": "", "categoria": "📺 TV Aberta Brasil", "pais": "🇧🇷 Brasil", "regiao": "São Paulo"},
+    {"nome": "SIC TV Rondônia HD", "url": "https://parecisfmlive.brasilstream.com.br/hls/parecisfmlive/index.m3u8", "logo": "", "categoria": "📺 TV Aberta Brasil", "pais": "🇧🇷 Brasil", "regiao": "Rondônia"},
+    {"nome": "TV Aliança Catarinense HD", "url": "https://video01.logicahost.com.br/tvalianca/tvalianca/playlist.m3u8", "logo": "", "categoria": "📺 TV Aberta Brasil", "pais": "🇧🇷 Brasil", "regiao": "Santa Catarina"},
+    {"nome": "TV Aldeia Acre HD", "url": "https://stmv1.samcast.com.br/giovane7843/giovane7843/playlist.m3u8", "logo": "", "categoria": "📺 TV Aberta Brasil", "pais": "🇧🇷 Brasil", "regiao": "Acre"},
+    {"nome": "TV Alternativa Brasil", "url": "https://stmv5.samcast.com.br/wagner7919/wagner7919/playlist.m3u8", "logo": "", "categoria": "📺 TV Aberta Brasil", "pais": "🇧🇷 Brasil", "regiao": "Nacional"},
+    {"nome": "TV Petrópolis HD", "url": "https://video02.logicahost.com.br/tvpetropolis/tvpetropolis/playlist.m3u8", "logo": "", "categoria": "📺 TV Aberta Brasil", "pais": "🇧🇷 Brasil", "regiao": "Rio de Janeiro"},
+    {"nome": "TV Curuçá Brasil", "url": "https://stmv1.srvif.com/tvcurucasp/tvcurucasp/playlist.m3u8", "logo": "", "categoria": "📺 TV Aberta Brasil", "pais": "🇧🇷 Brasil", "regiao": "Pará / SP"},
+    {"nome": "TV+Pet Brasil", "url": "https://stmv5.samcast.com.br/tvmaispet6354/tvmaispet6354/playlist.m3u8", "logo": "", "categoria": "🎭 Entretenimento & Reality", "pais": "🇧🇷 Brasil", "regiao": "Nacional / Pets"},
+    {"nome": "Unisul TV Santa Catarina", "url": "https://sitetv.brasilstream.com.br/hls/sitetv/index.m3u8?token=", "logo": "", "categoria": "📺 TV Aberta Brasil", "pais": "🇧🇷 Brasil", "regiao": "Santa Catarina"},
+    {"nome": "TV Difusão HD", "url": "https://tvdsoultv.acessaradios.com.br/tvdsoultv/tvdsoultv.stream/playlist.m3u8", "logo": "", "categoria": "📺 TV Aberta Brasil", "pais": "🇧🇷 Brasil", "regiao": "Nacional"},
+    {"nome": "TVitapé HD", "url": "https://stream01.msolutionbrasil.com.br/hls/tvitape/live.m3u8", "logo": "", "categoria": "📺 TV Aberta Brasil", "pais": "🇧🇷 Brasil", "regiao": "Itapeva / SP"},
+    {"nome": "TVLatinaSat Brasil HD", "url": "https://www.latinasat.com.br/hls/live/stream/index.m3u8", "logo": "", "categoria": "📺 TV Aberta Brasil", "pais": "🇧🇷 Brasil", "regiao": "Nacional"},
+    {"nome": "TV Mais Maricá 1080p", "url": "https://5cf4a2c2512a2.streamlock.net/tvmaismarica/tvmaismarica/playlist.m3u8", "logo": "", "categoria": "📺 TV Aberta Brasil", "pais": "🇧🇷 Brasil", "regiao": "Rio de Janeiro / Maricá"},
+    {"nome": "TV Sim São Mateus HD", "url": "https://5cf4a2c2512a2.streamlock.net/8236/8236/playlist.m3u8", "logo": "", "categoria": "📰 Notícias", "pais": "🇧🇷 Brasil", "regiao": "Espírito Santo"},
+    {"nome": "TV Show Fortaleza HD", "url": "https://stmv8.samcast.com.br/raimundoanselmolimamororo1908/raimundoanselmolimamororo1908/playlist.m3u8", "logo": "", "categoria": "📺 TV Aberta Brasil", "pais": "🇧🇷 Brasil", "regiao": "Ceará / Fortaleza"},
+    {"nome": "TV Cidade Música Brasil", "url": "https://stmv1.srvif.com/tvcidade/tvcidade/playlist.m3u8", "logo": "", "categoria": "🎸 Shows & Música", "pais": "🇧🇷 Brasil", "regiao": "Nacional"},
+    {"nome": "TVCOM Maceió Alagoas", "url": "https://srv5.zcast.com.br/tvcommaceio/tvcommaceio/playlist.m3u8", "logo": "", "categoria": "📺 TV Aberta Brasil", "pais": "🇧🇷 Brasil", "regiao": "Alagoas / Maceió"},
+    {"nome": "Demais TV Brasil", "url": "https://stmv1.samcast.com.br/demaistv6503/demaistv6503/playlist.m3u8", "logo": "", "categoria": "📺 TV Aberta Brasil", "pais": "🇧🇷 Brasil", "regiao": "Nacional"}
 ]
 
 nomes_prioridade_https = [ch["nome"] for ch in canais_novos_verificados[:25]]
@@ -1194,11 +1219,13 @@ c.execute(f"""
 rows = c.fetchall()
 conn.close()
 
-# Normalizar dados e aplicar o sistema de Tags Ricas (História, Combate, Comédia, Shows)
+# Normalizar dados e aplicar o sistema de Tags Ricas + Whitelist Rigorosa Brasil + Subdivisões Claras
 canais_estruturados = []
 contagem_paises = {"BR": 0, "PT": 0, "LATAM": 0, "GLOBAL": 0}
 contagem_tags = {
     "aberta": 0,
+    "discovery": 0,
+    "religiosos": 0,
     "series": 0,
     "comedia": 0,
     "shows": 0,
@@ -1213,20 +1240,81 @@ contagem_tags = {
     "musica": 0
 }
 
-numero_global = 1
+hosts_br_whitelist = (
+    ".com.br", ".gov.br", ".org.br", ".net.br", ".srv.br", ".tv.br", ".emp.br", ".leg.br", ".jus.br", ".edu.br",
+    "brasilstream", "brstream", "170.83.16.50", "170.83.49.66", "186.219.52.187",
+    "jmvstream.com", "logicahost", "samcast", "voxtvhd", "srvif.com", "srvstm.com", "srvsite.com",
+    "nuvemplay.live", "ciclano.io", "zoeweb.tv", "brascast.com", "msolutionbrasil", "transmissaodigital.com",
+    "painelvox.top", "acessaradios.com", "streamingdevideo", "redesuatv", "liveplushd", "vagalume.fm",
+    "streamtheworld.com", "fabricahost", "crossradio.com.br", "zcast.com.br", "zas.media", "cloudecast.com",
+    "wisestream.io", "appflux.com.br", "conectmy.com.br", "x1co.com.br", "tcm10.com.br", "tvufop.com.br",
+    "procergs.com.br", "azioncdn.net", "samsungbr", "samsungbrazil", "-lg-br-", "-tcl-br-", "samsung-br_",
+    "otteravision.com/rnw", "otteravision.com/gpa/vja", "jmp2.uk", "ichibantv.com", "ichibansys.com",
+    "manasat.com/kcine", "manasat.com/tvmana-brasil", "manasat.com/ktv", "akamaized.net/scheduler/schedulemaster/352",
+    "amg00740-sofa-amg00740c8", "klicgo.net/esportsmax", "extremakids", "tvcnbamerican", "streampool.net",
+    "network_id=6178", "network_id=6128", "network_id=292", "network_id=294", "45.185.15.154",
+    "dfr80qz435crc.cloudfront.net/efgh/amagi/globo", "ondaradioweb", "rodrigo2364",
+    "d1si3n1st4nkgb.cloudfront.net/10502/88886011", "streaming.onnethn.com/cinemax", "paroquiavianney", "cancaonova"
+)
+nomes_br_whitelist = (
+    "brasil", "brazil", "pt-br", "portuguese", "português", "portugues", "dublado", "sbt", "globo", "record",
+    "band", "redetv", "cultura", "gazeta", "aparecida", "canção nova", "cancao nova", "futura", "câmara",
+    "camara", "senado", "justiça", "justica", "rede minas", "meio norte", "tve ", "jovem pan", "agro",
+    "canal rural", "terra viva", "canal do boi", "rede vida", "novo tempo", "rit ", "evangelizar",
+    "pai eterno", "século 21", "seculo 21", "boas novas", "tv universal", "padre cicero", "padre cícero",
+    "terceiro anjo", "escrava_isaura", "escrava isaura", "turma da monica", "chaves", "chapolin",
+    "porta dos fundos", "são paulo", "sao paulo", "rio de janeiro", "belo horizonte", "fortaleza", "maceio",
+    "maceió", "marica", "maricá", "petropolis", "petrópolis", "passo fundo", "nova mutum", "mossoro",
+    "cascavel", "catarinense", "paulista", "parana", "paraná", "ceará", "ceara", "piauí", "piaui",
+    "marajoara", "pantanal", "litoral", "amazon sat", "amazonsat", "caze", "ge fast", "ge tv", "veja+",
+    "tcm 10", "cindie", "filmelier", "mytime movie network brasil", "canal de filme para crianças", "cinepix",
+    "despertar tv", "tv maná", "kuriakos", "araruna", "sptv", "sic tv", "tv aliança", "tv aldeia",
+    "tv alternativa", "tv curuçá", "tv+pet", "unisul", "tv difusão", "tvitapé", "latinasat", "sim são mateus",
+    "tv cidade", "demais tv", "telecine", "cine romântico", "cinemax", "comedy central brasil", "loading tv",
+    "tv séries", "geekdot", "retrô cartoon", "nickonline", "o dia tv", "conecta mais"
+)
+proibidos_br_re = re.compile(
+    r"([\u0400-\u04FF\u0600-\u06FF]|🇧🇪|🇮🇶|🇲🇦|🇻🇪|🇨🇱|🇦🇷|🇲🇽|🇪🇸|🇩🇪|🇮🇹|🇫🇷|🇷🇺|🇺🇦|🇮🇳|🇹🇷|🇬🇧|🇺🇸|"
+    r"\b(hava[ií]|al alam|al wousta|alcarria|altyn asyr|malaga|m[aá]laga|mancha|parlamento|san roque|"
+    r"canal sur|azteca|morelia|canarias|corrientes|iguaz[uú]|yguaz[uú]|latam\b|latin america|espa[nñ]ol|"
+    r"castela[nñ]o|mexico|argentina|colombia|chile|peru|dominicana|italia|germany|deutsch|france|russian|"
+    r"ukraine|iraque|marrocos|belgica|b[eé]lgica|worcester|white plains|weathernation|usa today|courttv usa)\b)",
+    re.I
+)
+latam_re = re.compile(
+    r"(\b(es|mx|ar|cl|co|pe|ve|uy|py|ec|bo|espa[nñ]ol|latam|latin america|pel[ií]culas|azteca|telecinco|"
+    r"rtve|tve|canarias|malaga|m[aá]laga|mancha|alcarria|parlamento|san roque|canal sur|morelia|once|"
+    r"corrientes|justicia tv|iguaz[uú]|yguaz[uú]|todo cine|cine estrella|rumba tv|rep\. dominicana)\b|"
+    r"\.(es|mx|ar|cl|co|pe)(/|:|$))",
+    re.I
+)
 
 for r in rows:
     c_id, nome, url, logo, cat_db, qual, lat, pais_db, reg, cors_star = r
-    
-    # 1. Normalizar País
-    p_str = pais_db or "🇧🇷 Brasil"
-    if "Brasil" in p_str:
-        p_cod = "BR"
-        p_label = "🇧🇷 Brasil"
-    elif "Portugal" in p_str or "Lusófono" in p_str:
+    nome_lower = nome.lower()
+    url_lower = (url or "").lower()
+    cat_lower = (cat_db or "").lower()
+
+    # 1. Normalização Estrita de País (Whitelist BR + Reclassificação PT / LATAM / GLOBAL)
+    p_str = pais_db or ""
+    eh_pt_explicito = "Portugal" in p_str or "Lusófono" in p_str or any(
+        k in nome_lower or k in url_lower for k in ("portugal", "rtp", "sic alta", "sic replay", "tvi", "cmtv", "porto canal", ".pt/", "canaistvpt")
+    )
+    eh_latam_explicito = "América Latina" in p_str or bool(latam_re.search(nome) or latam_re.search(url_lower))
+    eh_br_whitelist = (
+        (any(h in url_lower for h in hosts_br_whitelist) or any(nb in nome_lower for nb in nomes_br_whitelist))
+        and not proibidos_br_re.search(nome)
+        and not proibidos_br_re.search(url_lower)
+        and not eh_pt_explicito
+    )
+
+    if eh_pt_explicito:
         p_cod = "PT"
         p_label = "🇵🇹 Portugal"
-    elif "América Latina" in p_str:
+    elif eh_br_whitelist:
+        p_cod = "BR"
+        p_label = "🇧🇷 Brasil"
+    elif eh_latam_explicito:
         p_cod = "LATAM"
         p_label = "🌎 América Latina"
     else:
@@ -1235,18 +1323,41 @@ for r in rows:
 
     contagem_paises[p_cod] = contagem_paises.get(p_cod, 0) + 1
 
-    # 2. Sistema de Tags Multigênero (Permite que um canal apareça em História, Combate, Comédia ou Shows)
-    nome_lower = nome.lower()
-    cat_lower = (cat_db or "").lower()
+    # 2. Sistema de Tags Multigênero e Subdivisões Claras
     tags = []
 
-    # Tag ABERTA (TV Aberta Brasil Nacional e Regional: SBT, Globo, Cultura, Record, Band, RedeTV!, TV Brasil, Gazeta, etc.)
-    if any(k in nome_lower for k in [
-        "sbt", "cultura", "futura", "globo", "record", "band ", "bandeirantes", 
-        "redetv", "gazeta", "tv brasil", "ebc", "aparecida", "cancao nova", "canção nova", "senado", "justica", "justiça", 
-        "camara", "câmara", "terra viva", "canal do boi", "rede brasil", "cnt", "tv escola", "ideal tv", "tv a crítica", "tv a critica", "sesc tv", "canal rural",
-        "amazon sat", "boas novas", "canal fdr", "rede minas", "rede meio norte", "rede ngt", "tve rs", "tcm 10", "o dia tv", "conectv", "sou tv", "tv ufop", "tv brasil oeste", "catve", "tv fronteira"
-    ]) or cat_db == "📺 TV Aberta Brasil":
+    # Tag RELIGIOSOS (Separada em subdivisão própria ⛪ Religiosos)
+    eh_religioso = any(k in nome_lower for k in [
+        "aparecida", "cancao nova", "canção nova", "boas novas", "despertar", "padre cicero", "padre cícero",
+        "mana ", "maná ", "tv mana", "kuriakos", "gospel", "vianney", "universal", "novo tempo", "evangelizar",
+        "pai eterno", "seculo 21", "século 21", "rit ", "terceiro anjo", "plenitude", "fonte tv", "rede gospel",
+        "crista", "cristã", "bible", "3abn", "cinedios", "cine dios", "ewtn"
+    ]) or "religioso" in cat_lower
+    if eh_religioso:
+        tags.append("religiosos")
+        contagem_tags["religiosos"] += 1
+
+    # Tag DISCOVERY (Agrupando canais Discovery, Natureza, Ciência e Investigação)
+    eh_discovery = any(k in nome_lower for k in [
+        "discovery", "animal planet", "investigation discovery", "history", "national geographic",
+        "nat geo", "tlc", "hgtv"
+    ])
+    if eh_discovery:
+        tags.append("discovery")
+        contagem_tags["discovery"] += 1
+
+    # Tag ABERTA (TV Aberta Brasil Nacional e Regional)
+    if (any(k in nome_lower for k in [
+        "sbt", "cultura", "futura", "globo", "record", "band ", "bandeirantes",
+        "redetv", "gazeta", "tv brasil", "ebc", "senado", "justica", "justiça",
+        "camara", "câmara", "terra viva", "canal do boi", "rede brasil", "cnt", "tv escola", "ideal tv",
+        "tv a crítica", "tv a critica", "sesc tv", "canal rural",
+        "amazon sat", "canal fdr", "rede minas", "rede meio norte", "rede ngt", "tve rs", "tcm 10",
+        "o dia tv", "conectv", "sou tv", "tv ufop", "catve", "tv fronteira", "araruna", "sptv",
+        "sic tv", "tv aliança", "tv alianca", "tv aldeia", "tv alternativa", "tv petrópolis", "tv petropolis",
+        "tv curuçá", "tv curuca", "unisul", "tv difusão", "tv difusao", "tvitapé", "tvitape",
+        "latinasat", "mais maricá", "mais marica", "show fortaleza", "tvcom macei", "demais tv"
+    ]) or cat_db == "📺 TV Aberta Brasil") and not eh_religioso:
         tags.append("aberta")
         contagem_tags["aberta"] += 1
 
@@ -1377,8 +1488,12 @@ for r in rows:
         tags.append("noticias")
         contagem_tags["noticias"] += 1
 
-    # Categoria primária visual rigorosamente separada
-    if cat_db == "📺 TV Aberta Brasil" and not any(k in nome_lower for k in ["news", "bandnews", "record news", "jovem pan news"]):
+    # Categoria primária visual rigorosamente separada em subdivisões claras
+    if eh_religioso or "religiosos" in tags:
+        cat_final = "⛪ Religiosos"
+    elif eh_discovery or "discovery" in tags:
+        cat_final = "🔬 Discovery & Ciência"
+    elif cat_db == "📺 TV Aberta Brasil" and not any(k in nome_lower for k in ["news", "bandnews", "record news", "jovem pan news"]):
         cat_final = "📺 TV Aberta"
     elif "infantil" in tags:
         cat_final = "🧸 Infantil & Desenhos"
@@ -1409,10 +1524,23 @@ for r in rows:
     else:
         cat_final = "📺 TV Aberta"
 
+    # Etiqueta / Legenda Visual de Idioma no Card
+    if p_cod == "BR":
+        if "dublado" in nome_lower or "170.83.16.50" in url_lower or any(k in nome_lower for k in ("cindie", "filmelier", "mytime", "comedy central", "discovery", "animal planet", "tnt", "space", "axn", "sony", "cartoon", "history")):
+            idioma_badge = "🇧🇷 PT-BR • Dublado"
+        else:
+            idioma_badge = "🇧🇷 PT-BR"
+    elif p_cod == "PT":
+        idioma_badge = "🇵🇹 PT-EU"
+    elif p_cod == "LATAM":
+        idioma_badge = "🇪🇸 ESP"
+    else:
+        idioma_badge = "🌐 ING / INT"
+
     canais_estruturados.append({
         "id": c_id,
-        "numero": numero_global,
-        "numero_str": f"{numero_global:03d}",
+        "numero": 0,
+        "numero_str": "000",
         "nome": nome,
         "url": url,
         "logo": logo or "",
@@ -1423,9 +1551,50 @@ for r in rows:
         "pais": p_label,
         "pais_codigo": p_cod,
         "regiao": reg or "Nacional",
+        "idioma_badge": idioma_badge,
         "cors": bool(cors_star) or ("170.83.16.50" in url)
     })
-    numero_global += 1
+
+# Ordenação organizada em subdivisões claras (TV Aberta -> Discovery -> Filmes -> Esportes -> Notícias -> Séries -> Desenhos -> Rádios -> Religiosos)
+ordem_pais = {"BR": 1, "PT": 2, "LATAM": 3, "GLOBAL": 4}
+ordem_bloco = {
+    "📺 TV Aberta": 1,
+    "🔬 Discovery & Ciência": 2,
+    "🎬 Filmes & Cinema": 3,
+    "⚽ Esportes & Ação": 4,
+    "📰 Notícias": 5,
+    "🍿 Séries & Maratona": 6,
+    "🧸 Infantil & Desenhos": 7,
+    "📻 Rádios & Música": 8,
+    "🎸 Shows & Música": 8,
+    "😂 Comédia & Humor": 9,
+    "🥊 Combate & Lutas": 10,
+    "📜 História & Documentários": 11,
+    "🎭 Entretenimento & Reality": 12,
+    "⭐ VIP Fibra": 13,
+    "⛪ Religiosos": 14,
+}
+topo_tv_aberta = [
+    "SBT Nacional HD", "TV Cultura SP (Fibra Leve)", "Canal Futura (Grupo Globo Fibra)",
+    "RecordTV Juara HD", "Band TV HD (Ao Vivo)", "BandNews TV (Fibra Leve)",
+    "RedeTV! (Fibra Leve)", "TV Brasil (EBC Oficial HD)", "TV Gazeta SP (NuvemPlay)",
+    "Record News (Fibra Leve)", "TV Cultura SP Oficial (UOL)", "TV Câmara Brasil Oficial 1080p",
+    "Amazon Sat HD Oficial", "Boas Novas 1080p", "TVE RS 1080p", "Rede Minas HD", "Rede Meio Norte HD"
+]
+
+def chave_ordenacao(ch):
+    p_rank = ordem_pais.get(ch["pais_codigo"], 9)
+    b_rank = ordem_bloco.get(ch["categoria"], 99)
+    try:
+        top_rank = topo_tv_aberta.index(ch["nome"])
+    except ValueError:
+        top_rank = 100 if ch["nome"] in nomes_prioridade_https else (200 if "170.83.16.50" in ch["url"] else 500)
+    return (p_rank, b_rank, top_rank, ch["nome"].lower())
+
+canais_estruturados.sort(key=chave_ordenacao)
+for i, ch in enumerate(canais_estruturados, start=1):
+    ch["numero"] = i
+    ch["numero_str"] = f"{i:03d}"
 
 total_canais = len(canais_estruturados)
 print(f"Total de canais estruturados: {total_canais}")
@@ -2423,6 +2592,54 @@ html_code = f"""<!DOCTYPE html>
             color: #93c5fd;
             box-shadow: 0 0 12px rgba(59, 130, 246, 0.35);
         }}
+        .cat-pill.pill-discovery.active {{
+            background: rgba(6, 182, 212, 0.25);
+            border-color: #06b6d4;
+            color: #67e8f9;
+            box-shadow: 0 0 12px rgba(6, 182, 212, 0.35);
+        }}
+        .cat-pill.pill-religiosos.active {{
+            background: rgba(245, 158, 11, 0.25);
+            border-color: #f59e0b;
+            color: #fde68a;
+            box-shadow: 0 0 12px rgba(245, 158, 11, 0.35);
+        }}
+        .lang-badge {{
+            display: inline-flex;
+            align-items: center;
+            font-size: 9.5px;
+            font-weight: 800;
+            padding: 1px 6px;
+            border-radius: 5px;
+            white-space: nowrap;
+            flex-shrink: 0;
+            letter-spacing: 0.2px;
+        }}
+        .lang-ptbr {{
+            background: rgba(16, 185, 129, 0.16);
+            border: 1px solid rgba(16, 185, 129, 0.4);
+            color: #6ee7b7;
+        }}
+        .lang-pt {{
+            background: rgba(59, 130, 246, 0.16);
+            border: 1px solid rgba(59, 130, 246, 0.4);
+            color: #93c5fd;
+        }}
+        .lang-esp {{
+            background: rgba(245, 158, 11, 0.16);
+            border: 1px solid rgba(245, 158, 11, 0.4);
+            color: #fcd34d;
+        }}
+        .lang-int {{
+            background: rgba(168, 85, 247, 0.16);
+            border: 1px solid rgba(168, 85, 247, 0.4);
+            color: #d8b4fe;
+        }}
+        .icon-btn-text.sub-on {{
+            background: rgba(16, 185, 129, 0.22);
+            border-color: var(--emerald);
+            color: #6ee7b7;
+        }}
 
         /* LISTA ULTRA-LEVE DE CANAIS */
         .channel-list {{
@@ -3085,14 +3302,14 @@ html_code = f"""<!DOCTYPE html>
             .player-actions {{
                 width: 100%;
                 display: grid;
-                grid-template-columns: auto 1fr auto;
-                gap: 6px;
+                grid-template-columns: auto auto 1fr auto;
+                gap: 5px;
             }}
             .icon-btn-text {{
                 justify-content: center;
                 height: 34px;
-                padding: 0 10px;
-                font-size: 11px;
+                padding: 0 7px;
+                font-size: 10.5px;
                 white-space: nowrap;
             }}
             .cur-ch-num {{
@@ -3402,6 +3619,7 @@ html_code = f"""<!DOCTYPE html>
                         <div class="cur-ch-meta">
                             <h2>
                                 <span id="dockName">SBT Nacional HD</span>
+                                <span id="dockLangBadge" class="lang-badge lang-ptbr">🇧🇷 PT-BR</span>
                             </h2>
                         </div>
                     </div>
@@ -3411,6 +3629,9 @@ html_code = f"""<!DOCTYPE html>
                 <div class="player-actions">
                     <button type="button" class="icon-btn-text" id="epgDockCard" onclick="abrirModalEpg(event)" title="Ver guia de programação do canal">
                         <span>📅</span> <span>Guia</span>
+                    </button>
+                    <button type="button" class="icon-btn-text" id="btnSubtitles" onclick="alternarLegenda(event)" title="Ativar/Desativar Legendas (CC) ou ver idioma">
+                        <span>💬</span> <span id="subtitlesLabel">Legenda</span>
                     </button>
                     <button type="button" class="icon-btn-text btn-drawer-toggle" id="btnToggleChannelsDrawer" onclick="alternarGavetaCanais(event)" title="Mostrar ou minimizar todos os canais">
                         <span>📋</span> <span id="drawerToggleText">Todos os Canais</span> <span id="drawerToggleArrow">▼</span>
@@ -3423,7 +3644,7 @@ html_code = f"""<!DOCTYPE html>
 
             <!-- BARRA COMPACTA QUANDO OS CANAIS ESTÃO MINIMIZADOS -->
             <div id="collapsedChannelsBar" class="collapsed-channels-bar" onclick="alternarGavetaCanais(event)" title="Clique para abrir a lista completa de canais">
-                <span>📋 <strong>Ver Todos os Canais</strong> (<span id="collapsedTotalCount">{total_canais}</span> disponíveis)</span>
+                <span>📋 <strong>Ver Todos os Canais</strong> (<span id="collapsedTotalCount">{contagem_paises['BR']}</span> disponíveis)</span>
                 <span class="collapsed-bar-arrow">Abrir Lista ▼</span>
             </div>
         </div>
@@ -3433,24 +3654,21 @@ html_code = f"""<!DOCTYPE html>
             <div class="sidebar-top-actions">
                 <button type="button" id="btnMinimizeSidebar" class="btn-minimize-sidebar" onclick="alternarGavetaCanais(event)">
                     <span>▲ Minimizar</span>
-                    <span class="sidebar-total-pill" id="sidebarTotalPill">{total_canais}</span>
+                    <span class="sidebar-total-pill" id="sidebarTotalPill">{contagem_paises['BR']}</span>
                 </button>
                 <button type="button" id="btnToggleFilters" class="btn-toggle-filters" onclick="alternarPainelFiltros(event)">
                     <span>🎛️ Categorias</span>
-                    <span id="filtersToggleArrow">▼</span>
+                    <span id="filtersToggleArrow">▲</span>
                 </button>
             </div>
 
-            <div id="sidebarFiltersBox" class="sidebar-filters-box">
+            <div id="sidebarFiltersBox" class="sidebar-filters-box open">
                 <div class="mobile-search-box">
                     <input type="text" id="mobileSearchInput" class="mobile-search-input" placeholder="🔍 Buscar canal por nome ou número (#001)...">
                 </div>
-                <!-- ABAS DE PAÍSES COM CONTAGEM -->
+                <!-- ABAS DE PAÍSES COM CONTAGEM RIGOROSA -->
                 <div class="country-tabs">
-                    <button class="country-tab-btn active" data-country="ALL">
-                        ⚡ Todos <span class="tab-count">{total_canais}</span>
-                    </button>
-                    <button class="country-tab-btn" data-country="BR">
+                    <button class="country-tab-btn active" data-country="BR">
                         🇧🇷 Brasil <span class="tab-count">{contagem_paises['BR']}</span>
                     </button>
                     <button class="country-tab-btn" data-country="PT">
@@ -3462,24 +3680,29 @@ html_code = f"""<!DOCTYPE html>
                     <button class="country-tab-btn" data-country="GLOBAL">
                         🌐 Global <span class="tab-count">{contagem_paises['GLOBAL']}</span>
                     </button>
+                    <button class="country-tab-btn" data-country="ALL">
+                        ⚡ Todos <span class="tab-count">{total_canais}</span>
+                    </button>
                 </div>
 
-                <!-- FILTROS DE CATEGORIA COM OS 4 GÊNEROS FAVORITOS DO JONAS EM DESTAQUE -->
+                <!-- FILTROS DE SUBDIVISÃO ORGANIZADOS (DISCOVERY, FILMES, ESPORTES, NOTÍCIAS, RELIGIOSOS) -->
                 <div class="category-pills">
                     <button class="cat-pill active" data-cat="all">Todos</button>
                     <button class="cat-pill pill-aberta" data-cat="aberta">📺 TV Aberta ({contagem_tags['aberta']})</button>
+                    <button class="cat-pill pill-discovery" data-cat="discovery">🔬 Discovery ({contagem_tags['discovery']})</button>
                     <button class="cat-pill pill-filmes" data-cat="filmes">🎬 Filmes ({contagem_tags['filmes']})</button>
+                    <button class="cat-pill pill-esportes" data-cat="esportes">⚽ Esportes ({contagem_tags['esportes']})</button>
+                    <button class="cat-pill pill-noticias" data-cat="noticias">📰 Notícias ({contagem_tags['noticias']})</button>
                     <button class="cat-pill pill-series" data-cat="series">🍿 Séries ({contagem_tags['series']})</button>
                     <button class="cat-pill pill-infantil" data-cat="infantil">🧸 Desenhos & Kids ({contagem_tags['infantil']})</button>
                     <button class="cat-pill pill-musica" data-cat="musica">📻 Rádios & Música ({contagem_tags['musica']})</button>
+                    <button class="cat-pill pill-religiosos" data-cat="religiosos">⛪ Religiosos ({contagem_tags['religiosos']})</button>
                     <button class="cat-pill pill-vip" data-cat="vip">⭐ VIP Fibra ({contagem_tags['vip']})</button>
-                    <button class="cat-pill pill-esportes" data-cat="esportes">⚽ Esportes ({contagem_tags['esportes']})</button>
                     <button class="cat-pill pill-shows" data-cat="shows">🎸 Shows ({contagem_tags['shows']})</button>
                     <button class="cat-pill pill-historia" data-cat="historia">📜 Documentários ({contagem_tags['historia']})</button>
                     <button class="cat-pill pill-comedia" data-cat="comedia">😂 Comédia ({contagem_tags['comedia']})</button>
                     <button class="cat-pill pill-combate" data-cat="combate">🥊 Combate ({contagem_tags['combate']})</button>
                     <button class="cat-pill pill-entretenimento" data-cat="entretenimento">🎭 Reality ({contagem_tags['entretenimento']})</button>
-                    <button class="cat-pill pill-noticias" data-cat="noticias">📰 Notícias ({contagem_tags['noticias']})</button>
                 </div>
             </div>
 
@@ -3586,8 +3809,17 @@ html_code = f"""<!DOCTYPE html>
         let tentativasErro = 0;
         let favoritos = JSON.parse(localStorage.getItem('iptv_favoritos_pro') || '[]');
         let apenasFavoritos = false;
-        let paisFiltro = 'ALL';
+        let paisFiltro = 'BR';
         let catFiltro = 'all';
+        let legendaPreferida = true;
+
+        function obterClasseIdiomaBadge(badge) {{
+            const txt = String(badge || '').toUpperCase();
+            if (txt.includes('PT-BR')) return 'lang-ptbr';
+            if (txt.includes('PT-EU') || txt.includes('PT')) return 'lang-pt';
+            if (txt.includes('ESP')) return 'lang-esp';
+            return 'lang-int';
+        }}
 
         // Modos de Enquadramento da Tela (Padrão 16:9 sempre uniforme)
         const MODOS_ENQUADRAMENTO = [
@@ -3730,6 +3962,7 @@ html_code = f"""<!DOCTYPE html>
             'http://170.83.16.50/REDE_TV/index.m3u8': 'https://cdn.live.br1.jmvstream.com/webtv/AVJ-15235/playlist/playlist.m3u8',
             'http://170.83.16.50/RECORD_NEWS/index.m3u8': 'https://rnw-rn-samsungtvplus.otteravision.com/rnw/rn/rnw_rn.m3u8',
             'http://170.83.16.50/TV_APARECIDA/index.m3u8': 'https://cdn.jmvstream.com/w/LVW-9716/LVW9716_HbtQtezcaw/master.m3u8',
+            'http://170.83.16.50/CANCAO_NOVA/index.m3u8': 'https://5c65286fc6ace.streamlock.net/cancaonova/CancaoNova.stream/playlist.m3u8',
             'http://170.83.49.66:8083/TVCAMARAHD/index.m3u8': 'https://stream3.camara.gov.br/tv1/manifest.m3u8'
         }};
 
@@ -3744,6 +3977,14 @@ html_code = f"""<!DOCTYPE html>
             const c = TODOS_CANAIS[idx];
             document.getElementById('dockChNum').textContent = `#${{c.numero_str}}`;
             document.getElementById('dockName').textContent = c.nome;
+            const dockLangEl = document.getElementById('dockLangBadge');
+            if (dockLangEl) {{
+                const badgeTxt = c.idioma_badge || c.pais || '🇧🇷 PT-BR';
+                dockLangEl.textContent = badgeTxt;
+                dockLangEl.className = `lang-badge ${{obterClasseIdiomaBadge(badgeTxt)}}`;
+            }}
+            const btnSubEl = document.getElementById('btnSubtitles');
+            if (btnSubEl) btnSubEl.classList.remove('sub-on');
 
             const logoBox = document.getElementById('dockLogo');
             const safeName = c.nome.replace(/'/g, "\\'");
@@ -3840,6 +4081,10 @@ html_code = f"""<!DOCTYPE html>
                 hls = new Hls({{
                     enableWorker: true,
                     lowLatencyMode: true,
+                    enableWebVTT: true,
+                    enableIMSC1: true,
+                    enableCEA708Captions: true,
+                    subtitleDisplay: true,
                     backBufferLength: 30,
                     maxBufferLength: 30,
                     maxMaxBufferLength: 60,
@@ -3850,6 +4095,18 @@ html_code = f"""<!DOCTYPE html>
 
                 hls.loadSource(streamUrl);
                 hls.attachMedia(video);
+
+                hls.on(Hls.Events.SUBTITLE_TRACKS_UPDATED, function (ev, info) {{
+                    const tracks = (info && info.subtitleTracks) || hls.subtitleTracks || [];
+                    const btnSub = document.getElementById('btnSubtitles');
+                    if (tracks.length > 0 && legendaPreferida) {{
+                        const idxPt = tracks.findIndex(t => /pt|por/i.test((t.lang || '') + ' ' + (t.name || '')));
+                        const chosen = idxPt >= 0 ? idxPt : 0;
+                        hls.subtitleTrack = chosen;
+                        hls.subtitleDisplay = true;
+                        if (btnSub) btnSub.classList.add('sub-on');
+                    }}
+                }});
 
                 hls.on(Hls.Events.MANIFEST_PARSED, function () {{
                     playOverlay.classList.add('hidden');
@@ -3943,15 +4200,61 @@ html_code = f"""<!DOCTYPE html>
             aplicarFiltros(false);
         }}
 
+        function alternarLegenda(ev) {{
+            if (ev && ev.stopPropagation) ev.stopPropagation();
+            const c = TODOS_CANAIS[canalAtualIndex] || {{}};
+            const btnSub = document.getElementById('btnSubtitles');
+            if (hls && hls.subtitleTracks && hls.subtitleTracks.length > 0) {{
+                const estaAtiva = hls.subtitleTrack >= 0 && hls.subtitleDisplay;
+                if (estaAtiva) {{
+                    legendaPreferida = false;
+                    hls.subtitleDisplay = false;
+                    hls.subtitleTrack = -1;
+                    if (btnSub) btnSub.classList.remove('sub-on');
+                    mostrarHUD('💬 Legenda (CC) desativada');
+                }} else {{
+                    legendaPreferida = true;
+                    const idxPt = hls.subtitleTracks.findIndex(t => /pt|por/i.test((t.lang || '') + ' ' + (t.name || '')));
+                    hls.subtitleTrack = idxPt >= 0 ? idxPt : 0;
+                    hls.subtitleDisplay = true;
+                    if (btnSub) btnSub.classList.add('sub-on');
+                    const tr = hls.subtitleTracks[hls.subtitleTrack];
+                    mostrarHUD(`💬 Legenda ativada (${{tr && (tr.name || tr.lang) || 'CC'}})`);
+                }}
+                return;
+            }}
+            const textTracks = video && video.textTracks ? Array.from(video.textTracks) : [];
+            if (textTracks.length > 0) {{
+                const ativo = textTracks.some(t => t.mode === 'showing');
+                textTracks.forEach(t => {{ t.mode = ativo ? 'disabled' : 'showing'; }});
+                if (btnSub) btnSub.classList.toggle('sub-on', !ativo);
+                mostrarHUD(ativo ? '💬 Legenda desativada' : '💬 Legenda ativada');
+                return;
+            }}
+            const infoIdioma = c.idioma_badge || c.pais || '🇧🇷 PT-BR';
+            mostrarHUD(`🗣️ Idioma do canal: ${{infoIdioma}} • Transmissão sem legenda CC embutida`);
+        }}
+        window.alternarLegenda = alternarLegenda;
+
         function aplicarFiltros(resetScroll = true) {{
             const mobileSearchInput = document.getElementById('mobileSearchInput');
             const termoRaw = (searchInput && searchInput.value ? searchInput.value : (mobileSearchInput ? mobileSearchInput.value : ''));
             const termo = termoRaw.toLowerCase().trim();
 
-            canaisFiltradosCache = TODOS_CANAIS.filter(c => {{
-                // Em nuvem HTTPS sem proxy local, exibe apenas canais e rádios compatíveis
-                if (!ehCanalDisponivelAgora(c)) return false;
+            const canaisAmbiente = TODOS_CANAIS.filter(c => ehCanalDisponivelAgora(c));
+            const contadoresPais = {{ ALL: canaisAmbiente.length, BR: 0, PT: 0, LATAM: 0, GLOBAL: 0 }};
+            canaisAmbiente.forEach(c => {{
+                if (contadoresPais[c.pais_codigo] !== undefined) contadoresPais[c.pais_codigo]++;
+            }});
+            document.querySelectorAll('.country-tab-btn').forEach(btn => {{
+                const cod = btn.getAttribute('data-country');
+                const spanCount = btn.querySelector('.tab-count');
+                if (spanCount && contadoresPais[cod] !== undefined) {{
+                    spanCount.textContent = contadoresPais[cod];
+                }}
+            }});
 
+            canaisFiltradosCache = canaisAmbiente.filter(c => {{
                 // Filtro de Favoritos
                 if (apenasFavoritos && !favoritos.includes(c.id)) return false;
 
@@ -4017,6 +4320,8 @@ html_code = f"""<!DOCTYPE html>
 
                 const safeName = c.nome.replace(/'/g, "\\'");
                 const logoHtml = c.logo ? `<img src="${{c.logo}}" alt="${{c.nome}}" onerror="this.outerHTML=obterBadgeSvgCliente('${{safeName}}')">` : obterBadgeSvgCliente(c.nome);
+                const badgeTxt = c.idioma_badge || c.pais || '🇧🇷 PT-BR';
+                const badgeCls = obterClasseIdiomaBadge(badgeTxt);
 
                 card.innerHTML = `
                     <div class="channel-card-left">
@@ -4025,7 +4330,7 @@ html_code = f"""<!DOCTYPE html>
                         <div class="ch-card-info">
                             <div class="ch-card-name">${{c.nome}}</div>
                             <div class="ch-card-sub">
-                                <span>${{c.pais}}</span> • <span>${{c.categoria}}</span>
+                                <span class="lang-badge ${{badgeCls}}">${{badgeTxt}}</span> <span>${{c.categoria}}</span>
                             </div>
                         </div>
                     </div>
@@ -4636,7 +4941,7 @@ html_code = f"""<!DOCTYPE html>
         // INICIALIZAÇÃO AUTOMÁTICA
         aplicarEnquadramento(enquadramentoIndex, false);
         aplicarFiltros(true);
-        const primeiroCanalValidoIdx = TODOS_CANAIS.findIndex(c => ehCanalDisponivelAgora(c));
+        const primeiroCanalValidoIdx = TODOS_CANAIS.findIndex(c => c.pais_codigo === paisFiltro && ehCanalDisponivelAgora(c));
         sintonizar(primeiroCanalValidoIdx >= 0 ? primeiroCanalValidoIdx : 0);
     </script>
 </body>
