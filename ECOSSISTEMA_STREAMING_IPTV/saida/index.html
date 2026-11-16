@@ -406,9 +406,10 @@
             border-radius: 12px;
             padding: 8px 14px;
             display: flex;
+            flex-wrap: wrap;
             align-items: center;
             justify-content: space-between;
-            gap: 12px;
+            gap: 8px 12px;
             flex-shrink: 0;
         }
         .channel-zapper-pill {
@@ -419,8 +420,8 @@
             border: 1px solid var(--border);
             border-radius: 12px;
             padding: 4px 6px;
-            min-width: 0;
-            flex: 1;
+            min-width: 240px;
+            flex: 1 1 260px;
             max-width: 560px;
         }
         .zapper-arrow-btn {
@@ -616,8 +617,11 @@
         /* CONTROLES RÁPIDOS */
         .player-actions {
             display: flex;
+            flex-wrap: wrap;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
+            flex: 0 1 auto;
+            max-width: 100%;
         }
         .icon-btn {
             background: var(--bg-card);
@@ -1561,8 +1565,31 @@
             line-height: 1.4;
         }
 
-        /* RESPONSIVIDADE DEDICADA: CELULAR EM PÉ (RETRATO) */
-        @media (max-width: 900px) and (orientation: portrait) {
+        /* AJUSTE PARA TELAS MÉDIAS (NOTEBOOKS / JANELAS DIVIDIDAS) */
+        @media (max-width: 1180px) and (min-height: 561px) {
+            .brand-substatus {
+                display: none !important;
+            }
+            .sidebar-channels {
+                width: clamp(270px, 34vw, 350px);
+                min-width: 260px;
+            }
+            .player-info-dock {
+                padding: 8px 10px;
+                gap: 8px;
+            }
+            .player-actions {
+                justify-content: flex-end;
+            }
+            .icon-btn-text {
+                height: 34px;
+                padding: 0 9px;
+                font-size: 11.5px;
+            }
+        }
+
+        /* RESPONSIVIDADE DEDICADA: CELULAR EM PÉ E JANELAS ESTREITAS (ATÉ 900PX) */
+        @media (max-width: 900px) and (min-height: 561px), (max-width: 900px) and (orientation: portrait) {
             body {
                 height: 100vh;
                 height: 100dvh;
