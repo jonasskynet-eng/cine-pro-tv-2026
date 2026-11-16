@@ -34,6 +34,15 @@ c.execute("""
        OR url LIKE '%youtube.com%'
        OR url LIKE '%youtu.be%'
        OR LOWER(url) LIKE '%.mpd%'
+       OR LOWER(url) LIKE '%.m3u'
+       OR url LIKE '%paldi.pro%'
+       OR url LIKE '%stream.mcquack.net/100%'
+       OR url LIKE '%amg00740-sofa-amg00740c7-lg-br-7305.playouts.now.amagi.tv/1080p-cc-hevc%'
+       OR url LIKE '%amg00740-sofa-amg00740c8-tcl-us-7180.playouts.now.amagi.tv/1080p-cc%'
+       OR url LIKE '%a-cdn.klowdtv.com%'
+       OR url LIKE '%vglivessai.akamaized.net%'
+       OR url LIKE '%Samsung-br_SonyOneEmocoes%'
+       OR url LIKE '%iptv-org.github.io/iptv/categories/%'
        OR LOWER(nome) LIKE '%[color%'
        OR nome LIKE '%(Digital HLS)%'
 """)
@@ -92,7 +101,7 @@ padrao_url_estrangeira_br = re.compile(
 )
 padrao_nome_estrangeiro_br = re.compile(
     r"(\|\s*(EUA|USA|ESP|MEX|ARG|COL|CHL|PER|VEN|ECU|URU|PAR|BOL|CRI|PAN|DOM|GTM|HND|SLV|NIC|CUB|PRI|ALE|GER|FRA|ITA|RUS|UK|ING|CAN|JPN|KOR|CHN|IND|M[eé]xico|Costa Rica|espanhol|ingl[eê]s|franc[eê]s))"
-    r"|(\b(COSTA RICA:|nieuwsradio|azahares|bibel tv|dasding|dmf|brescia|giornale radio|kronehit|m[aá]s fm|cumbia mix|shockmedia|playoutcenter|usastreams|triple-it|solumedia|tvomix|alsolnet|BRAVO WALT|Beach TV - Panama City|EWTN Espa[nñ]a|FIFA\+ Spain|Kpop Mix|Urban Mix|La 1 Canarias|MyTime Movie Network|Arirang|BR Fernsehen|Balabol|Brat TV|CVN TV|Cadena TV|Canal 4 Posadas|Catamarca|CineLife|Cinepride|Circle|Colosal TV|Dorama|FilmUA|First Channel|Goldmines|INSTITUCIONAL TV|Imperial Television|NHK World|Jenny Live|Lacco Ameno|Lider TV|Master TV|Mir 24|Mireasa|Misiones Cuatro|Muzhskoy|NDR Fernsehen|NTK TV|Nevskiy|OAN Opinion|Palitra|Peques TV|Perviy otdel|Popular TV Cantabria|Power Max Radio|Primocanale|Public Movies|Punjabi Shorts|PursuitUP|Qollasuyo|ROCK FM|RTC Quarta|RTV Diocesana|RTV Drenthe|RTV Maastricht|RTV Noord|RTV Utrecht|RUN:TIME|Radio Alfa|Radio Conexion|Radio Iglesias|Radio NBC Milano|Radio Stereo 5|Radio UP|Retr[oô] TV|Revry|Rossini|Saarland|Shef|Shemaroo|SideWalks|Simon|Skoraya|Smotrim|Star Cinema|Star Family|Studio 100|Studio Pasco|Suriyan|TV BRICS|TV Kujawy|TV\+ Chincha|TVL|TeleTusciaSabina|Telekanal RAI|Teleleonessa|Teleuniverso|Umbria Tv|VR Canal 21|Very Local|Vouli Tileorasi|VoxAfrica|White Channel)\b)",
+    r"|(\b(COSTA RICA:|nieuwsradio|azahares|bibel tv|dasding|dmf|brescia|giornale radio|kronehit|m[aá]s fm|cumbia mix|shockmedia|playoutcenter|usastreams|triple-it|solumedia|tvomix|alsolnet|BRAVO WALT|Beach TV - Panama City|EWTN Espa[nñ]a|FIFA\+ Spain|Kpop Mix|Urban Mix|La 1 Canarias|Arirang|BR Fernsehen|Balabol|Brat TV|CVN TV|Cadena TV|Canal 4 Posadas|Catamarca|CineLife|Cinepride|Circle|Colosal TV|Dorama|FilmUA|First Channel|Goldmines|INSTITUCIONAL TV|Imperial Television|NHK World|Jenny Live|Lacco Ameno|Lider TV|Master TV|Mir 24|Mireasa|Misiones Cuatro|Muzhskoy|NDR Fernsehen|NTK TV|Nevskiy|OAN Opinion|Palitra|Peques TV|Perviy otdel|Popular TV Cantabria|Power Max Radio|Primocanale|Public Movies|Punjabi Shorts|PursuitUP|Qollasuyo|ROCK FM|RTC Quarta|RTV Diocesana|RTV Drenthe|RTV Maastricht|RTV Noord|RTV Utrecht|RUN:TIME|Radio Alfa|Radio Conexion|Radio Iglesias|Radio NBC Milano|Radio Stereo 5|Radio UP|Revry|Rossini|Saarland|Shef|Shemaroo|SideWalks|Simon|Skoraya|Smotrim|Star Cinema|Star Family|Studio 100|Studio Pasco|Suriyan|TV BRICS|TV Kujawy|TV\+ Chincha|TVL|TeleTusciaSabina|Telekanal RAI|Teleleonessa|Teleuniverso|Umbria Tv|VR Canal 21|Very Local|Vouli Tileorasi|VoxAfrica|White Channel)\b)",
     re.I,
 )
 c.execute("SELECT id, nome, url FROM canais WHERE status = 'ATIVO' AND pais LIKE '%Brasil%'")
@@ -1030,10 +1039,78 @@ for rad in radios_brasil_oficiais:
             cors_star=1
     """, (rad["nome"], rad["url"], rad["logo"], rad["categoria"], rad["qualidade"], rad["latencia"], rad["pais"], rad["regiao"]))
 
+# Novos Canais Brasileiros e Lusófonos 100% Verificados (HTTPS + CORS * + H.264)
+canais_novos_verificados = [
+    # Filmes & Cinema
+    {"nome": "Filmelier TV Brasil HD", "url": "https://amg00740-sofa-amg00740c8-tcl-us-7180.playouts.now.amagi.tv/playlist.m3u8", "logo": "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgKFqoSPuSVS48c3vMYINkZ7FpE4Q1MfEMG9M8-jDs880IdHqaUmdXXFwjMIB9QsOqDhl34u1PhUzCiTOHRP4qBOwrSPMG3PN4d1a0LgeNmzphknJH6DWND3RZyx7Zy6smq0QFFEQzJ0pzjAtiFke0qNuytF-skQ0P7R0yAV3qU5mVRb7YKuPBHVhs50hQ/s1600/filmeliertv.jpg", "categoria": "🎬 Filmes & Cinema", "pais": "🇧🇷 Brasil", "regiao": "Nacional / Filmes"},
+    {"nome": "MyTime Movie Network Brasil HD", "url": "https://appletree-mytime-samsungbrazil.amagi.tv/playlist.m3u8", "logo": "", "categoria": "🎬 Filmes & Cinema", "pais": "🇧🇷 Brasil", "regiao": "Nacional / Filmes"},
+    {"nome": "CINDIE TV Cinema HD", "url": "https://cc-hqw8u5r1nshjc.akamaized.net/scheduler/scheduleMaster/352.m3u8", "logo": "https://a.jsrdn.com/hls/23208/cindie-tv/logo_20250225_222520_68.png", "categoria": "🎬 Filmes & Cinema", "pais": "🇧🇷 Brasil", "regiao": "Nacional / Cinema"},
+    {"nome": "Kuriakos Cine HD", "url": "https://w2.manasat.com/kcine/smil:kcine.smil/playlist.m3u8", "logo": "https://i.imgur.com/CZViCwB.jpg", "categoria": "🎬 Filmes & Cinema", "pais": "🇧🇷 Brasil", "regiao": "Lusófono / Cinema"},
+    {"nome": "Classique TV Filmes Clássicos", "url": "https://stmv1.srvif.com/classique/classique/playlist.m3u8", "logo": "", "categoria": "🎬 Filmes & Cinema", "pais": "🇧🇷 Brasil", "regiao": "Nacional / Clássicos"},
+    {"nome": "+MaisUm Filmes & Séries HD", "url": "https://stream.ichibansys.com:3230/hybrid/play.m3u8", "logo": "", "categoria": "🎬 Filmes & Cinema", "pais": "🇧🇷 Brasil", "regiao": "Nacional / Filmes"},
+    {"nome": "Gospel Movie TV", "url": "https://stmv1.srvif.com/gospelf/gospelf/playlist.m3u8", "logo": "", "categoria": "🎬 Filmes & Cinema", "pais": "🇧🇷 Brasil", "regiao": "Nacional / Filmes"},
+    {"nome": "Cine Romântico HD", "url": "https://d1si3n1st4nkgb.cloudfront.net/10502/88886011/hls/master.m3u8?ads.xumo_channelId=88886011", "logo": "https://i.imgur.com/FUrrDrb.png", "categoria": "🎬 Filmes & Cinema", "pais": "🇧🇷 Brasil", "regiao": "Nacional / Romance"},
+    {"nome": "Cinemax LatAm HD", "url": "https://streaming.onnethn.com/CINEMAX/playlist.m3u8", "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/brazil/cinemax-br.png", "categoria": "🎬 Filmes & Cinema", "pais": "🇧🇷 Brasil", "regiao": "LatAm / Cinema"},
+    # Séries, Comédia, Animes & Kids
+    {"nome": "Comedy Central Brasil", "url": "https://stmv2.srvif.com/gafeab/gafeab/playlist.m3u8", "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/brazil/comedy-central-br.png", "categoria": "😂 Comédia & Humor", "pais": "🇧🇷 Brasil", "regiao": "Nacional / Humor"},
+    {"nome": "Loading TV Cultura Pop & Animes HD", "url": "https://stmv1.srvif.com/loadingtv/loadingtv/playlist.m3u8", "logo": "", "categoria": "🧸 Infantil & Desenhos", "pais": "🇧🇷 Brasil", "regiao": "Nacional / Animes"},
+    {"nome": "TV Séries 24h Brasil", "url": "https://stmv1.srvif.com/tvserie/tvserie/playlist.m3u8", "logo": "", "categoria": "🍿 Séries & Maratona", "pais": "🇧🇷 Brasil", "regiao": "Nacional / Séries"},
+    {"nome": "Geekdot Animes & Desenhos HD", "url": "https://stream.ichibantv.com:3764/hybrid/play.m3u8", "logo": "https://i.imgur.com/jML1u4O.png", "categoria": "🧸 Infantil & Desenhos", "pais": "🇧🇷 Brasil", "regiao": "Nacional / Animes"},
+    {"nome": "Retrô Cartoon Clássicos HD", "url": "https://stmv1.video.brstream.com.br/retrotv/retrotv/playlist.m3u8", "logo": "https://i.imgur.com/hIlEfhl.png", "categoria": "🧸 Infantil & Desenhos", "pais": "🇧🇷 Brasil", "regiao": "Nacional / Clássicos"},
+    {"nome": "NickOnline Bob Esponja 24h HD", "url": "https://pc.x1co.com.br/hls/stream.m3u8", "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/brazil/nickelodeon-br.png", "categoria": "🧸 Infantil & Desenhos", "pais": "🇧🇷 Brasil", "regiao": "Nacional / Desenhos"},
+    {"nome": "Gospel Cartoon", "url": "https://stmv1.srvif.com/gospelcartoon/gospelcartoon/playlist.m3u8", "logo": "", "categoria": "🧸 Infantil & Desenhos", "pais": "🇧🇷 Brasil", "regiao": "Nacional / Kids"},
+    {"nome": "Extrema Kids TV HD", "url": "https://627bb251f23c7.streamlock.net:444/ExtremaKids/ExtremaKids/playlist.m3u8", "logo": "https://www.vivalivetv.com/public/files/shows/0/1/3027-294x165-FFFFFF.jpg", "categoria": "🧸 Infantil & Desenhos", "pais": "🇧🇷 Brasil", "regiao": "Minas Gerais / Kids"},
+    {"nome": "SIC Alta Definição HD", "url": "https://production-fast-sic.content.okast.tv/fa2e8c4385712f9aa54bbe52b1bd9b6b/channels/d9070446-8448-455e-8075-773b1ba12562/fc831b20-f252-4e7d-8cc5-2d05f4d43c1c/media_.m3u8", "logo": "https://i.imgur.com/VdPwyQv.png", "categoria": "🎭 Entretenimento & Reality", "pais": "🇵🇹 Portugal", "regiao": "Lisboa / Portugal"},
+    {"nome": "SIC Replay Séries HD", "url": "https://production-fast-sic.content.okast.tv/fa2e8c4385712f9a7dce4ff2dcebac2e/channels/d9070446-8448-455e-8075-773b1ba12562/d47eae0f-ad77-414a-9a1d-2a6628ba18c3/media_.m3u8", "logo": "https://i.imgur.com/fj84mXz.png", "categoria": "🍿 Séries & Maratona", "pais": "🇵🇹 Portugal", "regiao": "Lisboa / Portugal"},
+    {"nome": "1001 Noites Novelas", "url": "https://cpbr.appflux.com.br:2000/hls/1001noites/1001noites.m3u8", "logo": "", "categoria": "🍿 Séries & Maratona", "pais": "🇧🇷 Brasil", "regiao": "Nacional / Novelas"},
+    # Esportes, Notícias & TV Aberta Brasil
+    {"nome": "ge Fast Globo Esporte 1080p", "url": "https://amg00716-globo-amg00716c1-tcl-br-9495.playouts.now.amagi.tv/playlist.m3u8", "logo": "https://i.ibb.co/WGXHDnF/logo-ge-fast.png", "categoria": "⚽ Esportes & Ação", "pais": "🇧🇷 Brasil", "regiao": "Nacional / Globo Esporte"},
+    {"nome": "FUEL TV Brasil HD", "url": "https://cdn-uw2-prod.tsv2.amagi.tv/linear/amg01074-fueltv-fueltvbr-samsungbr/playlist.m3u8", "logo": "https://images.pluto.tv/channels/6144d088516ea8000739076a/colorLogoPNG.png", "categoria": "⚽ Esportes & Ação", "pais": "🇧🇷 Brasil", "regiao": "Nacional / Radicais"},
+    {"nome": "eSports Max TV HD", "url": "https://cdnlive.klicgo.net/esportsmax/live/playlist_dvr.m3u8", "logo": "https://i.imgur.com/OprRgQN.png", "categoria": "⚽ Esportes & Ação", "pais": "🇧🇷 Brasil", "regiao": "Nacional / eSports"},
+    {"nome": "VEJA+ TV Notícias 1080p", "url": "https://gpa-vja.otteravision.com/gpa/vja/vja.m3u8", "logo": "https://i.imgur.com/n0pxHo4.png", "categoria": "📰 Notícias", "pais": "🇧🇷 Brasil", "regiao": "São Paulo / Nacional"},
+    {"nome": "TV Câmara Brasil Oficial 1080p", "url": "https://stream3.camara.gov.br/tv1/manifest.m3u8", "logo": "https://i.imgur.com/Sdou1Ab.png", "categoria": "📺 TV Aberta Brasil", "pais": "🇧🇷 Brasil", "regiao": "Brasília / Nacional"},
+    {"nome": "Amazon Sat HD Oficial", "url": "https://amazonsat.brasilstream.com.br/hls/amazonsat/index.m3u8", "logo": "", "categoria": "📺 TV Aberta Brasil", "pais": "🇧🇷 Brasil", "regiao": "Manaus / Amazônia"},
+    {"nome": "Boas Novas 1080p", "url": "https://cdn.jmvstream.com/w/LVW-9375/LVW9375_6i0wPBCHYc/playlist.m3u8", "logo": "", "categoria": "📺 TV Aberta Brasil", "pais": "🇧🇷 Brasil", "regiao": "Manaus / Nacional"},
+    {"nome": "Canal FDR 1080p", "url": "https://v-us-01.wisestream.io/memfs/e4ade538-7924-4359-81ef-b9d4dd229e91.m3u8", "logo": "", "categoria": "📺 TV Aberta Brasil", "pais": "🇧🇷 Brasil", "regiao": "Ceará / Educação"},
+    {"nome": "Rede Minas HD", "url": "https://8hzcavccys.zoeweb.tv/redeminas/ngrp:redeminas_all/playlist.m3u8", "logo": "https://i.imgur.com/MtQWAHv.png", "categoria": "📺 TV Aberta Brasil", "pais": "🇧🇷 Brasil", "regiao": "Minas Gerais"},
+    {"nome": "Rede Meio Norte HD", "url": "https://maystreaming.cloudecast.com/redemeio/index.m3u8", "logo": "https://i.imgur.com/KVdTi0M.png", "categoria": "📺 TV Aberta Brasil", "pais": "🇧🇷 Brasil", "regiao": "Piauí / Nordeste"},
+    {"nome": "Rede NGT 1080p", "url": "https://isaocorp.cloudecast.com/ngt/index.m3u8", "logo": "https://i.imgur.com/ZFN1R4B.png", "categoria": "📺 TV Aberta Brasil", "pais": "🇧🇷 Brasil", "regiao": "São Paulo / RJ"},
+    {"nome": "TVE RS 1080p", "url": "https://streaming.procergs.com.br:8443/tve/stve/playlist.m3u8", "logo": "https://i.imgur.com/MQ6lJpS.png", "categoria": "📺 TV Aberta Brasil", "pais": "🇧🇷 Brasil", "regiao": "Rio Grande do Sul"},
+    {"nome": "TCM 10 HD", "url": "https://live.tcm10.com.br/tcm10hd/stream.m3u8", "logo": "https://i.imgur.com/aMuMVvB.png", "categoria": "📺 TV Aberta Brasil", "pais": "🇧🇷 Brasil", "regiao": "Rio Grande do Norte"},
+    {"nome": "SBT Nova Mutum HD", "url": "https://video09.logicahost.com.br/sbtmutum/sbtmutum/playlist.m3u8", "logo": "https://upload.wikimedia.org/wikipedia/pt/d/d0/Logotipo_do_SBT_Nova_Mutum.png", "categoria": "📺 TV Aberta Brasil", "pais": "🇧🇷 Brasil", "regiao": "Mato Grosso"},
+    {"nome": "O Dia TV HD", "url": "https://6836041ea1117.streamlock.net/tvodia/tvodia/playlist.m3u8", "logo": "", "categoria": "📺 TV Aberta Brasil", "pais": "🇧🇷 Brasil", "regiao": "Piauí / Teresina"},
+    {"nome": "J3News TV HD", "url": "https://video01.brascast.com/d92ebb4f/d92ebb4f/playlist.m3u8", "logo": "", "categoria": "📰 Notícias", "pais": "🇧🇷 Brasil", "regiao": "Rio de Janeiro"},
+    {"nome": "ConecTV Brasil HD", "url": "https://stream01.msolutionbrasil.com.br/hls/conectv/live.m3u8", "logo": "", "categoria": "📺 TV Aberta Brasil", "pais": "🇧🇷 Brasil", "regiao": "Nacional"},
+    {"nome": "SOU TV Brasil HD", "url": "https://video10.logicahost.com.br/soutv/soutv/playlist.m3u8", "logo": "https://i.ibb.co/8cKmCNm/ezgif-com-gif-maker.png", "categoria": "📺 TV Aberta Brasil", "pais": "🇧🇷 Brasil", "regiao": "São Paulo"},
+    {"nome": "Petlovers TV Brasil", "url": "https://video04.logicahost.com.br/petloverstv/petloverstv/playlist.m3u8", "logo": "", "categoria": "🎭 Entretenimento & Reality", "pais": "🇧🇷 Brasil", "regiao": "Nacional / Pets"},
+    {"nome": "TV UFOP 1080p", "url": "https://app.tvufop.com.br/hls/tvufop.m3u8", "logo": "https://raw.githubusercontent.com/daniloroxette/tvufop/refs/heads/main/images/tvufop_logo.png", "categoria": "📺 TV Aberta Brasil", "pais": "🇧🇷 Brasil", "regiao": "Minas Gerais"},
+    {"nome": "TV Brasil Oeste HD", "url": "https://5ad482a77183d.streamlock.net/operacaotbomt.com/operacaotbomt.com/playlist.m3u8", "logo": "https://i.imgur.com/noqGfuy.png", "categoria": "📺 TV Aberta Brasil", "pais": "🇧🇷 Brasil", "regiao": "Mato Grosso"},
+    {"nome": "Catve2 HD", "url": "https://5b33b873179a2.streamlock.net:1443/catve2/catve2/playlist.m3u8", "logo": "", "categoria": "📺 TV Aberta Brasil", "pais": "🇧🇷 Brasil", "regiao": "Paraná / Cascavel"},
+    {"nome": "TV Fronteira Paulista", "url": "https://tvfronteira.brasilstream.com.br/hls/tvfronteira/index.m3u8", "logo": "https://i.imgur.com/NtcoW6G.png", "categoria": "📺 TV Aberta Brasil", "pais": "🇧🇷 Brasil", "regiao": "Interior SP"}
+]
+
+nomes_prioridade_https = [ch["nome"] for ch in canais_novos_verificados[:25]]
+
+for nv in canais_novos_verificados:
+    c.execute("""
+        INSERT INTO canais (nome, url, logo, categoria, qualidade, latencia_ms, status, pais, regiao, web_ok, cors_star)
+        VALUES (?, ?, ?, ?, 'Digital HD', 35, 'ATIVO', ?, ?, 1, 1)
+        ON CONFLICT(url) DO UPDATE SET
+            nome=excluded.nome,
+            logo=CASE WHEN excluded.logo != '' THEN excluded.logo ELSE canais.logo END,
+            categoria=excluded.categoria,
+            pais=excluded.pais,
+            regiao=excluded.regiao,
+            status='ATIVO',
+            web_ok=1,
+            cors_star=1
+    """, (nv["nome"], nv["url"], nv["logo"], nv["categoria"], nv["pais"], nv["regiao"]))
+
 conn.commit()
 
 # Buscar TODOS os canais ATIVOS do banco com prioridade total para os VIPs da Fibra Brasileira
-c.execute("""
+placeholders_prio = ",".join("?" for _ in nomes_prioridade_https)
+c.execute(f"""
     SELECT 
         id, nome, url, logo, categoria, qualidade, latencia_ms, pais, regiao, cors_star
     FROM canais
@@ -1045,6 +1122,12 @@ c.execute("""
       AND url NOT LIKE '%38.134.250.110%'
       AND url NOT LIKE '%45.171.64.30%'
       AND url NOT LIKE '%190.128.214.97%'
+      AND url NOT LIKE '%paldi.pro%'
+      AND url NOT LIKE '%a-cdn.klowdtv.com%'
+      AND url NOT LIKE '%vglivessai.akamaized.net%'
+      AND url NOT LIKE '%Samsung-br_SonyOneEmocoes%'
+      AND url NOT LIKE '%iptv-org.github.io/iptv/categories/%'
+      AND LOWER(url) NOT LIKE '%.m3u'
       AND nome NOT LIKE '%(Digital HLS)%'
     ORDER BY 
         CASE 
@@ -1099,13 +1182,14 @@ c.execute("""
             WHEN url LIKE '%170.83.16.50%' THEN 49
             WHEN url LIKE '%170.83.49.66%' THEN 50
             WHEN categoria LIKE '%Rádios%' AND (url LIKE '%streamtheworld%' OR url LIKE '%crossradio%' OR url LIKE '%brasilstream%' OR url LIKE '%fabricahost%' OR url LIKE '%fox.srv.br%') THEN 51
+            WHEN nome IN ({placeholders_prio}) THEN 52
             WHEN pais LIKE '%Brasil%' THEN 55
             WHEN pais LIKE '%Portugal%' THEN 60
             WHEN pais LIKE '%América Latina%' THEN 70
             ELSE 80
         END,
         nome ASC
-""")
+""", nomes_prioridade_https)
 
 rows = c.fetchall()
 conn.close()
@@ -1160,7 +1244,8 @@ for r in rows:
     if any(k in nome_lower for k in [
         "sbt", "cultura", "futura", "globo", "record", "band ", "bandeirantes", 
         "redetv", "gazeta", "tv brasil", "ebc", "aparecida", "cancao nova", "canção nova", "senado", "justica", "justiça", 
-        "camara", "câmara", "terra viva", "canal do boi", "rede brasil", "cnt", "tv escola", "ideal tv", "tv a crítica", "tv a critica", "sesc tv", "canal rural"
+        "camara", "câmara", "terra viva", "canal do boi", "rede brasil", "cnt", "tv escola", "ideal tv", "tv a crítica", "tv a critica", "sesc tv", "canal rural",
+        "amazon sat", "boas novas", "canal fdr", "rede minas", "rede meio norte", "rede ngt", "tve rs", "tcm 10", "o dia tv", "conectv", "sou tv", "tv ufop", "tv brasil oeste", "catve", "tv fronteira"
     ]) or cat_db == "📺 TV Aberta Brasil":
         tags.append("aberta")
         contagem_tags["aberta"] += 1
@@ -1174,9 +1259,9 @@ for r in rows:
     eh_infantil = any(k in nome_lower for k in [
         "kid", "kids", "infantil", "desenho", "desenhos", "cartoon", "cartoonito", "baby",
         "animac", "nickelodeon", "nick", "disney", "gloob", "turma da monica", "peppa",
-        "patrulha canina", "smurfs", "tartarugas ninja", "bob esponja", "avatar: a lenda",
-        "oggy", "anime", "naruto", "one piece", "tokusato", "babyfirst", "kuriakos kids",
-        "reino infantil"
+        "patrulha canina", "smurfs", "tartarugas ninja", "bob esponja", "spongebob", "avatar: a lenda",
+        "oggy", "anime", "animes", "naruto", "one piece", "tokusato", "babyfirst", "kuriakos kids",
+        "reino infantil", "geekdot", "loading tv"
     ]) or "desenho" in cat_lower or "infantil" in cat_lower
     if eh_infantil:
         tags.append("infantil")
@@ -1184,28 +1269,31 @@ for r in rows:
 
     # Tag SÉRIES (Séries 24h, Maratonas, Sitcoms, Novelas, Dramas)
     tem_nome_serie = any(k in nome_lower for k in [
-        "serie", "series", "maratona", "sitcom", "novela", "novelas", "dorama", "k-drama",
+        "serie", "series", "séries", "maratona", "sitcom", "novela", "novelas", "dorama", "k-drama",
         "csi", "ncis", "macgyver", "trek", "jornada nas estrelas", "star trek", "jeannie",
         "feiticeira", "chaves", "chapolin", "dexter", "sherlock", "house", "charmed",
         "smallville", "numbers", "kenan", "kel", "icarly", "zoey", "drake", "josh",
         "supernatural", "sobrenatural", "walking dead", "colombo", "schitt", "arnold",
-        "detetives medicos", "soap"
+        "detetives medicos", "soap", "sic replay", "1001 noites", "+maisum"
     ])
     if tem_nome_serie or ("séries" in cat_lower and not any(k in nome_lower for k in ["cine", "filme", "movie", "telecine", "megapix", "hbo", "paramount", "tnt", "space", "axn"])):
         tags.append("series")
         contagem_tags["series"] += 1
 
     # Tag FILMES (Cinema, Filmes Clássicos, Telecine, HBO, Megapix, Ação, Drama)
+    nao_eh_filme = any(k in nome_lower for k in [
+        "deal or no deal", "dog the bounty", "fear factor", "homes under",
+        "at home with", "family handyman", "chat show", "cold case",
+        "true crime", "educação", "educacao", "cnbc-e", "esports max", "unsolved mysteries"
+    ])
     tem_nome_filme = any(k in nome_lower for k in [
         "filme", "filmes", "movie", "movies", "cine", "cinema", "telecine", "megapix",
-        "hbo", "max", "paramount", "adrenalina pura", "netmovies", "tnt", "space",
+        "hbo", "hbomax", "paramount", "adrenalina pura", "netmovies", "tnt", "space",
         "axn", "sony channel", "sony", "lifetime", "warner", "universal", "cinemax",
-        "canal brasil", "terror", "suspense", "bang bang", "ficcao cientifica"
+        "canal brasil", "terror", "suspense", "bang bang", "ficcao cientifica",
+        "filmelier", "cindie", "classique", "mytime"
     ])
-    if (tem_nome_filme or "filme" in cat_lower) and not tem_nome_serie:
-        tags.append("filmes")
-        contagem_tags["filmes"] += 1
-    elif tem_nome_filme:
+    if ((tem_nome_filme or "filme" in cat_lower) and not nao_eh_filme) and (not tem_nome_serie or tem_nome_filme):
         tags.append("filmes")
         contagem_tags["filmes"] += 1
 
@@ -1272,18 +1360,19 @@ for r in rows:
 
     # Tag ESPORTES (Futebol, Vôlei, Basquete, F1, Ligas)
     if any(k in nome_lower for k in [
-        "esporte", "esportes", "sport", "sports", "futebol", "fut ", "espn", "sportv",
+        "esporte", "esportes", "esports", "sport", "sports", "futebol", "fut ", "espn", "sportv",
         "fox sports", "band sports", "bandsports", "premiere", "tnt sports", "dazn",
-        "nba", "nfl", "formula 1", "f1", "nascar", "motogp", "corrida", "automobilismo", "turbo"
+        "nba", "nfl", "formula 1", "f1", "nascar", "motogp", "corrida", "automobilismo", "turbo",
+        "ge fast", "fuel tv"
     ]) or "esportes" in cat_lower:
         tags.append("esportes")
         contagem_tags["esportes"] += 1
 
     # Tag NOTÍCIAS (Jornalismo 24h, Noticiários Globais e Locais)
     if any(k in nome_lower for k in [
-        "noticia", "noticias", "news", "jornal", "cnn", "globonews", "bandnews",
+        "noticia", "noticias", "notícias", "news", "jornal", "cnn", "globonews", "bandnews",
         "jovem pan news", "record news", "bloomberg", "reuters", "al jazeera",
-        "euronews", "bbc", "climatempo", "canal uol", "uol noticias", "bm&c"
+        "euronews", "bbc", "climatempo", "canal uol", "uol noticias", "bm&c", "veja+", "tcm 10"
     ]) or "notícias" in cat_lower:
         tags.append("noticias")
         contagem_tags["noticias"] += 1
@@ -3640,7 +3729,8 @@ html_code = f"""<!DOCTYPE html>
             'http://170.83.16.50/CULTURA/tracks-v1a1/mono.m3u8': 'https://player-tvcultura.stream.uol.com.br/live/tvcultura.m3u8',
             'http://170.83.16.50/REDE_TV/index.m3u8': 'https://cdn.live.br1.jmvstream.com/webtv/AVJ-15235/playlist/playlist.m3u8',
             'http://170.83.16.50/RECORD_NEWS/index.m3u8': 'https://rnw-rn-samsungtvplus.otteravision.com/rnw/rn/rnw_rn.m3u8',
-            'http://170.83.16.50/TV_APARECIDA/index.m3u8': 'https://cdn.jmvstream.com/w/LVW-9716/LVW9716_HbtQtezcaw/master.m3u8'
+            'http://170.83.16.50/TV_APARECIDA/index.m3u8': 'https://cdn.jmvstream.com/w/LVW-9716/LVW9716_HbtQtezcaw/master.m3u8',
+            'http://170.83.49.66:8083/TVCAMARAHD/index.m3u8': 'https://stream3.camara.gov.br/tv1/manifest.m3u8'
         }};
 
         function sintonizar(idx) {{
@@ -4040,7 +4130,12 @@ html_code = f"""<!DOCTYPE html>
             if (!c) return false;
             if (!EH_AMBIENTE_LOCAL && !LOCAL_PROXY_ATIVO && window.location.protocol === 'https:') {{
                 const urlResolvida = MAPA_FALLBACK_HTTPS_NUVEM[c.url] || c.url;
-                if (urlResolvida.startsWith('http://')) return false;
+                if (
+                    urlResolvida.startsWith('http://') ||
+                    urlResolvida.includes('jmp2.uk') ||
+                    urlResolvida.includes('embedplayer2.xyz') ||
+                    urlResolvida.includes('paldi.pro')
+                ) return false;
             }}
             return true;
         }}
