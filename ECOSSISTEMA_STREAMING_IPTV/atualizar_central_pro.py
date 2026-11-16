@@ -1974,6 +1974,139 @@ html_code = f"""<!DOCTYPE html>
             opacity: 0;
             pointer-events: none;
         }}
+        /* MODO ECONOMIA (SÓ ÁUDIO / RÁDIO) */
+        body.audio-only-mode video {{
+            opacity: 0.02 !important;
+        }}
+        .audio-only-overlay {{
+            position: absolute;
+            inset: 0;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            padding: 20px;
+            text-align: center;
+            background: radial-gradient(circle at center, rgba(16, 185, 129, 0.14) 0%, rgba(6, 9, 19, 0.98) 72%);
+            z-index: 15;
+        }}
+        body.audio-only-mode .audio-only-overlay {{
+            display: flex;
+        }}
+        .audio-only-badge {{
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            color: #6ee7b7;
+            background: rgba(16, 185, 129, 0.16);
+            border: 1px solid rgba(16, 185, 129, 0.45);
+            padding: 4px 12px;
+            border-radius: 999px;
+        }}
+        .audio-only-logo {{
+            width: 78px;
+            height: 78px;
+            border-radius: 18px;
+            background: #0f172a;
+            border: 1px solid rgba(16, 185, 129, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            box-shadow: 0 10px 28px rgba(0, 0, 0, 0.55);
+        }}
+        .audio-only-logo img {{
+            max-width: 64px;
+            max-height: 64px;
+            object-fit: contain;
+        }}
+        .audio-only-title {{
+            font-size: 18px;
+            font-weight: 900;
+            color: #fff;
+            max-width: 90%;
+        }}
+        .audio-only-prog {{
+            font-size: 12.5px;
+            color: #94a3b8;
+        }}
+        .icon-btn-text.mode-active {{
+            background: rgba(16, 185, 129, 0.22) !important;
+            border-color: var(--emerald) !important;
+            color: #6ee7b7 !important;
+        }}
+        .icon-btn-text.sleep-active {{
+            background: rgba(56, 189, 248, 0.2) !important;
+            border-color: #38bdf8 !important;
+            color: #bae6fd !important;
+        }}
+        .sleep-grid {{
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 12px;
+        }}
+        .sleep-opt-btn {{
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            border-radius: 10px;
+            padding: 12px 10px;
+            font-size: 13px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.15s;
+        }}
+        .sleep-opt-btn:hover, .sleep-opt-btn.selected {{
+            background: rgba(56, 189, 248, 0.2);
+            border-color: #38bdf8;
+            color: #bae6fd;
+        }}
+        .custom-form-group {{
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-bottom: 10px;
+            text-align: left;
+        }}
+        .custom-form-group label {{
+            font-size: 11.5px;
+            font-weight: 700;
+            color: #cbd5e1;
+        }}
+        .custom-input, .custom-textarea, .custom-select {{
+            width: 100%;
+            background: #090e1a;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 8px 10px;
+            color: #fff;
+            font-size: 12.5px;
+            outline: none;
+        }}
+        .custom-input:focus, .custom-textarea:focus, .custom-select:focus {{
+            border-color: var(--emerald);
+        }}
+        .custom-saved-list {{
+            max-height: 150px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-top: 8px;
+        }}
+        .custom-saved-item {{
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 6px 10px;
+            font-size: 12px;
+        }}
         .pulse-play-circle {{
             width: 90px;
             height: 90px;
@@ -3372,12 +3505,13 @@ html_code = f"""<!DOCTYPE html>
             }}
             .player-actions {{
                 width: 100%;
-                display: grid;
-                grid-template-columns: auto auto 1fr auto;
+                display: flex;
+                flex-wrap: wrap;
                 gap: 5px;
             }}
             .icon-btn-text {{
                 justify-content: center;
+                flex: 1 1 auto;
                 height: 34px;
                 padding: 0 7px;
                 font-size: 10.5px;
@@ -3632,6 +3766,9 @@ html_code = f"""<!DOCTYPE html>
         </div>
 
         <div class="header-controls">
+            <button id="btnAddChannelHeader" class="btn-ui" onclick="abrirModalMeusCanais()" style="background: rgba(56, 189, 248, 0.14); border-color: rgba(56, 189, 248, 0.45); color: #bae6fd;" title="Adicionar canal ou lista M3U própria">
+                ➕ Meu Canal
+            </button>
             <button id="btnQrRemote" class="btn-ui" style="background: rgba(16, 185, 129, 0.15); border-color: rgba(16, 185, 129, 0.4); color: #6ee7b7;" title="Controlar pelo Celular">
                 📱 Controle Celular
             </button>
@@ -3662,6 +3799,17 @@ html_code = f"""<!DOCTYPE html>
                         <span class="expand-icon">⛶</span>
                         <span id="btnFloatingFullscreenText">EXPANDIR TELA TODA</span>
                     </button>
+
+                    <!-- MODO ECONOMIA SÓ ÁUDIO (RÁDIO / BATERIA) -->
+                    <div id="audioOnlyOverlay" class="audio-only-overlay">
+                        <span class="audio-only-badge">📻 MODO ECONOMIA • SÓ ÁUDIO</span>
+                        <div class="audio-only-logo" id="audioOverlayLogo">📻</div>
+                        <div class="audio-only-title" id="audioOverlayTitle">SBT Nacional HD</div>
+                        <div class="audio-only-prog" id="audioOverlayProg">Economizando dados móveis e bateria...</div>
+                        <button type="button" class="icon-btn-text mode-active" onclick="alternarModoAudio()" style="margin-top:6px;">
+                            <span>📺</span> <span>Voltar ao Vídeo</span>
+                        </button>
+                    </div>
 
                     <!-- OVERLAY INICIAL PARA LIBERAR REPRODUÇÃO IMEDIATA -->
                     <div id="playClickOverlay" class="click-overlay">
@@ -3704,6 +3852,12 @@ html_code = f"""<!DOCTYPE html>
                     <button type="button" class="icon-btn-text" id="btnSubtitles" onclick="alternarLegenda(event)" title="Ativar/Desativar Legendas (CC) ou ver idioma">
                         <span>💬</span> <span id="subtitlesLabel">Legenda</span>
                     </button>
+                    <button type="button" class="icon-btn-text" id="btnAudioOnly" onclick="alternarModoAudio()" title="Economizar dados e bateria ouvindo só o áudio">
+                        <span>📻</span> <span id="audioOnlyLabel">Só Áudio</span>
+                    </button>
+                    <button type="button" class="icon-btn-text" id="btnSleepTimer" onclick="abrirModalSleep()" title="Temporizador para desligar sozinho ao dormir">
+                        <span>🌙</span> <span id="sleepLabel">Dormir</span>
+                    </button>
                     <button type="button" class="icon-btn-text btn-drawer-toggle" id="btnToggleChannelsDrawer" onclick="alternarGavetaCanais(event)" title="Mostrar ou minimizar todos os canais">
                         <span>📋</span> <span id="drawerToggleText">Todos os Canais</span> <span id="drawerToggleArrow">▼</span>
                     </button>
@@ -3726,6 +3880,9 @@ html_code = f"""<!DOCTYPE html>
                 <button type="button" id="btnMinimizeSidebar" class="btn-minimize-sidebar" onclick="alternarGavetaCanais(event)">
                     <span>▲ Minimizar</span>
                     <span class="sidebar-total-pill" id="sidebarTotalPill">{contagem_paises['BR']}</span>
+                </button>
+                <button type="button" class="btn-toggle-filters" onclick="abrirModalMeusCanais()" style="background:rgba(56,189,248,0.14); border-color:rgba(56,189,248,0.45); color:#bae6fd;" title="Adicionar canal ou lista M3U">
+                    <span>➕ Meu Canal</span>
                 </button>
                 <button type="button" id="btnToggleFilters" class="btn-toggle-filters" onclick="alternarPainelFiltros(event)">
                     <span>🎛️ Categorias</span>
@@ -3759,6 +3916,7 @@ html_code = f"""<!DOCTYPE html>
                 <!-- FILTROS DE SUBDIVISÃO ORGANIZADOS (DISCOVERY, FILMES, ESPORTES, NOTÍCIAS, RELIGIOSOS) -->
                 <div class="category-pills">
                     <button class="cat-pill active" data-cat="all">Todos</button>
+                    <button class="cat-pill" data-cat="meus" style="border-color:rgba(56,189,248,0.45); color:#bae6fd;">➕ Meus Canais (0)</button>
                     <button class="cat-pill pill-aberta" data-cat="aberta">📺 TV Aberta ({contagem_tags['aberta']})</button>
                     <button class="cat-pill pill-discovery" data-cat="discovery">🔬 Discovery ({contagem_tags['discovery']})</button>
                     <button class="cat-pill pill-filmes" data-cat="filmes">🎬 Filmes ({contagem_tags['filmes']})</button>
@@ -3873,8 +4031,97 @@ html_code = f"""<!DOCTYPE html>
         </div>
     </div>
 
+    <!-- MODAL DO TEMPORIZADOR PARA DORMIR (SLEEP TIMER) -->
+    <div id="sleepModal" class="modal-shade">
+        <div class="modal-panel" style="max-width: 420px; text-align: center;">
+            <div class="modal-title-bar">
+                <h3>🌙 Temporizador para Dormir</h3>
+                <button class="modal-dismiss" onclick="fecharModalSleep()">&times;</button>
+            </div>
+            <p id="sleepModalStatus" style="font-size: 13px; color: var(--text-muted); margin-bottom: 10px;">
+                Escolha em quanto tempo a TV deve parar sozinha para economizar energia e internet:
+            </p>
+            <div class="sleep-grid">
+                <button type="button" class="sleep-opt-btn" data-min="15" onclick="definirTemporizadorDormir(15)">⏱️ 15 minutos</button>
+                <button type="button" class="sleep-opt-btn" data-min="30" onclick="definirTemporizadorDormir(30)">⏱️ 30 minutos</button>
+                <button type="button" class="sleep-opt-btn" data-min="60" onclick="definirTemporizadorDormir(60)">⏱️ 1 hora (60 min)</button>
+                <button type="button" class="sleep-opt-btn" data-min="90" onclick="definirTemporizadorDormir(90)">⏱️ 1h30 (90 min)</button>
+            </div>
+            <button type="button" class="sleep-opt-btn" data-min="0" onclick="definirTemporizadorDormir(0)" style="width:100%; margin-top:10px; border-color:rgba(248,113,113,0.45); color:#fca5a5;">
+                ⏹️ Desativar Temporizador
+            </button>
+        </div>
+    </div>
+
+    <!-- MODAL ADICIONAR MEU CANAL OU LISTA M3U -->
+    <div id="addChannelModal" class="modal-shade">
+        <div class="modal-panel" style="max-width: 500px; max-height: 90vh; overflow-y: auto;">
+            <div class="modal-title-bar">
+                <h3>➕ Adicionar Canal ou Lista M3U</h3>
+                <button class="modal-dismiss" onclick="fecharModalMeusCanais()">&times;</button>
+            </div>
+            <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;">
+                Tudo fica salvo direto neste aparelho (sem precisar mexer em código).
+            </p>
+
+            <div style="background:rgba(15,23,42,0.7); border:1px solid var(--border); border-radius:10px; padding:12px; margin-bottom:12px;">
+                <div style="font-size:12.5px; font-weight:800; color:#6ee7b7; margin-bottom:8px;">1) Adicionar 1 Canal Direto</div>
+                <div class="custom-form-group">
+                    <label for="customChName">Nome do Canal</label>
+                    <input type="text" id="customChName" class="custom-input" placeholder="Ex: Canal Cinema Favorito">
+                </div>
+                <div class="custom-form-group">
+                    <label for="customChCat">Categoria</label>
+                    <select id="customChCat" class="custom-select">
+                        <option value="filmes">🎬 Filmes</option>
+                        <option value="discovery">🔬 Discovery & Ciência</option>
+                        <option value="aberta">📺 TV Aberta</option>
+                        <option value="esportes">⚽ Esportes</option>
+                        <option value="noticias">📰 Notícias</option>
+                        <option value="series">🍿 Séries</option>
+                        <option value="infantil">🧸 Desenhos & Kids</option>
+                        <option value="musica">📻 Rádios & Música</option>
+                        <option value="religiosos">⛪ Religiosos</option>
+                    </select>
+                </div>
+                <div class="custom-form-group">
+                    <label for="customChUrl">Link do Vídeo / Rádio (.m3u8, .mp3, .aac)</label>
+                    <input type="url" id="customChUrl" class="custom-input" placeholder="https://.../playlist.m3u8">
+                </div>
+                <button type="button" onclick="salvarCanalIndividual()" class="btn-ui" style="width:100%; justify-content:center; padding:9px; background:rgba(16,185,129,0.2); border-color:var(--emerald); color:#6ee7b7;">
+                    💾 Salvar Canal e Assistir
+                </button>
+            </div>
+
+            <div style="background:rgba(15,23,42,0.7); border:1px solid var(--border); border-radius:10px; padding:12px; margin-bottom:12px;">
+                <div style="font-size:12.5px; font-weight:800; color:#bae6fd; margin-bottom:8px;">2) Importar Lista M3U (.m3u / .m3u8)</div>
+                <div class="custom-form-group">
+                    <label for="customM3uFile">Escolher arquivo .m3u do celular/PC (opcional)</label>
+                    <input type="file" id="customM3uFile" accept=".m3u,.m3u8,.txt" class="custom-input" onchange="carregarArquivoM3u(event)">
+                </div>
+                <div class="custom-form-group">
+                    <label for="customM3uText">Ou cole os links / conteúdo #EXTINF aqui</label>
+                    <textarea id="customM3uText" rows="4" class="custom-textarea" placeholder="#EXTINF:-1,Meu Canal&#10;https://.../stream.m3u8"></textarea>
+                </div>
+                <button type="button" onclick="importarListaM3uTexto()" class="btn-ui" style="width:100%; justify-content:center; padding:9px; background:rgba(56,189,248,0.18); border-color:#38bdf8; color:#bae6fd;">
+                    📥 Importar Lista M3U
+                </button>
+            </div>
+
+            <div style="border-top:1px solid var(--border); padding-top:10px;">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <span style="font-size:12px; font-weight:800; color:#e2e8f0;">Meus Canais Salvos (<span id="customSavedCount">0</span>)</span>
+                    <button type="button" onclick="limparMeusCanais()" style="background:none; border:none; color:#fca5a5; font-size:11px; cursor:pointer; font-weight:700;">🗑️ Limpar Tudo</button>
+                </div>
+                <div id="customSavedList" class="custom-saved-list"></div>
+            </div>
+        </div>
+    </div>
+
     <script>
         const TODOS_CANAIS = {json_canais_str};
+        const CANAIS_BASE_QTD = TODOS_CANAIS.length;
+        const CHAVE_MEUS_CANAIS = 'cinepro_meus_canais_v1';
         let hls = null;
         let canalAtualIndex = 0;
         let tentativasErro = 0;
@@ -3883,6 +4130,271 @@ html_code = f"""<!DOCTYPE html>
         let paisFiltro = 'BR';
         let catFiltro = 'all';
         let legendaPreferida = true;
+        let modoEconomiaAudio = false;
+        let sleepInterval = null;
+        let sleepSecondsLeft = 0;
+
+        function lerMeusCanaisStorage() {{
+            try {{
+                const arr = JSON.parse(localStorage.getItem(CHAVE_MEUS_CANAIS) || '[]');
+                return Array.isArray(arr) ? arr : [];
+            }} catch (_) {{ return []; }}
+        }}
+
+        function salvarMeusCanaisStorage(lista) {{
+            localStorage.setItem(CHAVE_MEUS_CANAIS, JSON.stringify(lista));
+        }}
+
+        function construirObjetoMeuCanal(item, ordemIdx) {{
+            const catMap = {{
+                aberta: '📺 TV Aberta',
+                discovery: '🔬 Discovery & Ciência',
+                filmes: '🎬 Filmes & Cinema',
+                esportes: '⚽ Esportes & Ação',
+                noticias: '📰 Notícias',
+                series: '🍿 Séries & Maratona',
+                infantil: '🧸 Infantil & Desenhos',
+                musica: '📻 Rádios & Música',
+                religiosos: '⛪ Religiosos'
+            }};
+            const tagCat = item.cat || 'filmes';
+            return {{
+                id: item.id,
+                numero: 900 + ordemIdx,
+                numero_str: String(900 + ordemIdx).padStart(3, '0'),
+                nome: item.nome || 'Meu Canal',
+                url: item.url,
+                logo: item.logo || '',
+                categoria: catMap[tagCat] || '➕ Meus Canais',
+                tags: ['meus', tagCat],
+                qualidade: 'Digital',
+                latencia: 30,
+                pais: '🇧🇷 Brasil',
+                pais_codigo: 'BR',
+                regiao: 'Adicionado por Você',
+                idioma_badge: '⭐ Meu Canal',
+                cors: true,
+                custom: true
+            }};
+        }}
+
+        function recarregarMeusCanaisNoCatalogo() {{
+            TODOS_CANAIS.length = CANAIS_BASE_QTD;
+            const salvos = lerMeusCanaisStorage();
+            salvos.forEach((item, idx) => {{
+                TODOS_CANAIS.unshift(construirObjetoMeuCanal(item, idx + 1));
+            }});
+            const badgeTotal = document.getElementById('totalCanaisBadge');
+            if (badgeTotal) badgeTotal.textContent = TODOS_CANAIS.length;
+        }}
+        recarregarMeusCanaisNoCatalogo();
+
+        function renderizarListaMeusCanaisModal() {{
+            const salvos = lerMeusCanaisStorage();
+            const countEl = document.getElementById('customSavedCount');
+            const listEl = document.getElementById('customSavedList');
+            if (countEl) countEl.textContent = salvos.length;
+            if (!listEl) return;
+            if (salvos.length === 0) {{
+                listEl.innerHTML = '<div style="font-size:11.5px; color:#64748b; padding:8px 0;">Nenhum canal próprio adicionado ainda.</div>';
+                return;
+            }}
+            listEl.innerHTML = salvos.map(item => `
+                <div class="custom-saved-item">
+                    <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">⭐ ${{item.nome}}</span>
+                    <button type="button" onclick="removerMeuCanal(${{item.id}})" style="background:rgba(248,113,113,0.16); border:1px solid rgba(248,113,113,0.4); color:#fca5a5; border-radius:6px; padding:3px 8px; font-size:11px; cursor:pointer;">Remover</button>
+                </div>
+            `).join('');
+        }}
+
+        function abrirModalMeusCanais() {{
+            renderizarListaMeusCanaisModal();
+            const modal = document.getElementById('addChannelModal');
+            if (modal) modal.classList.add('open');
+        }}
+        function fecharModalMeusCanais() {{
+            const modal = document.getElementById('addChannelModal');
+            if (modal) modal.classList.remove('open');
+        }}
+        window.abrirModalMeusCanais = abrirModalMeusCanais;
+        window.fecharModalMeusCanais = fecharModalMeusCanais;
+
+        function salvarCanalIndividual() {{
+            const nome = (document.getElementById('customChName').value || '').trim();
+            const cat = document.getElementById('customChCat').value || 'filmes';
+            const url = (document.getElementById('customChUrl').value || '').trim();
+            if (!nome || !/^https?:\\/\\//i.test(url)) {{
+                mostrarHUD('⚠️ Preencha o nome e um link válido (http:// ou https://).');
+                return;
+            }}
+            const salvos = lerMeusCanaisStorage();
+            salvos.unshift({{ id: -Date.now(), nome, cat, url }});
+            salvarMeusCanaisStorage(salvos);
+            document.getElementById('customChName').value = '';
+            document.getElementById('customChUrl').value = '';
+            recarregarMeusCanaisNoCatalogo();
+            renderizarListaMeusCanaisModal();
+            aplicarFiltros(true);
+            fecharModalMeusCanais();
+            const novoIdx = TODOS_CANAIS.findIndex(x => x.url === url);
+            if (novoIdx >= 0) sintonizar(novoIdx);
+            mostrarHUD(`✅ Canal "${{nome}}" salvo no aparelho!`);
+        }}
+        window.salvarCanalIndividual = salvarCanalIndividual;
+
+        function parsearTextoM3u(texto) {{
+            const linhas = String(texto || '').split(/\\r?\\n/);
+            const encontrados = [];
+            let nomeAtual = '';
+            let logoAtual = '';
+            for (const l of linhas) {{
+                const s = l.trim();
+                if (!s) continue;
+                if (s.startsWith('#EXTINF')) {{
+                    const mLogo = s.match(/tvg-logo="([^"]+)"/i);
+                    logoAtual = mLogo ? mLogo[1] : '';
+                    const virgula = s.lastIndexOf(',');
+                    nomeAtual = virgula >= 0 ? s.slice(virgula + 1).trim() : 'Canal M3U';
+                }} else if (/^https?:\\/\\//i.test(s)) {{
+                    encontrados.push({{
+                        id: -(Date.now() + encontrados.length + Math.floor(Math.random() * 1000)),
+                        nome: nomeAtual || `Canal M3U ${{encontrados.length + 1}}`,
+                        logo: logoAtual,
+                        cat: 'filmes',
+                        url: s
+                    }});
+                    nomeAtual = '';
+                    logoAtual = '';
+                }}
+            }}
+            return encontrados;
+        }}
+
+        function importarListaM3uTexto() {{
+            const txtEl = document.getElementById('customM3uText');
+            const novos = parsearTextoM3u(txtEl ? txtEl.value : '');
+            if (novos.length === 0) {{
+                mostrarHUD('⚠️ Nenhum link válido encontrado na lista M3U.');
+                return;
+            }}
+            const salvos = lerMeusCanaisStorage();
+            salvarMeusCanaisStorage([...novos, ...salvos]);
+            if (txtEl) txtEl.value = '';
+            recarregarMeusCanaisNoCatalogo();
+            renderizarListaMeusCanaisModal();
+            aplicarFiltros(true);
+            const pillMeus = document.querySelector('.cat-pill[data-cat="meus"]');
+            if (pillMeus) pillMeus.click();
+            fecharModalMeusCanais();
+            mostrarHUD(`📥 ${{novos.length}} canais importados para "Meus Canais"!`);
+        }}
+        window.importarListaM3uTexto = importarListaM3uTexto;
+
+        function carregarArquivoM3u(ev) {{
+            const file = ev && ev.target && ev.target.files && ev.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = () => {{
+                const txtEl = document.getElementById('customM3uText');
+                if (txtEl) txtEl.value = String(reader.result || '');
+                importarListaM3uTexto();
+            }};
+            reader.readAsText(file, 'utf-8');
+        }}
+        window.carregarArquivoM3u = carregarArquivoM3u;
+
+        function removerMeuCanal(id) {{
+            const salvos = lerMeusCanaisStorage().filter(x => x.id !== id);
+            salvarMeusCanaisStorage(salvos);
+            recarregarMeusCanaisNoCatalogo();
+            renderizarListaMeusCanaisModal();
+            aplicarFiltros(true);
+            mostrarHUD('🗑️ Canal removido.');
+        }}
+        function limparMeusCanais() {{
+            salvarMeusCanaisStorage([]);
+            recarregarMeusCanaisNoCatalogo();
+            renderizarListaMeusCanaisModal();
+            aplicarFiltros(true);
+            mostrarHUD('🗑️ Todos os canais próprios foram removidos.');
+        }}
+        window.removerMeuCanal = removerMeuCanal;
+        window.limparMeusCanais = limparMeusCanais;
+
+        function alternarModoAudio() {{
+            modoEconomiaAudio = !modoEconomiaAudio;
+            document.body.classList.toggle('audio-only-mode', modoEconomiaAudio);
+            const btn = document.getElementById('btnAudioOnly');
+            const lbl = document.getElementById('audioOnlyLabel');
+            if (btn) btn.classList.toggle('mode-active', modoEconomiaAudio);
+            if (lbl) lbl.textContent = modoEconomiaAudio ? 'Vídeo' : 'Só Áudio';
+            if (hls && hls.levels && hls.levels.length > 1) {{
+                hls.currentLevel = modoEconomiaAudio ? 0 : -1;
+            }}
+            mostrarHUD(modoEconomiaAudio ? '📻 Modo Economia ativo: qualidade mínima e só áudio!' : '📺 Modo Vídeo normal restaurado!');
+        }}
+        window.alternarModoAudio = alternarModoAudio;
+
+        function abrirModalSleep() {{
+            const m = document.getElementById('sleepModal');
+            if (m) m.classList.add('open');
+        }}
+        function fecharModalSleep() {{
+            const m = document.getElementById('sleepModal');
+            if (m) m.classList.remove('open');
+        }}
+        window.abrirModalSleep = abrirModalSleep;
+        window.fecharModalSleep = fecharModalSleep;
+
+        function atualizarUiSleep() {{
+            const btn = document.getElementById('btnSleepTimer');
+            const lbl = document.getElementById('sleepLabel');
+            const st = document.getElementById('sleepModalStatus');
+            if (sleepSecondsLeft > 0) {{
+                const mm = String(Math.floor(sleepSecondsLeft / 60)).padStart(2, '0');
+                const ss = String(sleepSecondsLeft % 60).padStart(2, '0');
+                if (btn) btn.classList.add('sleep-active');
+                if (lbl) lbl.textContent = `${{mm}}:${{ss}}`;
+                if (st) st.textContent = `⏳ A TV vai desligar sozinha em ${{mm}}m ${{ss}}s.`;
+            }} else {{
+                if (btn) btn.classList.remove('sleep-active');
+                if (lbl) lbl.textContent = 'Dormir';
+                if (st) st.textContent = 'Escolha em quanto tempo a TV deve parar sozinha para economizar energia e internet:';
+            }}
+        }}
+
+        function definirTemporizadorDormir(minutos) {{
+            clearInterval(sleepInterval);
+            sleepInterval = null;
+            if (!minutos || minutos <= 0) {{
+                sleepSecondsLeft = 0;
+                atualizarUiSleep();
+                fecharModalSleep();
+                mostrarHUD('⏹️ Temporizador para dormir desativado.');
+                return;
+            }}
+            sleepSecondsLeft = minutos * 60;
+            atualizarUiSleep();
+            fecharModalSleep();
+            mostrarHUD(`🌙 Temporizador ativado: TV desliga em ${{minutos}} minutos.`);
+            sleepInterval = setInterval(() => {{
+                sleepSecondsLeft--;
+                if (sleepSecondsLeft <= 0) {{
+                    clearInterval(sleepInterval);
+                    sleepInterval = null;
+                    sleepSecondsLeft = 0;
+                    atualizarUiSleep();
+                    try {{
+                        if (video) video.pause();
+                        if (hls) hls.stopLoad();
+                    }} catch (_) {{}}
+                    mostrarHUD('🌙 Boa noite! TV pausada pelo temporizador.');
+                }} else {{
+                    atualizarUiSleep();
+                }}
+            }}, 1000);
+        }}
+        window.definirTemporizadorDormir = definirTemporizadorDormir;
 
         function obterClasseIdiomaBadge(badge) {{
             const txt = String(badge || '').toUpperCase();
@@ -4143,6 +4655,12 @@ html_code = f"""<!DOCTYPE html>
             }}
 
             const epg = obterEpgDinamico(c);
+            const audioLogoEl = document.getElementById('audioOverlayLogo');
+            const audioTitleEl = document.getElementById('audioOverlayTitle');
+            const audioProgEl = document.getElementById('audioOverlayProg');
+            if (audioLogoEl) audioLogoEl.innerHTML = logoBox.innerHTML;
+            if (audioTitleEl) audioTitleEl.textContent = c.nome;
+            if (audioProgEl) audioProgEl.textContent = `${{epg.titulo}} • ${{c.categoria}}`;
             const epgTimeEl = document.getElementById('epgTimeBadge');
             const epgProgEl = document.getElementById('epgProgBadge');
             const epgNext = document.getElementById('epgNextBadge');
@@ -4266,6 +4784,9 @@ html_code = f"""<!DOCTYPE html>
                 }});
 
                 hls.on(Hls.Events.MANIFEST_PARSED, function () {{
+                    if (modoEconomiaAudio && hls.levels && hls.levels.length > 1) {{
+                        hls.currentLevel = 0;
+                    }}
                     playOverlay.classList.add('hidden');
                     tentativasErro = 0;
                     clearTimeout(window.autoZapTimer);
@@ -4408,6 +4929,33 @@ html_code = f"""<!DOCTYPE html>
                 const spanCount = btn.querySelector('.tab-count');
                 if (spanCount && contadoresPais[cod] !== undefined) {{
                     spanCount.textContent = contadoresPais[cod];
+                }}
+            }});
+
+            // Contagem inteligente nos filtros de categoria (reflete ambiente atual + país selecionado)
+            const canaisDoPaisAtual = canaisAmbiente.filter(c => {{
+                if (apenasFavoritos && !favoritos.includes(c.id)) return false;
+                if (paisFiltro !== 'ALL' && c.pais_codigo !== paisFiltro) return false;
+                return true;
+            }});
+            const contagemCats = {{ all: canaisDoPaisAtual.length, meus: 0 }};
+            canaisDoPaisAtual.forEach(c => {{
+                if (c.tags) {{
+                    c.tags.forEach(t => {{
+                        contagemCats[t] = (contagemCats[t] || 0) + 1;
+                    }});
+                }}
+            }});
+            document.querySelectorAll('.cat-pill').forEach(pill => {{
+                const catKey = pill.getAttribute('data-cat');
+                if (!pill.dataset.baseLabel) {{
+                    pill.dataset.baseLabel = pill.textContent.replace(/\\s*\\(\\d+\\)$/, '').trim();
+                }}
+                if (catKey === 'all') {{
+                    pill.textContent = `${{pill.dataset.baseLabel}} (${{contagemCats.all || 0}})`;
+                }} else {{
+                    const q = contagemCats[catKey] || 0;
+                    pill.textContent = `${{pill.dataset.baseLabel}} (${{q}})`;
                 }}
             }});
 
