@@ -621,15 +621,6 @@
     "categoria": "📰 Notícias"
   },
   {
-    "nome": "Canal 38 (720p)",
-    "url": "https://cdn.jmvstream.com/w/LVW-8503/LVW8503_d0V5oduFlK/playlist.m3u8",
-    "logo": "https://i.imgur.com/co7TCWC.png",
-    "grupo": "News",
-    "pais": "🇧🇷 Brasil",
-    "cors_star": 1,
-    "categoria": "📰 Notícias"
-  },
-  {
     "nome": "Canal Metropolitano de Noticias",
     "url": "https://stmv5.samcast.com.br/claudio8701/claudio8701/playlist.m3u8",
     "logo": "https://i.imgur.com/G0x4xqa.png",
@@ -774,15 +765,6 @@
     "categoria": "📰 Notícias"
   },
   {
-    "nome": "TV Zoom (720p)",
-    "url": "https://cdn.jmvstream.com/w/LVW-9730/LVW9730_LmUwslM8jt/playlist.m3u8",
-    "logo": "https://i.imgur.com/jCGrjf5.png",
-    "grupo": "Entertainment;News",
-    "pais": "🇧🇷 Brasil",
-    "cors_star": 1,
-    "categoria": "📰 Notícias"
-  },
-  {
     "nome": "VEJA+ TV (1080p)",
     "url": "https://gpa-vja.otteravision.com/gpa/vja/vja.m3u8",
     "logo": "https://i.imgur.com/n0pxHo4.png",
@@ -796,15 +778,6 @@
     "url": "https://cpbr.appflux.com.br:2000/hls/1001noites/1001noites.m3u8",
     "logo": "https://i.imgur.com/dWA9y2J.png",
     "grupo": "Shop",
-    "pais": "🇧🇷 Brasil",
-    "cors_star": 1,
-    "categoria": "📺 TV Aberta Brasil"
-  },
-  {
-    "nome": "Adesso TV (720p)",
-    "url": "https://cdn.jmvstream.com/w/LVW-9715/LVW9715_12B26T62tm/playlist.m3u8",
-    "logo": "https://i.imgur.com/KgetM8j.png",
-    "grupo": "General",
     "pais": "🇧🇷 Brasil",
     "cors_star": 1,
     "categoria": "📺 TV Aberta Brasil"
@@ -1435,15 +1408,6 @@
     "url": "https://cdn-uw2-prod.tsv2.amagi.tv/linear/amg01131-tracetv-tracebrazuca-samsungbr/playlist.m3u8",
     "logo": "https://i.imgur.com/DFBocPu.png",
     "grupo": "Music",
-    "pais": "🇧🇷 Brasil",
-    "cors_star": 1,
-    "categoria": "📺 TV Aberta Brasil"
-  },
-  {
-    "nome": "TV A Critica (1080p)",
-    "url": "https://cdn.live.br1.jmvstream.com/w/LVW-20715/LVW20715_50E3x2MCm2/playlist.m3u8",
-    "logo": "https://i.imgur.com/j51rBro.png",
-    "grupo": "Undefined",
     "pais": "🇧🇷 Brasil",
     "cors_star": 1,
     "categoria": "📺 TV Aberta Brasil"

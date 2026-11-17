@@ -1,15 +1,17 @@
+import os
 import sqlite3
 import json
 import re
 import shutil
 from pathlib import Path
 
-BASE_DIR = Path(r"c:\Users\jonas\Downloads\projeto de estudo\ECOSSISTEMA_STREAMING_IPTV")
+BASE_DIR = Path(__file__).resolve().parent
 SAIDA_DIR = BASE_DIR / "saida"
 DB_PATH = SAIDA_DIR / "banco_iptv.db"
-DESKTOP_DIR = Path(r"C:\Users\jonas\Desktop\iptv")
+DESKTOP_DIR = Path(r"C:\Users\jonas\Desktop\iptv") if os.name == "nt" else (SAIDA_DIR / "playlists_m3u")
 
 SAIDA_DIR.mkdir(parents=True, exist_ok=True)
+DESKTOP_DIR.mkdir(parents=True, exist_ok=True)
 
 # 1. Conexão ao banco SQLite
 conn = sqlite3.connect(DB_PATH)
@@ -1602,22 +1604,61 @@ for r in rows:
     else:
         idioma_badge = "🌐 ING / INT"
 
+    eh_cors_ok = bool(cors_star) or ("170.83.16.50" in url)
+    lat_val = lat or 45
+    eh_alta_confianca = (
+        (url_lower.startswith("https://") and eh_cors_ok and not any(x in url_lower for x in ("jmp2.uk", "embedplayer2.xyz", "paldi.pro")))
+        or ("170.83.16.50" in url_lower)
+    )
+
+    # Link Reserva (Plano B) para emissoras principais quando o sinal principal oscilar
+    reserva_url = ""
+    if "sbt nacional" in nome_lower or "sbt interior" in nome_lower:
+        reserva_url = "https://video09.logicahost.com.br/sbtmutum/sbtmutum/playlist.m3u8"
+    elif "cultura" in nome_lower and "uol" in url_lower:
+        reserva_url = "https://v-us-01.wisestream.io/memfs/e8740862-7a1f-45f3-acb2-4f357e144059.m3u8"
+    elif "cultura" in nome_lower:
+        reserva_url = "https://player-tvcultura.stream.uol.com.br/live/tvcultura.m3u8"
+    elif "record news" in nome_lower and "samsungtvplus" in url_lower:
+        reserva_url = "https://rnw-rn.otteravision.com/rnw/rn/rnw_rn.m3u8"
+    elif "record news" in nome_lower:
+        reserva_url = "https://rnw-rn-samsungtvplus.otteravision.com/rnw/rn/rnw_rn.m3u8"
+    elif "redetv" in nome_lower and "jmvstream" in url_lower:
+        reserva_url = "https://tv01.zas.media:1936/redetvparana/redetvparana/playlist.m3u8"
+    elif "redetv" in nome_lower:
+        reserva_url = "https://cdn.live.br1.jmvstream.com/webtv/AVJ-15235/playlist/playlist.m3u8"
+    elif "rede brasil" in nome_lower and "logicahost" in url_lower:
+        reserva_url = "https://redebrasil.nuvemplay.live/hls/stream.m3u8"
+    elif "rede brasil" in nome_lower:
+        reserva_url = "https://video09.logicahost.com.br/redebrasiloficial/redebrasiloficial/playlist.m3u8"
+    elif "aparecida" in nome_lower and "jmvstream" in url_lower:
+        reserva_url = "https://stmv5.samcast.com.br/puctvgoias/puctvgoias/playlist.m3u8"
+    elif "aparecida" in nome_lower:
+        reserva_url = "https://cdn.jmvstream.com/w/LVW-9716/LVW9716_HbtQtezcaw/master.m3u8"
+    elif "cnn brasil" in nome_lower and "170.83.16.50" in url_lower:
+        reserva_url = "https://d25usgadhphvwi.cloudfront.net/hls/main.m3u8"
+
+    if reserva_url == url:
+        reserva_url = ""
+
     canais_estruturados.append({
         "id": c_id,
         "numero": 0,
         "numero_str": "000",
         "nome": nome,
         "url": url,
+        "reserva_url": reserva_url,
         "logo": logo or "",
         "categoria": cat_final,
         "tags": tags,
         "qualidade": "Digital",
-        "latencia": lat or 45,
+        "latencia": lat_val,
+        "confianca": "alta" if eh_alta_confianca else "media",
         "pais": p_label,
         "pais_codigo": p_cod,
         "regiao": reg or "Nacional",
         "idioma_badge": idioma_badge,
-        "cors": bool(cors_star) or ("170.83.16.50" in url)
+        "cors": eh_cors_ok
     })
 
 # Ordenação organizada em subdivisões claras (TV Aberta -> Discovery -> Filmes -> Esportes -> Notícias -> Séries -> Desenhos -> Rádios -> Religiosos)
@@ -1650,11 +1691,12 @@ topo_tv_aberta = [
 def chave_ordenacao(ch):
     p_rank = ordem_pais.get(ch["pais_codigo"], 9)
     b_rank = ordem_bloco.get(ch["categoria"], 99)
+    conf_rank = 0 if ch.get("confianca") == "alta" else 1
     try:
         top_rank = topo_tv_aberta.index(ch["nome"])
     except ValueError:
         top_rank = 100 if ch["nome"] in nomes_prioridade_https else (200 if "170.83.16.50" in ch["url"] else 500)
-    return (p_rank, b_rank, top_rank, ch["nome"].lower())
+    return (p_rank, b_rank, top_rank, conf_rank, ch["nome"].lower())
 
 canais_estruturados.sort(key=chave_ordenacao)
 for i, ch in enumerate(canais_estruturados, start=1):
@@ -2127,6 +2169,53 @@ html_code = f"""<!DOCTYPE html>
             border-radius: 8px;
             padding: 6px 10px;
             font-size: 12px;
+        }}
+        .health-pill {{
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 2px 8px;
+            border-radius: 999px;
+            font-size: 10.5px;
+            font-weight: 800;
+            background: rgba(16, 185, 129, 0.14);
+            border: 1px solid rgba(16, 185, 129, 0.4);
+            color: #6ee7b7;
+        }}
+        .health-pill.cloud {{
+            background: rgba(56, 189, 248, 0.14);
+            border-color: rgba(56, 189, 248, 0.45);
+            color: #bae6fd;
+        }}
+        .health-pill.warn {{
+            background: rgba(245, 158, 11, 0.16);
+            border-color: rgba(245, 158, 11, 0.45);
+            color: #fde68a;
+        }}
+        .health-pill.offline {{
+            background: rgba(248, 113, 113, 0.18);
+            border-color: rgba(248, 113, 113, 0.5);
+            color: #fecaca;
+        }}
+        .conf-pill {{
+            font-size: 9.5px;
+            font-weight: 800;
+            padding: 1px 6px;
+            border-radius: 999px;
+            background: rgba(16, 185, 129, 0.12);
+            color: #6ee7b7;
+            border: 1px solid rgba(16, 185, 129, 0.28);
+            white-space: nowrap;
+        }}
+        .conf-pill.ponte {{
+            background: rgba(56, 189, 248, 0.12);
+            color: #bae6fd;
+            border-color: rgba(56, 189, 248, 0.3);
+        }}
+        .conf-pill.instavel {{
+            background: rgba(248, 113, 113, 0.14);
+            color: #fca5a5;
+            border-color: rgba(248, 113, 113, 0.35);
         }}
         .pulse-play-circle {{
             width: 90px;
@@ -3776,7 +3865,7 @@ html_code = f"""<!DOCTYPE html>
             </div>
             <div class="brand-substatus">
                 <span class="status-dot"></span>
-                <span>Fibra Leve • Zero Travamento • <b id="totalCanaisBadge">{total_canais}</b> Canais</span>
+                <span><b id="totalCanaisBadge">{total_canais}</b> Canais • <span id="healthStatusPill" class="health-pill">🟢 Verificando...</span></span>
             </div>
         </div>
 
@@ -4551,10 +4640,37 @@ html_code = f"""<!DOCTYPE html>
             /^(192\\.168\\.|10\\.|172\\.(1[6-9]|2[0-9]|3[01])\\.)/.test(window.location.hostname) ||
             window.location.protocol === 'file:';
 
-        const DEFAULT_CLOUDFLARE_PROXY_URL = 'https://cinepro-tv-proxy.jonasskynet.workers.dev';
+        let DEFAULT_CLOUDFLARE_PROXY_URL = 'https://cinepro-tv-proxy.jonasskynet.workers.dev';
         let LOCAL_PROXY_ATIVO = false;
         let NUVEM_PROXY_ATIVO = false;
         let NUVEM_PROXY_ENDPOINT = '/.netlify/functions/proxy?url=';
+        let pulosConsecutivos = 0;
+        let usandoReservaAtual = false;
+        const canaisInstaveisSessao = new Set();
+
+        function atualizarPainelSaude() {{
+            const pill = document.getElementById('healthStatusPill');
+            if (!pill) return;
+            if (!navigator.onLine) {{
+                pill.className = 'health-pill offline';
+                pill.textContent = '🔴 Sem Internet';
+                return;
+            }}
+            if (EH_AMBIENTE_LOCAL || LOCAL_PROXY_ATIVO) {{
+                pill.className = 'health-pill';
+                pill.textContent = '🟢 Casa Completa (Proxy 8080)';
+                return;
+            }}
+            if (NUVEM_PROXY_ATIVO) {{
+                pill.className = 'health-pill cloud';
+                pill.textContent = '🔵 Nuvem + Ponte Ativa';
+                return;
+            }}
+            pill.className = 'health-pill warn';
+            pill.textContent = '🟡 Nuvem Direta';
+        }}
+        window.addEventListener('online', () => {{ atualizarPainelSaude(); mostrarHUD('🟢 Internet restabelecida!'); }});
+        window.addEventListener('offline', () => {{ atualizarPainelSaude(); mostrarHUD('🔴 Sem conexão com a internet.'); }});
 
         function obterUrlPonteConfigurada() {{
             try {{
@@ -4579,6 +4695,7 @@ html_code = f"""<!DOCTYPE html>
                     if (data && data.ok) {{
                         NUVEM_PROXY_ATIVO = true;
                         NUVEM_PROXY_ENDPOINT = baseUrl + '/?url=';
+                        atualizarPainelSaude();
                         aplicarFiltros(true);
                         mostrarHUD('📡 Ponte na nuvem ativa! Todos os canais liberados.');
                         return true;
@@ -4632,6 +4749,7 @@ html_code = f"""<!DOCTYPE html>
                 .then(r => {{
                     if (r.ok) {{
                         LOCAL_PROXY_ATIVO = true;
+                        atualizarPainelSaude();
                         aplicarFiltros(true);
                     }}
                 }})
@@ -4647,10 +4765,40 @@ html_code = f"""<!DOCTYPE html>
             'http://170.83.49.66:8083/TVCAMARAHD/index.m3u8': 'https://stream3.camara.gov.br/tv1/manifest.m3u8'
         }};
 
-        function sintonizar(idx) {{
+        function tratarFalhaSintonizacao(c, motivo) {{
+            if (c && c.reserva_url && !usandoReservaAtual) {{
+                const candidatoReserva = {{ ...c, url: c.reserva_url }};
+                if (ehCanalDisponivelAgora(candidatoReserva)) {{
+                    mostrarHUD('🔁 Sinal principal oscilou — ativando Link Reserva (Plano B)...');
+                    clearTimeout(window.autoZapTimer);
+                    window.autoZapTimer = setTimeout(() => {{
+                        sintonizar(canalAtualIndex, true);
+                    }}, 700);
+                    return;
+                }}
+            }}
+            if (c && c.id !== undefined) {{
+                canaisInstaveisSessao.add(c.id);
+                aplicarFiltros(false);
+            }}
+            pulosConsecutivos++;
+            if (pulosConsecutivos >= 4) {{
+                pulosConsecutivos = 0;
+                mostrarHUD('⚠️ Vários canais oscilaram em sequência. Clique em ▶ ou escolha outro canal.');
+                return;
+            }}
+            mostrarHUD(motivo || '⚠️ Canal indisponível. Mudando para o próximo...');
+            clearTimeout(window.autoZapTimer);
+            window.autoZapTimer = setTimeout(() => {{
+                navegarCanal(1);
+            }}, 2000);
+        }}
+
+        function sintonizar(idx, usarReserva = false) {{
             if (idx < 0) idx = TODOS_CANAIS.length - 1;
             if (idx >= TODOS_CANAIS.length) idx = 0;
             canalAtualIndex = idx;
+            usandoReservaAtual = !!usarReserva;
             tentativasErro = 0;
             clearTimeout(window.autoZapTimer);
             clearTimeout(window.stallCheckTimer);
@@ -4705,8 +4853,8 @@ html_code = f"""<!DOCTYPE html>
             video.onerror = null;
 
             // Roteamento híbrido inteligente: Local (proxy Python 8080) vs Nuvem (Cloudflare Ponte / HTTPS direto)
-            let urlBase = c.url;
-            if (!EH_AMBIENTE_LOCAL && !LOCAL_PROXY_ATIVO && MAPA_FALLBACK_HTTPS_NUVEM[c.url]) {{
+            let urlBase = (usandoReservaAtual && c.reserva_url) ? c.reserva_url : c.url;
+            if (!usandoReservaAtual && !EH_AMBIENTE_LOCAL && !LOCAL_PROXY_ATIVO && MAPA_FALLBACK_HTTPS_NUVEM[c.url]) {{
                 urlBase = MAPA_FALLBACK_HTTPS_NUVEM[c.url];
             }}
 
@@ -4810,6 +4958,8 @@ html_code = f"""<!DOCTYPE html>
                     }}
                     playOverlay.classList.add('hidden');
                     tentativasErro = 0;
+                    pulosConsecutivos = 0;
+                    if (c && c.id !== undefined) canaisInstaveisSessao.delete(c.id);
                     clearTimeout(window.autoZapTimer);
                     clearTimeout(window.stallCheckTimer);
 
@@ -4839,26 +4989,23 @@ html_code = f"""<!DOCTYPE html>
                             case Hls.ErrorTypes.NETWORK_ERROR:
                                 tentativasErro++;
                                 if (tentativasErro >= 2) {{
-                                    mostrarHUD('⚠️ Sinal com instabilidade de rede. Avançando para o próximo canal em 2s...');
-                                    clearTimeout(window.autoZapTimer);
-                                    window.autoZapTimer = setTimeout(() => {{
-                                        navegarCanal(1);
-                                    }}, 2000);
+                                    tratarFalhaSintonizacao(c, '⚠️ Sinal com instabilidade de rede. Avançando...');
                                 }} else {{
                                     mostrarHUD('⚠️ Reconectando sinal ao vivo...');
                                     hls.startLoad();
                                 }}
                                 break;
                             case Hls.ErrorTypes.MEDIA_ERROR:
-                                mostrarHUD('🔧 Recuperando decodificador de vídeo...');
-                                hls.recoverMediaError();
+                                tentativasErro++;
+                                if (tentativasErro >= 2) {{
+                                    tratarFalhaSintonizacao(c, '⚠️ Formato de vídeo instável. Pulando...');
+                                }} else {{
+                                    mostrarHUD('🔧 Recuperando decodificador de vídeo...');
+                                    hls.recoverMediaError();
+                                }}
                                 break;
                             default:
-                                mostrarHUD('⚠️ Canal indisponível. Mudando para o próximo canal...');
-                                clearTimeout(window.autoZapTimer);
-                                window.autoZapTimer = setTimeout(() => {{
-                                    navegarCanal(1);
-                                }}, 2000);
+                                tratarFalhaSintonizacao(c, '⚠️ Canal indisponível. Mudando para o próximo...');
                                 break;
                         }}
                     }}
@@ -5004,6 +5151,14 @@ html_code = f"""<!DOCTYPE html>
                 return true;
             }});
 
+            if (canaisInstaveisSessao.size > 0) {{
+                canaisFiltradosCache.sort((a, b) => {{
+                    const ia = canaisInstaveisSessao.has(a.id) ? 1 : 0;
+                    const ib = canaisInstaveisSessao.has(b.id) ? 1 : 0;
+                    return ia - ib;
+                }});
+            }}
+
             searchCountBadge.textContent = `${{canaisFiltradosCache.length}} canais`;
             const collapsedCountEl = document.getElementById('collapsedTotalCount');
             const sidebarPillEl = document.getElementById('sidebarTotalPill');
@@ -5051,15 +5206,19 @@ html_code = f"""<!DOCTYPE html>
                 const logoHtml = c.logo ? `<img src="${{c.logo}}" alt="${{c.nome}}" onerror="this.outerHTML=obterBadgeSvgCliente('${{safeName}}')">` : obterBadgeSvgCliente(c.nome);
                 const badgeTxt = c.idioma_badge || c.pais || '🇧🇷 PT-BR';
                 const badgeCls = obterClasseIdiomaBadge(badgeTxt);
+                const ehInstavel = canaisInstaveisSessao.has(c.id);
+                const confTxt = ehInstavel ? '⚠️ Instável' : (c.confianca === 'alta' ? '🟢 Estável' : '🔵 Ponte');
+                const confCls = ehInstavel ? 'instavel' : (c.confianca === 'alta' ? '' : 'ponte');
+                const reservaIcon = c.reserva_url ? ' <span title="Tem Link Reserva (Plano B)">🔁</span>' : '';
 
                 card.innerHTML = `
                     <div class="channel-card-left">
                         <span class="ch-num-badge">#${{c.numero_str}}</span>
                         <div class="ch-card-logo">${{logoHtml}}</div>
                         <div class="ch-card-info">
-                            <div class="ch-card-name">${{c.nome}}</div>
+                            <div class="ch-card-name">${{c.nome}}${{reservaIcon}}</div>
                             <div class="ch-card-sub">
-                                <span class="lang-badge ${{badgeCls}}">${{badgeTxt}}</span> <span>${{c.categoria}}</span>
+                                <span class="lang-badge ${{badgeCls}}">${{badgeTxt}}</span> <span class="conf-pill ${{confCls}}">${{confTxt}}</span> <span>${{c.categoria}}</span>
                             </div>
                         </div>
                     </div>
@@ -5674,6 +5833,7 @@ html_code = f"""<!DOCTYPE html>
         resetarInatividadeMouse();
 
         // INICIALIZAÇÃO AUTOMÁTICA
+        atualizarPainelSaude();
         aplicarEnquadramento(enquadramentoIndex, false);
         aplicarFiltros(true);
         const primeiroCanalValidoIdx = TODOS_CANAIS.findIndex(c => c.pais_codigo === paisFiltro && ehCanalDisponivelAgora(c));

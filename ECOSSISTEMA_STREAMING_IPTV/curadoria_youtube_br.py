@@ -4,7 +4,7 @@ import pathlib
 import re
 import urllib.request
 
-BASE_DIR = pathlib.Path(r"c:\Users\jonas\Downloads\projeto de estudo\ECOSSISTEMA_STREAMING_IPTV")
+BASE_DIR = pathlib.Path(__file__).resolve().parent
 OUT_JSON = BASE_DIR / "canais_comunidade_br.json"
 
 FONTES = [
