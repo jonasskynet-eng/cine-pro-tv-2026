@@ -1041,6 +1041,20 @@ for vip in canais_vip_fibra:
             cors_star=1
     """, (vip["nome"], vip["url"], vip["logo"], vip["categoria"], vip["qualidade"], vip["latencia"], vip["status"], vip["pais"], vip["regiao"]))
 
+# Inserir ou atualizar canais brasileiros verificados da curadoria comunitária (iptv-org BR / Free-TV BR / Runtime)
+comunidade_json_path = BASE_DIR / "canais_comunidade_br.json"
+if comunidade_json_path.exists():
+    canais_comunidade = json.loads(comunidade_json_path.read_text(encoding="utf-8"))
+    for cm in canais_comunidade:
+        c.execute("""
+            INSERT INTO canais (nome, url, logo, categoria, qualidade, latencia_ms, status, pais, regiao, web_ok, cors_star)
+            VALUES (?, ?, ?, ?, 'Digital', 42, 'ATIVO', ?, 'Brasil / Nuvem', 1, ?)
+            ON CONFLICT(url) DO UPDATE SET
+                status='ATIVO',
+                web_ok=1,
+                cors_star=excluded.cors_star
+        """, (cm["nome"], cm["url"], cm.get("logo", ""), cm.get("categoria", "📺 TV Aberta Brasil"), cm.get("pais", "🇧🇷 Brasil"), int(cm.get("cors_star", 0))))
+
 # Lista Oficial das Principais Rádios FM do Brasil (Extraídas do radiosaovivo.net)
 radios_brasil_oficiais = [
     {"nome": "Rádio Mix FM 106.3 SP", "url": "https://playerservices.streamtheworld.com/api/livestream-redirect/MIXFM_SAOPAULOAAC_SC", "logo": "https://cdn.instant.audio/images/logos/radiosaovivo-net/mix-fm.png", "categoria": "📻 Rádios & Música", "qualidade": "Áudio HD", "latencia": 25, "pais": "🇧🇷 Brasil", "regiao": "São Paulo"},
@@ -1297,7 +1311,10 @@ hosts_br_whitelist = (
     "network_id=6178", "network_id=6128", "network_id=292", "network_id=294", "45.185.15.154",
     "dfr80qz435crc.cloudfront.net/efgh/amagi/globo", "ondaradioweb", "rodrigo2364",
     "d1si3n1st4nkgb.cloudfront.net/10502/88886011", "streaming.onnethn.com/cinemax", "paroquiavianney", "cancaonova",
-    "service.webvideocore.net/cl1olyogir", "rt-rtd.rttv.com/live/rtdoc"
+    "service.webvideocore.net/cl1olyogir", "rt-rtd.rttv.com/live/rtdoc",
+    "d25usgadhphvwi.cloudfront.net", "dai.google.com/linear/hls/event/1xsodt", "stream.ads.ottera.tv/playlist.m3u8?network_id=2153",
+    "khuwemultimedia.com", "mediatailor.us-west-2.amazonaws.com", "mais.uol.com.br", "porbrics.mediacdn.ru",
+    "live.cdn.upx.com", "cdn.livespanel.com", "welltecnologia.com.br", "ecast.site", "streamhost.org", "streamingdevideo.com.br"
 )
 nomes_br_whitelist = (
     "brasil", "brazil", "pt-br", "portuguese", "português", "portugues", "dublado", "sbt", "globo", "record",
@@ -1310,11 +1327,13 @@ nomes_br_whitelist = (
     "maceió", "marica", "maricá", "petropolis", "petrópolis", "passo fundo", "nova mutum", "mossoro",
     "cascavel", "catarinense", "paulista", "parana", "paraná", "ceará", "ceara", "piauí", "piaui",
     "marajoara", "pantanal", "litoral", "amazon sat", "amazonsat", "caze", "ge fast", "ge tv", "veja+",
-    "tcm 10", "cindie", "filmelier", "mytime movie network brasil", "canal de filme para crianças", "cinepix",
+    "tcm 10", "cindie", "filmelier", "mytime movie network", "canal de filme para crianças", "cinepix",
     "despertar tv", "tv maná", "kuriakos", "araruna", "sptv", "sic tv", "tv aliança", "tv aldeia",
     "tv alternativa", "tv curuçá", "tv+pet", "unisul", "tv difusão", "tvitapé", "latinasat", "sim são mateus",
     "tv cidade", "demais tv", "telecine", "cine romântico", "cinemax", "comedy central brasil", "loading tv",
-    "tv séries", "geekdot", "retrô cartoon", "nickonline", "o dia tv", "conecta mais", "space today", "rakuten document"
+    "tv séries", "geekdot", "retrô cartoon", "retro cartoon", "nickonline", "o dia tv", "conecta mais", "space today", "rakuten document",
+    "runtime tv", "reino infantil", "cnn brasil", "canal uol", "rede brasil", "com brasil", "aratu on",
+    "stz tv", "plena tv", "j3news", "fifa+ portuguese", "o encantador de caes", "smithsonian", "awtv", "blitstv"
 )
 proibidos_br_re = re.compile(
     r"([\u0400-\u04FF\u0600-\u06FF]|🇧🇪|🇮🇶|🇲🇦|🇻🇪|🇨🇱|🇦🇷|🇲🇽|🇪🇸|🇩🇪|🇮🇹|🇫🇷|🇷🇺|🇺🇦|🇮🇳|🇹🇷|🇬🇧|🇺🇸|"
@@ -1384,7 +1403,9 @@ for r in rows:
     eh_discovery = any(k in nome_lower for k in [
         "discovery", "animal planet", "investigation discovery", "history", "national geographic",
         "nat geo", "tlc", "hgtv", "pluto tv investigac", "pluto tv natureza", "space today",
-        "rakuten document", "nasa tv", "wild earth"
+        "rakuten document", "nasa tv", "wild earth", "smithsonian", "pluto tv aliens",
+        "pluto tv animais", "pluto tv turbo", "pluto tv policial", "detetives medicos",
+        "encantador de caes", "negocio fechado"
     ])
     if eh_discovery:
         tags.append("discovery")
@@ -1429,14 +1450,14 @@ for r in rows:
         "feiticeira", "chaves", "chapolin", "dexter", "sherlock", "house", "charmed",
         "smallville", "numbers", "kenan", "kel", "icarly", "zoey", "drake", "josh",
         "supernatural", "sobrenatural", "walking dead", "colombo", "schitt", "arnold",
-        "detetives medicos", "soap", "sic replay", "1001 noites", "+maisum"
+        "detetives medicos", "soap", "sic replay", "1001 noites", "+maisum", "awtv", "tvi fic"
     ])
     if tem_nome_serie or ("séries" in cat_lower and not any(k in nome_lower for k in ["cine", "filme", "movie", "telecine", "megapix", "hbo", "paramount", "tnt", "space", "axn"])):
         tags.append("series")
         contagem_tags["series"] += 1
 
     # Tag FILMES (Cinema, Filmes Clássicos, Telecine, HBO, Megapix, Ação, Drama)
-    nao_eh_filme = any(k in nome_lower for k in [
+    nao_eh_filme = eh_religioso or any(k in nome_lower for k in [
         "deal or no deal", "dog the bounty", "fear factor", "homes under",
         "at home with", "family handyman", "chat show", "cold case",
         "true crime", "educação", "educacao", "cnbc-e", "esports max", "unsolved mysteries"
@@ -1444,9 +1465,9 @@ for r in rows:
     tem_nome_filme = any(k in nome_lower for k in [
         "filme", "filmes", "movie", "movies", "cine", "cinema", "telecine", "megapix",
         "hbo", "hbomax", "paramount", "adrenalina pura", "netmovies", "tnt", "space",
-        "axn", "sony channel", "sony", "lifetime", "warner", "universal", "cinemax",
+        "axn", "sony channel", "sony", "lifetime", "warner", "universal tv", "cinemax",
         "canal brasil", "terror", "suspense", "bang bang", "ficcao cientifica",
-        "filmelier", "cindie", "classique", "mytime"
+        "filmelier", "cindie", "classique", "mytime", "runtime tv"
     ])
     if ((tem_nome_filme or "filme" in cat_lower) and not nao_eh_filme) and (not tem_nome_serie or tem_nome_filme):
         tags.append("filmes")
