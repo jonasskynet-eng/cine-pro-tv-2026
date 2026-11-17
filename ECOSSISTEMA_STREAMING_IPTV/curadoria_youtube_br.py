@@ -37,6 +37,242 @@ EXTRAS_MANUAIS = [
         "pais": "🇵🇹 Portugal / Lusófonos",
         "cors_star": 1,
     },
+    # --- Infantil & Desenhos BR ---
+    {
+        "nome": "Fox Kids [Infantis]",
+        "url": "https://stmv2.srvif.com/emlsilva/emlsilva/playlist.m3u8",
+        "logo": "",
+        "grupo": "Kids",
+        "pais": "🇧🇷 Brasil",
+        "cors_star": 1,
+    },
+    {
+        "nome": "Jetsons TV [Infantis]",
+        "url": "https://stmv1.srvif.com/jetsontv/jetsontv/playlist.m3u8",
+        "logo": "",
+        "grupo": "Kids",
+        "pais": "🇧🇷 Brasil",
+        "cors_star": 1,
+    },
+    {
+        "nome": "Xtrema Cartoons",
+        "url": "https://stmv6.voxtvhd.com.br/xtremacartoons/xtremacartoons/playlist.m3u8",
+        "logo": "",
+        "grupo": "Kids",
+        "pais": "🇧🇷 Brasil",
+        "cors_star": 1,
+    },
+    {
+        "nome": "Beyblade | Pluto TV Brasil",
+        "url": "https://service-stitcher.clusters.pluto.tv/v1/stitch/embed/hls/channel/633dc392e0282400071b0d39/master.m3u8?deviceId=channel&deviceModel=web&deviceVersion=1.0&appVersion=1.0&deviceType=rokuChannel&deviceMake=rokuChannel&deviceDNT=1",
+        "logo": "",
+        "grupo": "Kids",
+        "pais": "🇧🇷 Brasil",
+        "cors_star": 0,
+    },
+    # --- TV Aberta, Regionais e Notícias BR ---
+    {
+        "nome": "RBATV Band Pará HD",
+        "url": "https://cdn.live.br1.jmvstream.com/w/LVW-15748/LVW15748_Yed7yzLuRC/playlist.m3u8",
+        "logo": "",
+        "grupo": "General",
+        "pais": "🇧🇷 Brasil",
+        "cors_star": 1,
+    },
+    {
+        "nome": "DW Brasil Notícias",
+        "url": "https://dwamdstream102.akamaized.net/hls/live/2015525/dwstream102/index.m3u8",
+        "logo": "",
+        "grupo": "News",
+        "pais": "🇧🇷 Brasil",
+        "cors_star": 1,
+    },
+    {
+        "nome": "TV ALMG | MG Brasil",
+        "url": "https://streaming.almg.gov.br/live/tvalmg.m3u8",
+        "logo": "",
+        "grupo": "News",
+        "pais": "🇧🇷 Brasil",
+        "cors_star": 1,
+    },
+    {
+        "nome": "TV Cultura Pará (Funtelpa)",
+        "url": "https://www.portalcultura.com.br/playerhtml/funtelpa/tv_funtelpa/playlist.m3u8",
+        "logo": "",
+        "grupo": "General",
+        "pais": "🇧🇷 Brasil",
+        "cors_star": 0,
+    },
+    {
+        "nome": "TVM Pará [TV Aberta]",
+        "url": "https://video09.logicahost.com.br/tvmpara/tvmpara/playlist.m3u8",
+        "logo": "",
+        "grupo": "General",
+        "pais": "🇧🇷 Brasil",
+        "cors_star": 1,
+    },
+    {
+        "nome": "Super Marajoara [TV Aberta]",
+        "url": "https://tv02.zas.media:1936/supermarajoara/supermarajoara/playlist.m3u8",
+        "logo": "",
+        "grupo": "General",
+        "pais": "🇧🇷 Brasil",
+        "cors_star": 1,
+    },
+    {
+        "nome": "TV MAX Rio | Brasil",
+        "url": "https://5cf4a2c2512a2.streamlock.net:443/tvmax/tvmax/playlist.m3u8",
+        "logo": "",
+        "grupo": "General",
+        "pais": "🇧🇷 Brasil",
+        "cors_star": 1,
+    },
+    {
+        "nome": "TV Candidés",
+        "url": "https://cdn.live.br1.jmvstream.com/w/LVW-8067/ngrp:LVW8067_ZffQjxn7UC_all/playlist.m3u8",
+        "logo": "",
+        "grupo": "General",
+        "pais": "🇧🇷 Brasil",
+        "cors_star": 1,
+    },
+    {
+        "nome": "Top Mix TV",
+        "url": "https://video03.logicahost.com.br/topmixtv/topmixtv/chunklist.m3u8",
+        "logo": "",
+        "grupo": "General",
+        "pais": "🇧🇷 Brasil",
+        "cors_star": 1,
+    },
+    {
+        "nome": "TV Ondas Play [Notícias]",
+        "url": "https://stmv5.samcast.com.br/portalondasdemarica/portalondasdemarica/playlist.m3u8",
+        "logo": "",
+        "grupo": "News",
+        "pais": "🇧🇷 Brasil",
+        "cors_star": 1,
+    },
+    {
+        "nome": "Solive TV",
+        "url": "https://stmv6.voxtvhd.com.br/solivetv/solivetv/playlist.m3u8",
+        "logo": "",
+        "grupo": "General",
+        "pais": "🇧🇷 Brasil",
+        "cors_star": 1,
+    },
+    {
+        "nome": "TV Canal 72",
+        "url": "https://stmv1.voxtvhd.com.br/canal72tv2/canal72tv2/playlist.m3u8",
+        "logo": "",
+        "grupo": "General",
+        "pais": "🇧🇷 Brasil",
+        "cors_star": 1,
+    },
+    {
+        "nome": "Elemental Channel",
+        "url": "https://stmv1.samcast.com.br/ricardo2194/ricardo2194/playlist.m3u8",
+        "logo": "",
+        "grupo": "General",
+        "pais": "🇧🇷 Brasil",
+        "cors_star": 1,
+    },
+    {
+        "nome": "Assim é Portugal | Brasil",
+        "url": "https://video04.logicahost.com.br/assimeportugal/assimeportugal/playlist.m3u8",
+        "logo": "",
+        "grupo": "General",
+        "pais": "🇧🇷 Brasil",
+        "cors_star": 1,
+    },
+    # --- Religiosos BR ---
+    {
+        "nome": "TV Pai Eterno (720p)",
+        "url": "https://video09.logicahost.com.br/paieterno/paieterno/playlist.m3u8",
+        "logo": "",
+        "grupo": "Religious",
+        "pais": "🇧🇷 Brasil",
+        "cors_star": 1,
+    },
+    {
+        "nome": "TV Igreja Mundial do Poder de Deus",
+        "url": "https://stmv7.voxtvhd.com.br/pralan/pralan/playlist.m3u8",
+        "logo": "",
+        "grupo": "Religious",
+        "pais": "🇧🇷 Brasil",
+        "cors_star": 1,
+    },
+    {
+        "nome": "TV Adorando Jesus",
+        "url": "https://stmv1.srvif.com/tvadorando/tvadorando/playlist.m3u8",
+        "logo": "",
+        "grupo": "Religious",
+        "pais": "🇧🇷 Brasil",
+        "cors_star": 1,
+    },
+    {
+        "nome": "Rede Mais Família",
+        "url": "https://video09.logicahost.com.br/redefamilia/redefamilia/playlist.m3u8",
+        "logo": "",
+        "grupo": "Religious",
+        "pais": "🇧🇷 Brasil",
+        "cors_star": 1,
+    },
+    {
+        "nome": "TV Manancial",
+        "url": "https://srv4.zcast.com.br/flavio8792/flavio8792/playlist.m3u8",
+        "logo": "",
+        "grupo": "Religious",
+        "pais": "🇧🇷 Brasil",
+        "cors_star": 1,
+    },
+    {
+        "nome": "TV SEPIOL",
+        "url": "https://5a57bda70564a.streamlock.net/tvsepiol/tvsepiol.sdp/playlist.m3u8",
+        "logo": "",
+        "grupo": "Religious",
+        "pais": "🇧🇷 Brasil",
+        "cors_star": 1,
+    },
+    {
+        "nome": "Gospel Music TV",
+        "url": "https://stmv1.srvif.com/gmusic/gmusic/playlist.m3u8",
+        "logo": "",
+        "grupo": "Religious",
+        "pais": "🇧🇷 Brasil",
+        "cors_star": 1,
+    },
+    {
+        "nome": "TOP MIX TV 03 [Religiosos]",
+        "url": "https://video01.logicahost.com.br/topmixtvgospelcanal03/topmixtvgospelcanal03/playlist.m3u8",
+        "logo": "",
+        "grupo": "Religious",
+        "pais": "🇧🇷 Brasil",
+        "cors_star": 1,
+    },
+    # --- Portugal / Lusófonos ---
+    {
+        "nome": "TVI (720p)",
+        "url": "https://raw.githubusercontent.com/thomraider12/canaistvpt/main/m3u8s/tvi.m3u8",
+        "logo": "",
+        "grupo": "General",
+        "pais": "🇵🇹 Portugal / Lusófonos",
+        "cors_star": 1,
+    },
+    {
+        "nome": "V+ TVI (720p)",
+        "url": "https://raw.githubusercontent.com/thomraider12/canaistvpt/main/m3u8s/vmaistvi.m3u8",
+        "logo": "",
+        "grupo": "General",
+        "pais": "🇵🇹 Portugal / Lusófonos",
+        "cors_star": 1,
+    },
+    {
+        "nome": "ON TV Portugal",
+        "url": "https://5ce9406b73c33.streamlock.net/ONFM/livestream/master.m3u8",
+        "logo": "",
+        "grupo": "General",
+        "pais": "🇵🇹 Portugal / Lusófonos",
+        "cors_star": 1,
+    },
 ]
 
 
@@ -91,13 +327,13 @@ def testar_canal(item):
 
 def mapear_categoria(grupo, nome):
     g = (grupo + " " + nome).lower()
-    if any(k in g for k in ("relig", "fonte tv", "plenitude", "rit tv", "universal", "terceiro anjo")):
+    if any(k in g for k in ("relig", "fonte tv", "plenitude", "rit tv", "universal", "terceiro anjo", "gospel", "pai eterno", "igreja", "adorando", "mais fam", "manancial", "sepiol")):
         return "⛪ Religiosos"
     if any(k in g for k in ("encantador", "document", "science", "nature")):
         return "🔬 Discovery & Ciência"
-    if any(k in g for k in ("news", "notic", "cnn", "uol", "aratu", "canal 38")):
+    if any(k in g for k in ("news", "notic", "cnn", "uol", "aratu", "canal 38", "dw brasil", "almg", "ondas")):
         return "📰 Notícias"
-    if any(k in g for k in ("kids", "nickelodeon", "cartoon", "infantil")):
+    if any(k in g for k in ("kids", "nickelodeon", "cartoon", "infantil", "fox kids", "jetsons", "beyblade", "xtrema")):
         return "🧸 Infantil & Desenhos"
     if any(k in g for k in ("sport", "red bull")):
         return "⚽ Esportes & Ação"

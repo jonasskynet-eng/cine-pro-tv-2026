@@ -72,6 +72,15 @@
     "categoria": "⛪ Religiosos"
   },
   {
+    "nome": "Gospel Music TV",
+    "url": "https://stmv1.srvif.com/gmusic/gmusic/playlist.m3u8",
+    "logo": "",
+    "grupo": "Religious",
+    "pais": "🇧🇷 Brasil",
+    "cors_star": 1,
+    "categoria": "⛪ Religiosos"
+  },
+  {
     "nome": "Kuriakos Kids (1080p)",
     "url": "https://w2.manasat.com/kkids/smil:kkids.smil/playlist.m3u8",
     "logo": "https://i.imgur.com/SRX6EPY.png",
@@ -90,9 +99,9 @@
     "categoria": "⛪ Religiosos"
   },
   {
-    "nome": "Rede Gospel (1080p)",
-    "url": "https://cdn.live.br1.jmvstream.com/w/LVW-8719/LVW8719_AcLVAxWy5J/playlist.m3u8",
-    "logo": "https://i.imgur.com/mttSwgO.png",
+    "nome": "Rede Mais Família",
+    "url": "https://video09.logicahost.com.br/redefamilia/redefamilia/playlist.m3u8",
+    "logo": "",
     "grupo": "Religious",
     "pais": "🇧🇷 Brasil",
     "cors_star": 1,
@@ -108,6 +117,33 @@
     "categoria": "⛪ Religiosos"
   },
   {
+    "nome": "TOP MIX TV 03 [Religiosos]",
+    "url": "https://video01.logicahost.com.br/topmixtvgospelcanal03/topmixtvgospelcanal03/playlist.m3u8",
+    "logo": "",
+    "grupo": "Religious",
+    "pais": "🇧🇷 Brasil",
+    "cors_star": 1,
+    "categoria": "⛪ Religiosos"
+  },
+  {
+    "nome": "TV Adorando Jesus",
+    "url": "https://stmv1.srvif.com/tvadorando/tvadorando/playlist.m3u8",
+    "logo": "",
+    "grupo": "Religious",
+    "pais": "🇧🇷 Brasil",
+    "cors_star": 1,
+    "categoria": "⛪ Religiosos"
+  },
+  {
+    "nome": "TV Igreja Mundial do Poder de Deus",
+    "url": "https://stmv7.voxtvhd.com.br/pralan/pralan/playlist.m3u8",
+    "logo": "",
+    "grupo": "Religious",
+    "pais": "🇧🇷 Brasil",
+    "cors_star": 1,
+    "categoria": "⛪ Religiosos"
+  },
+  {
     "nome": "TV Mana Brasil (1080p)",
     "url": "https://w1.manasat.com/tvmana-brasil/smil:tvmana-brasil.smil/playlist.m3u8",
     "logo": "https://i.imgur.com/AFb712e.png",
@@ -117,9 +153,36 @@
     "categoria": "⛪ Religiosos"
   },
   {
+    "nome": "TV Manancial",
+    "url": "https://srv4.zcast.com.br/flavio8792/flavio8792/playlist.m3u8",
+    "logo": "",
+    "grupo": "Religious",
+    "pais": "🇧🇷 Brasil",
+    "cors_star": 1,
+    "categoria": "⛪ Religiosos"
+  },
+  {
     "nome": "TV Padre Cicero (720p)",
     "url": "https://video01.logicahost.com.br/tvpadrecicero/tvpadrecicero/playlist.m3u8",
     "logo": "https://i.imgur.com/Y7b29VG.png",
+    "grupo": "Religious",
+    "pais": "🇧🇷 Brasil",
+    "cors_star": 1,
+    "categoria": "⛪ Religiosos"
+  },
+  {
+    "nome": "TV Pai Eterno (720p)",
+    "url": "https://video09.logicahost.com.br/paieterno/paieterno/playlist.m3u8",
+    "logo": "",
+    "grupo": "Religious",
+    "pais": "🇧🇷 Brasil",
+    "cors_star": 1,
+    "categoria": "⛪ Religiosos"
+  },
+  {
+    "nome": "TV SEPIOL",
+    "url": "https://5a57bda70564a.streamlock.net/tvsepiol/tvsepiol.sdp/playlist.m3u8",
+    "logo": "",
     "grupo": "Religious",
     "pais": "🇧🇷 Brasil",
     "cors_star": 1,
@@ -657,9 +720,27 @@
     "categoria": "📰 Notícias"
   },
   {
+    "nome": "DW Brasil Notícias",
+    "url": "https://dwamdstream102.akamaized.net/hls/live/2015525/dwstream102/index.m3u8",
+    "logo": "",
+    "grupo": "News",
+    "pais": "🇧🇷 Brasil",
+    "cors_star": 1,
+    "categoria": "📰 Notícias"
+  },
+  {
     "nome": "J3NEWS TV",
     "url": "https://video01.brascast.com/d92ebb4f/d92ebb4f/playlist.m3u8",
     "logo": "https://i.imgur.com/lezIQyL.png",
+    "grupo": "News",
+    "pais": "🇧🇷 Brasil",
+    "cors_star": 1,
+    "categoria": "📰 Notícias"
+  },
+  {
+    "nome": "Plena TV (720p)",
+    "url": "https://cdn.jmvstream.com/w/LVW-9591/LVW9591_PmXtgATnaS/playlist.m3u8",
+    "logo": "https://i.imgur.com/lH4RT7b.png",
     "grupo": "News",
     "pais": "🇧🇷 Brasil",
     "cors_star": 1,
@@ -729,9 +810,9 @@
     "categoria": "📰 Notícias"
   },
   {
-    "nome": "TV A Folha (720p)",
-    "url": "https://video01.logicahost.com.br/tvafolha/tvafolha/playlist.m3u8",
-    "logo": "https://i.imgur.com/I7XGMhj.png",
+    "nome": "TV ALMG | MG Brasil",
+    "url": "https://streaming.almg.gov.br/live/tvalmg.m3u8",
+    "logo": "",
     "grupo": "News",
     "pais": "🇧🇷 Brasil",
     "cors_star": 1,
@@ -747,28 +828,19 @@
     "categoria": "📰 Notícias"
   },
   {
+    "nome": "TV Ondas Play [Notícias]",
+    "url": "https://stmv5.samcast.com.br/portalondasdemarica/portalondasdemarica/playlist.m3u8",
+    "logo": "",
+    "grupo": "News",
+    "pais": "🇧🇷 Brasil",
+    "cors_star": 1,
+    "categoria": "📰 Notícias"
+  },
+  {
     "nome": "TV Sim Cachoeiro (720p)",
     "url": "https://5cf4a2c2512a2.streamlock.net/8104/8104/playlist.m3u8",
     "logo": "https://i.imgur.com/t5oUK3C.png",
     "grupo": "News",
-    "pais": "🇧🇷 Brasil",
-    "cors_star": 1,
-    "categoria": "📰 Notícias"
-  },
-  {
-    "nome": "TV Sim Sao Mateus (720p)",
-    "url": "https://5cf4a2c2512a2.streamlock.net/8236/8236/playlist.m3u8",
-    "logo": "https://i.imgur.com/t5oUK3C.png",
-    "grupo": "News",
-    "pais": "🇧🇷 Brasil",
-    "cors_star": 1,
-    "categoria": "📰 Notícias"
-  },
-  {
-    "nome": "TV Zoom (720p)",
-    "url": "https://cdn.jmvstream.com/w/LVW-9730/LVW9730_LmUwslM8jt/playlist.m3u8",
-    "logo": "https://i.imgur.com/jCGrjf5.png",
-    "grupo": "Entertainment;News",
     "pais": "🇧🇷 Brasil",
     "cors_star": 1,
     "categoria": "📰 Notícias"
@@ -819,6 +891,15 @@
     "categoria": "📺 TV Aberta Brasil"
   },
   {
+    "nome": "Assim é Portugal | Brasil",
+    "url": "https://video04.logicahost.com.br/assimeportugal/assimeportugal/playlist.m3u8",
+    "logo": "",
+    "grupo": "General",
+    "pais": "🇧🇷 Brasil",
+    "cors_star": 1,
+    "categoria": "📺 TV Aberta Brasil"
+  },
+  {
     "nome": "Bem Mais TV (1080p)",
     "url": "https://video09.logicahost.com.br/bemmaistv01/bemmaistv01/playlist.m3u8",
     "logo": "https://bemmaistv.com.br/wp-content/uploads/2025/08/0LASAmOtt4-150x150.jpg",
@@ -837,10 +918,10 @@
     "categoria": "📺 TV Aberta Brasil"
   },
   {
-    "nome": "Boas Novas (1080p)",
-    "url": "https://cdn.jmvstream.com/w/LVW-9375/LVW9375_6i0wPBCHYc/playlist.m3u8",
-    "logo": "https://i.imgur.com/ZqhizdP.png",
-    "grupo": "Undefined",
+    "nome": "Blitstv",
+    "url": "https://stmv1.transmissaodigital.com/blitstv/blitstv/playlist.m3u8",
+    "logo": "https://i.imgur.com/FO4QTRf.jpeg",
+    "grupo": "Entertainment",
     "pais": "🇧🇷 Brasil",
     "cors_star": 1,
     "categoria": "📺 TV Aberta Brasil"
@@ -954,19 +1035,19 @@
     "categoria": "📺 TV Aberta Brasil"
   },
   {
-    "nome": "ElyTV (360p)",
-    "url": "https://stmv1.srvsite.com/ely/ely/playlist.m3u8",
-    "logo": "https://i.imgur.com/1eHNe91.png",
-    "grupo": "Entertainment",
+    "nome": "Elemental Channel",
+    "url": "https://stmv1.samcast.com.br/ricardo2194/ricardo2194/playlist.m3u8",
+    "logo": "",
+    "grupo": "General",
     "pais": "🇧🇷 Brasil",
     "cors_star": 1,
     "categoria": "📺 TV Aberta Brasil"
   },
   {
-    "nome": "EUTV (720p)",
-    "url": "https://cdn.jmvstream.com/w/LVW-8719/LVW8719_AcLVAxWy5J/playlist.m3u8",
-    "logo": "https://i.imgur.com/8PxpamC.png",
-    "grupo": "General",
+    "nome": "ElyTV (360p)",
+    "url": "https://stmv1.srvsite.com/ely/ely/playlist.m3u8",
+    "logo": "https://i.imgur.com/1eHNe91.png",
+    "grupo": "Entertainment",
     "pais": "🇧🇷 Brasil",
     "cors_star": 1,
     "categoria": "📺 TV Aberta Brasil"
@@ -1107,6 +1188,15 @@
     "categoria": "📺 TV Aberta Brasil"
   },
   {
+    "nome": "ON TV Portugal",
+    "url": "https://5ce9406b73c33.streamlock.net/ONFM/livestream/master.m3u8",
+    "logo": "",
+    "grupo": "General",
+    "pais": "🇵🇹 Portugal / Lusófonos",
+    "cors_star": 1,
+    "categoria": "📺 TV Aberta Brasil"
+  },
+  {
     "nome": "One Piece BR",
     "url": "https://jmp2.uk/plu-624b1c8d4321e200073ee421.m3u8",
     "logo": "https://i.imgur.com/XsvbAWR.png",
@@ -1233,6 +1323,15 @@
     "categoria": "📺 TV Aberta Brasil"
   },
   {
+    "nome": "RBATV (720p)",
+    "url": "https://cdn.live.br1.jmvstream.com/w/LVW-15748/LVW15748_Yed7yzLuRC/playlist.m3u8",
+    "logo": "https://i.imgur.com/ZWFxlU1.png",
+    "grupo": "General",
+    "pais": "🇧🇷 Brasil",
+    "cors_star": 1,
+    "categoria": "📺 TV Aberta Brasil"
+  },
+  {
     "nome": "Rede Brasil",
     "url": "https://video09.logicahost.com.br/redebrasiloficial/redebrasiloficial/playlist.m3u8",
     "logo": "https://upload.wikimedia.org/wikipedia/commons/d/d1/Marca_rede_brasil_rgb-color.png",
@@ -1332,6 +1431,15 @@
     "categoria": "📺 TV Aberta Brasil"
   },
   {
+    "nome": "Solive TV",
+    "url": "https://stmv6.voxtvhd.com.br/solivetv/solivetv/playlist.m3u8",
+    "logo": "",
+    "grupo": "General",
+    "pais": "🇧🇷 Brasil",
+    "cors_star": 1,
+    "categoria": "📺 TV Aberta Brasil"
+  },
+  {
     "nome": "SOU TV",
     "url": "https://video10.logicahost.com.br/soutv/soutv/playlist.m3u8",
     "logo": "https://i.ibb.co/8cKmCNm/ezgif-com-gif-maker.png",
@@ -1377,6 +1485,15 @@
     "categoria": "📺 TV Aberta Brasil"
   },
   {
+    "nome": "Super Marajoara [TV Aberta]",
+    "url": "https://tv02.zas.media:1936/supermarajoara/supermarajoara/playlist.m3u8",
+    "logo": "",
+    "grupo": "General",
+    "pais": "🇧🇷 Brasil",
+    "cors_star": 1,
+    "categoria": "📺 TV Aberta Brasil"
+  },
+  {
     "nome": "Tastemade Brasil (720p)",
     "url": "https://jmp2.uk/plu-5fd1419a3b4f4b000773ba85.m3u8",
     "logo": "https://i.imgur.com/FPy4zF4.png",
@@ -1401,6 +1518,15 @@
     "grupo": "Animation",
     "pais": "🇧🇷 Brasil",
     "cors_star": 0,
+    "categoria": "📺 TV Aberta Brasil"
+  },
+  {
+    "nome": "Top Mix TV",
+    "url": "https://video03.logicahost.com.br/topmixtv/topmixtv/chunklist.m3u8",
+    "logo": "",
+    "grupo": "General",
+    "pais": "🇧🇷 Brasil",
+    "cors_star": 1,
     "categoria": "📺 TV Aberta Brasil"
   },
   {
@@ -1449,12 +1575,12 @@
     "categoria": "📺 TV Aberta Brasil"
   },
   {
-    "nome": "TV Arapuan (720p)",
-    "url": "https://5b7f3c45ab7c2.streamlock.net/arapuan/ngrp:arapuan_all/playlist.m3u8",
-    "logo": "https://i.imgur.com/3395A2h.png",
+    "nome": "TV BRICS Portuguese (1080p)",
+    "url": "https://porbrics.mediacdn.ru/cdn/brics/portuguese/playlist.m3u8",
+    "logo": "https://i.imgur.com/vLpm8tN.png",
     "grupo": "General",
     "pais": "🇧🇷 Brasil",
-    "cors_star": 1,
+    "cors_star": 0,
     "categoria": "📺 TV Aberta Brasil"
   },
   {
@@ -1462,6 +1588,24 @@
     "url": "https://stream3.camara.gov.br/tv1/manifest.m3u8",
     "logo": "https://i.imgur.com/Sdou1Ab.png",
     "grupo": "Legislative",
+    "pais": "🇧🇷 Brasil",
+    "cors_star": 1,
+    "categoria": "📺 TV Aberta Brasil"
+  },
+  {
+    "nome": "TV Canal 72",
+    "url": "https://stmv1.voxtvhd.com.br/canal72tv2/canal72tv2/playlist.m3u8",
+    "logo": "",
+    "grupo": "General",
+    "pais": "🇧🇷 Brasil",
+    "cors_star": 1,
+    "categoria": "📺 TV Aberta Brasil"
+  },
+  {
+    "nome": "TV Candidés",
+    "url": "https://cdn.live.br1.jmvstream.com/w/LVW-8067/ngrp:LVW8067_ZffQjxn7UC_all/playlist.m3u8",
+    "logo": "",
+    "grupo": "General",
     "pais": "🇧🇷 Brasil",
     "cors_star": 1,
     "categoria": "📺 TV Aberta Brasil"
@@ -1500,6 +1644,15 @@
     "grupo": "Brazil",
     "pais": "🇧🇷 Brasil",
     "cors_star": 1,
+    "categoria": "📺 TV Aberta Brasil"
+  },
+  {
+    "nome": "TV Cultura Pará (Funtelpa)",
+    "url": "https://www.portalcultura.com.br/playerhtml/funtelpa/tv_funtelpa/playlist.m3u8",
+    "logo": "",
+    "grupo": "General",
+    "pais": "🇧🇷 Brasil",
+    "cors_star": 0,
     "categoria": "📺 TV Aberta Brasil"
   },
   {
@@ -1566,6 +1719,15 @@
     "categoria": "📺 TV Aberta Brasil"
   },
   {
+    "nome": "TV MAX Rio | Brasil",
+    "url": "https://5cf4a2c2512a2.streamlock.net:443/tvmax/tvmax/playlist.m3u8",
+    "logo": "",
+    "grupo": "General",
+    "pais": "🇧🇷 Brasil",
+    "cors_star": 1,
+    "categoria": "📺 TV Aberta Brasil"
+  },
+  {
     "nome": "TV Passo Fundo (720p)",
     "url": "https://5a57bda70564a.streamlock.net/tvpasso/tvpasso.sdp/playlist.m3u8",
     "logo": "https://i.imgur.com/QFE6TiV.png",
@@ -1588,15 +1750,6 @@
     "url": "https://stmv1.voxtvhd.com.br/9030/9030/playlist.m3u8",
     "logo": "https://i.imgur.com/f34CQIG.png",
     "grupo": "General",
-    "pais": "🇧🇷 Brasil",
-    "cors_star": 1,
-    "categoria": "📺 TV Aberta Brasil"
-  },
-  {
-    "nome": "TV Sul Bahia (320p)",
-    "url": "https://live.cdn.upx.com/00046/myStream.sdp/playlist.m3u8",
-    "logo": "https://i.imgur.com/qM6nMWm.png",
-    "grupo": "Undefined",
     "pais": "🇧🇷 Brasil",
     "cors_star": 1,
     "categoria": "📺 TV Aberta Brasil"
@@ -1638,6 +1791,15 @@
     "categoria": "📺 TV Aberta Brasil"
   },
   {
+    "nome": "TVI (720p)",
+    "url": "https://raw.githubusercontent.com/thomraider12/canaistvpt/main/m3u8s/tvi.m3u8",
+    "logo": "",
+    "grupo": "General",
+    "pais": "🇵🇹 Portugal / Lusófonos",
+    "cors_star": 1,
+    "categoria": "📺 TV Aberta Brasil"
+  },
+  {
     "nome": "TVitape (720p)",
     "url": "https://stream01.msolutionbrasil.com.br/hls/tvitape/live.m3u8",
     "logo": "https://i.imgur.com/XeqcwKe.png",
@@ -1656,9 +1818,9 @@
     "categoria": "📺 TV Aberta Brasil"
   },
   {
-    "nome": "TVNBN (720p)",
-    "url": "https://cdn.jmvstream.com/w/LVW-8410/LVW8410_uiZOVm6vz1/playlist.m3u8",
-    "logo": "https://i.imgur.com/zoHBxn1.png",
+    "nome": "TVM Pará [TV Aberta]",
+    "url": "https://video09.logicahost.com.br/tvmpara/tvmpara/playlist.m3u8",
+    "logo": "",
     "grupo": "General",
     "pais": "🇧🇷 Brasil",
     "cors_star": 1,
@@ -1679,6 +1841,15 @@
     "logo": "https://i.imgur.com/N0TvAFz.png",
     "grupo": "Culture;Education",
     "pais": "🇧🇷 Brasil",
+    "cors_star": 1,
+    "categoria": "📺 TV Aberta Brasil"
+  },
+  {
+    "nome": "V+ TVI (720p)",
+    "url": "https://raw.githubusercontent.com/thomraider12/canaistvpt/main/m3u8s/vmaistvi.m3u8",
+    "logo": "",
+    "grupo": "General",
+    "pais": "🇵🇹 Portugal / Lusófonos",
     "cors_star": 1,
     "categoria": "📺 TV Aberta Brasil"
   },
@@ -1782,12 +1953,39 @@
     "categoria": "🧸 Infantil & Desenhos"
   },
   {
+    "nome": "Beyblade | Pluto TV Brasil",
+    "url": "https://service-stitcher.clusters.pluto.tv/v1/stitch/embed/hls/channel/633dc392e0282400071b0d39/master.m3u8?deviceId=channel&deviceModel=web&deviceVersion=1.0&appVersion=1.0&deviceType=rokuChannel&deviceMake=rokuChannel&deviceDNT=1",
+    "logo": "",
+    "grupo": "Kids",
+    "pais": "🇧🇷 Brasil",
+    "cors_star": 0,
+    "categoria": "🧸 Infantil & Desenhos"
+  },
+  {
     "nome": "Bob Esponja Calca Quadrada (720p)",
     "url": "https://jmp2.uk/plu-62545c0b002f4b0007688b61.m3u8",
     "logo": "https://images.pluto.tv/channels/62545c0b002f4b0007688b61/colorLogoPNG.png",
     "grupo": "Kids",
     "pais": "🇧🇷 Brasil",
     "cors_star": 0,
+    "categoria": "🧸 Infantil & Desenhos"
+  },
+  {
+    "nome": "Fox Kids [Infantis]",
+    "url": "https://stmv2.srvif.com/emlsilva/emlsilva/playlist.m3u8",
+    "logo": "",
+    "grupo": "Kids",
+    "pais": "🇧🇷 Brasil",
+    "cors_star": 1,
+    "categoria": "🧸 Infantil & Desenhos"
+  },
+  {
+    "nome": "Jetsons TV [Infantis]",
+    "url": "https://stmv1.srvif.com/jetsontv/jetsontv/playlist.m3u8",
+    "logo": "",
+    "grupo": "Kids",
+    "pais": "🇧🇷 Brasil",
+    "cors_star": 1,
     "categoria": "🧸 Infantil & Desenhos"
   },
   {
@@ -1833,6 +2031,15 @@
     "grupo": "Kids",
     "pais": "🇧🇷 Brasil",
     "cors_star": 0,
+    "categoria": "🧸 Infantil & Desenhos"
+  },
+  {
+    "nome": "NickOnline HD (720p)",
+    "url": "https://x1colegal.com/hls/stream.m3u8",
+    "logo": "https://x1colegal.com/logo.png",
+    "grupo": "Animation;Kids",
+    "pais": "🇧🇷 Brasil",
+    "cors_star": 1,
     "categoria": "🧸 Infantil & Desenhos"
   },
   {
@@ -1905,6 +2112,15 @@
     "grupo": "Kids",
     "pais": "🇧🇷 Brasil",
     "cors_star": 0,
+    "categoria": "🧸 Infantil & Desenhos"
+  },
+  {
+    "nome": "Xtrema Cartoons",
+    "url": "https://stmv6.voxtvhd.com.br/xtremacartoons/xtremacartoons/playlist.m3u8",
+    "logo": "",
+    "grupo": "Kids",
+    "pais": "🇧🇷 Brasil",
+    "cors_star": 1,
     "categoria": "🧸 Infantil & Desenhos"
   }
 ]

@@ -28,8 +28,6 @@ c.execute("""
        OR url LIKE '%38.134.250.110%'
        OR url LIKE '%45.171.64.30%'
        OR url LIKE '%190.128.214.97%'
-       OR url LIKE '%LVW-15748%'
-       OR url LIKE '%LVW-10842/LVW10842_513N26MDBL/playlist.m3u8%'
        OR url LIKE '%LVW-10801/LVW10801_Xvg4R0u57n/playlist.m3u8%'
        OR url LIKE '%79.127.238.228%'
        OR url LIKE '%goo.gl%'
@@ -1316,7 +1314,10 @@ hosts_br_whitelist = (
     "service.webvideocore.net/cl1olyogir", "rt-rtd.rttv.com/live/rtdoc",
     "d25usgadhphvwi.cloudfront.net", "dai.google.com/linear/hls/event/1xsodt", "stream.ads.ottera.tv/playlist.m3u8?network_id=2153",
     "khuwemultimedia.com", "mediatailor.us-west-2.amazonaws.com", "mais.uol.com.br", "porbrics.mediacdn.ru",
-    "live.cdn.upx.com", "cdn.livespanel.com", "welltecnologia.com.br", "ecast.site", "streamhost.org", "streamingdevideo.com.br"
+    "live.cdn.upx.com", "cdn.livespanel.com", "welltecnologia.com.br", "ecast.site", "streamhost.org", "streamingdevideo.com.br",
+    "jmvstream.com", "dwamdstream102.akamaized.net", "streaming.almg.gov.br", "portalcultura.com.br", "logicahost.com.br",
+    "tv02.zas.media", "5cf4a2c2512a2.streamlock.net", "samcast.com.br", "voxtvhd.com.br", "srvif.com",
+    "zcast.com.br", "5a57bda70564a.streamlock.net", "clusters.pluto.tv"
 )
 nomes_br_whitelist = (
     "brasil", "brazil", "pt-br", "portuguese", "português", "portugues", "dublado", "sbt", "globo", "record",
@@ -1335,7 +1336,11 @@ nomes_br_whitelist = (
     "tv cidade", "demais tv", "telecine", "cine romântico", "cinemax", "comedy central brasil", "loading tv",
     "tv séries", "geekdot", "retrô cartoon", "retro cartoon", "nickonline", "o dia tv", "conecta mais", "space today", "rakuten document",
     "runtime tv", "reino infantil", "cnn brasil", "canal uol", "rede brasil", "com brasil", "aratu on",
-    "stz tv", "plena tv", "j3news", "fifa+ portuguese", "o encantador de caes", "smithsonian", "awtv", "blitstv"
+    "stz tv", "plena tv", "j3news", "fifa+ portuguese", "o encantador de caes", "smithsonian", "awtv", "blitstv",
+    "fox kids", "jetsons", "xtrema cartoons", "beyblade", "rbatv", "dw brasil", "tv almg",
+    "tv cultura para", "tvm para", "super marajoara", "tv max rio", "tv candides", "top mix tv",
+    "tv ondas play", "solive tv", "tv canal 72", "elemental channel", "assim e portugal",
+    "tv pai eterno", "igreja mundial", "adorando jesus", "rede mais familia", "tv manancial", "tv sepiol", "gospel music tv"
 )
 proibidos_br_re = re.compile(
     r"([\u0400-\u04FF\u0600-\u06FF]|🇧🇪|🇮🇶|🇲🇦|🇻🇪|🇨🇱|🇦🇷|🇲🇽|🇪🇸|🇩🇪|🇮🇹|🇫🇷|🇷🇺|🇺🇦|🇮🇳|🇹🇷|🇬🇧|🇺🇸|"
@@ -1439,7 +1444,7 @@ for r in rows:
         "animac", "nickelodeon", "nick", "disney", "gloob", "turma da monica", "peppa",
         "patrulha canina", "smurfs", "tartarugas ninja", "bob esponja", "spongebob", "avatar: a lenda",
         "oggy", "anime", "animes", "naruto", "one piece", "tokusato", "babyfirst", "kuriakos kids",
-        "reino infantil", "geekdot", "loading tv"
+        "reino infantil", "geekdot", "loading tv", "fox kids", "jetsons", "xtrema", "beyblade"
     ]) or "desenho" in cat_lower or "infantil" in cat_lower
     if eh_infantil:
         tags.append("infantil")
