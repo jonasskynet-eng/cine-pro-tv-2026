@@ -1681,10 +1681,11 @@ ordem_bloco = {
     "⛪ Religiosos": 14,
 }
 topo_tv_aberta = [
-    "SBT Nacional HD", "TV Cultura SP (Fibra Leve)", "Canal Futura (Grupo Globo Fibra)",
-    "RecordTV Juara HD", "Band TV HD (Ao Vivo)", "BandNews TV (Fibra Leve)",
-    "RedeTV! (Fibra Leve)", "TV Brasil (EBC Oficial HD)", "TV Gazeta SP (NuvemPlay)",
-    "Record News (Fibra Leve)", "TV Cultura SP Oficial (UOL)", "TV Câmara Brasil Oficial 1080p",
+    "SBT Nacional HD", "TV Cultura SP (Fibra Leve)", "CNN Brasil (1080p)", "SBT News (720p)",
+    "Canal Futura (Grupo Globo Fibra)", "RecordTV Juara HD", "Band TV HD (Ao Vivo)",
+    "BandNews TV (Fibra Leve)", "RedeTV! (Fibra Leve)", "TV Brasil (EBC Oficial HD)",
+    "Rede Brasil", "TV Gazeta SP (NuvemPlay)", "Record News (Fibra Leve)",
+    "TV Cultura SP Oficial (UOL)", "TV Câmara Brasil Oficial 1080p",
     "Amazon Sat HD Oficial", "Boas Novas 1080p", "TVE RS 1080p", "Rede Minas HD", "Rede Meio Norte HD"
 ]
 
@@ -3956,6 +3957,9 @@ html_code = f"""<!DOCTYPE html>
                 </div>
 
                 <div class="player-actions">
+                    <button type="button" class="icon-btn-text" id="btnLastChannel" onclick="voltarCanalAnterior()" title="Voltar ao último canal assistido">
+                        <span>↩️</span> <span>Voltar</span>
+                    </button>
                     <button type="button" class="icon-btn-text" id="epgDockCard" onclick="abrirModalEpg(event)" title="Ver guia de programação do canal">
                         <span>📅</span> <span>Guia</span>
                     </button>
@@ -4646,7 +4650,17 @@ html_code = f"""<!DOCTYPE html>
         let NUVEM_PROXY_ENDPOINT = '/.netlify/functions/proxy?url=';
         let pulosConsecutivos = 0;
         let usandoReservaAtual = false;
+        let canalAnteriorIndex = -1;
         const canaisInstaveisSessao = new Set();
+
+        function voltarCanalAnterior() {{
+            if (canalAnteriorIndex >= 0 && canalAnteriorIndex < TODOS_CANAIS.length && canalAnteriorIndex !== canalAtualIndex) {{
+                sintonizar(canalAnteriorIndex);
+            }} else {{
+                mostrarHUD('↩️ Assista a um segundo canal primeiro para alternar.');
+            }}
+        }}
+        window.voltarCanalAnterior = voltarCanalAnterior;
 
         function atualizarPainelSaude() {{
             const pill = document.getElementById('healthStatusPill');
@@ -4797,6 +4811,9 @@ html_code = f"""<!DOCTYPE html>
         function sintonizar(idx, usarReserva = false) {{
             if (idx < 0) idx = TODOS_CANAIS.length - 1;
             if (idx >= TODOS_CANAIS.length) idx = 0;
+            if (idx !== canalAtualIndex && !usarReserva) {{
+                canalAnteriorIndex = canalAtualIndex;
+            }}
             canalAtualIndex = idx;
             usandoReservaAtual = !!usarReserva;
             tentativasErro = 0;
@@ -5812,6 +5829,15 @@ html_code = f"""<!DOCTYPE html>
                 case 'categoria':
                     const pill = document.querySelector(`.cat-pill[data-cat="${{val}}"]`);
                     if (pill) pill.click();
+                    break;
+                case 'voltar':
+                    voltarCanalAnterior();
+                    break;
+                case 'audio_only':
+                    alternarModoAudio();
+                    break;
+                case 'dormir30':
+                    definirTemporizadorDormir(30);
                     break;
                 case 'recarregar':
                     window.location.reload();

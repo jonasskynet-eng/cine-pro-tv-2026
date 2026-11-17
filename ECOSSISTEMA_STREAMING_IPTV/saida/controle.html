@@ -422,13 +422,25 @@
 
     <!-- AÇÕES RÁPIDAS -->
     <div class="actions-row">
-        <button class="act-btn" onclick="enviarComando('playpause')">
-            <span class="icon">⏯</span>
-            <span>Play/Pause</span>
+        <button class="act-btn" onclick="enviarComando('voltar')">
+            <span class="icon">↩️</span>
+            <span>Voltar</span>
         </button>
         <button class="act-btn" onclick="enviarComando('mute')">
             <span class="icon">🔇</span>
             <span>Mudo</span>
+        </button>
+        <button class="act-btn" onclick="enviarComando('audio_only')">
+            <span class="icon">📻</span>
+            <span>Só Áudio</span>
+        </button>
+        <button class="act-btn" onclick="enviarComando('dormir30')">
+            <span class="icon">🌙</span>
+            <span>Dormir 30m</span>
+        </button>
+        <button class="act-btn" onclick="enviarComando('playpause')">
+            <span class="icon">⏯</span>
+            <span>Play/Pause</span>
         </button>
         <button class="act-btn" onclick="enviarComando('aspect')">
             <span class="icon">📐</span>
@@ -461,15 +473,17 @@
         <button class="num-btn btn-send" onclick="enviarNumero()">IR ➔</button>
     </div>
 
-    <!-- ATALHOS DE CATEGORIA -->
+    <!-- ATALHOS DE CATEGORIA (ORDEM DOS GOSTOS DO JONAS) -->
     <div class="cat-shortcuts">
         <button class="cat-btn" onclick="enviarComando('categoria', 'aberta')">📺 TV Aberta</button>
-        <button class="cat-btn" onclick="enviarComando('categoria', 'infantil')">🧸 Infantis</button>
-        <button class="cat-btn" onclick="enviarComando('categoria', 'series')">🍿 Séries</button>
-        <button class="cat-btn" onclick="enviarComando('categoria', 'comedia')">😂 Comédia</button>
+        <button class="cat-btn" onclick="enviarComando('categoria', 'discovery')">🔬 Discovery</button>
         <button class="cat-btn" onclick="enviarComando('categoria', 'filmes')">🎬 Filmes</button>
-        <button class="cat-btn" onclick="enviarComando('categoria', 'shows')">🎸 Shows</button>
+        <button class="cat-btn" onclick="enviarComando('categoria', 'series')">🍿 Séries</button>
         <button class="cat-btn" onclick="enviarComando('categoria', 'esportes')">⚽ Esportes</button>
+        <button class="cat-btn" onclick="enviarComando('categoria', 'noticias')">📰 Notícias</button>
+        <button class="cat-btn" onclick="enviarComando('categoria', 'infantil')">🧸 Desenhos</button>
+        <button class="cat-btn" onclick="enviarComando('categoria', 'musica')">📻 Rádios</button>
+        <button class="cat-btn" onclick="enviarComando('categoria', 'religiosos')">⛪ Religiosos</button>
     </div>
 
     <div id="toastHUD" class="toast">Comando enviado!</div>
