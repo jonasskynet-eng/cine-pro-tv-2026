@@ -99,6 +99,15 @@
     "categoria": "⛪ Religiosos"
   },
   {
+    "nome": "Rede Gospel (1080p)",
+    "url": "https://cdn.live.br1.jmvstream.com/w/LVW-8719/LVW8719_AcLVAxWy5J/playlist.m3u8",
+    "logo": "https://i.imgur.com/mttSwgO.png",
+    "grupo": "Religious",
+    "pais": "🇧🇷 Brasil",
+    "cors_star": 1,
+    "categoria": "⛪ Religiosos"
+  },
+  {
     "nome": "Rede Mais Família",
     "url": "https://video09.logicahost.com.br/redefamilia/redefamilia/playlist.m3u8",
     "logo": "",
@@ -666,15 +675,6 @@
     "categoria": "🎬 Filmes & Cinema"
   },
   {
-    "nome": "Aratu On (1080p)",
-    "url": "https://cdn.live.br1.jmvstream.com/w/LVW-9359/LVW9359_XSyReL0QVf/playlist.m3u8",
-    "logo": "https://i.imgur.com/Ht4jCab.png",
-    "grupo": "News",
-    "pais": "🇧🇷 Brasil",
-    "cors_star": 1,
-    "categoria": "📰 Notícias"
-  },
-  {
     "nome": "BM&C News (720p)",
     "url": "https://jmp2.uk/plu-666c9c60a7efd40008f552f0.m3u8",
     "logo": "https://i.imgur.com/pOUY2Uz.png",
@@ -810,6 +810,15 @@
     "categoria": "📰 Notícias"
   },
   {
+    "nome": "TV A Folha (720p)",
+    "url": "https://video01.logicahost.com.br/tvafolha/tvafolha/playlist.m3u8",
+    "logo": "https://i.imgur.com/I7XGMhj.png",
+    "grupo": "News",
+    "pais": "🇧🇷 Brasil",
+    "cors_star": 1,
+    "categoria": "📰 Notícias"
+  },
+  {
     "nome": "TV ALMG | MG Brasil",
     "url": "https://streaming.almg.gov.br/live/tvalmg.m3u8",
     "logo": "",
@@ -841,6 +850,15 @@
     "url": "https://5cf4a2c2512a2.streamlock.net/8104/8104/playlist.m3u8",
     "logo": "https://i.imgur.com/t5oUK3C.png",
     "grupo": "News",
+    "pais": "🇧🇷 Brasil",
+    "cors_star": 1,
+    "categoria": "📰 Notícias"
+  },
+  {
+    "nome": "TV Zoom (720p)",
+    "url": "https://cdn.jmvstream.com/w/LVW-9730/LVW9730_LmUwslM8jt/playlist.m3u8",
+    "logo": "https://i.imgur.com/jCGrjf5.png",
+    "grupo": "Entertainment;News",
     "pais": "🇧🇷 Brasil",
     "cors_star": 1,
     "categoria": "📰 Notícias"
@@ -1048,6 +1066,15 @@
     "url": "https://stmv1.srvsite.com/ely/ely/playlist.m3u8",
     "logo": "https://i.imgur.com/1eHNe91.png",
     "grupo": "Entertainment",
+    "pais": "🇧🇷 Brasil",
+    "cors_star": 1,
+    "categoria": "📺 TV Aberta Brasil"
+  },
+  {
+    "nome": "EUTV (720p)",
+    "url": "https://cdn.jmvstream.com/w/LVW-8719/LVW8719_AcLVAxWy5J/playlist.m3u8",
+    "logo": "https://i.imgur.com/8PxpamC.png",
+    "grupo": "General",
     "pais": "🇧🇷 Brasil",
     "cors_star": 1,
     "categoria": "📺 TV Aberta Brasil"
@@ -1323,15 +1350,6 @@
     "categoria": "📺 TV Aberta Brasil"
   },
   {
-    "nome": "RBATV (720p)",
-    "url": "https://cdn.live.br1.jmvstream.com/w/LVW-15748/LVW15748_Yed7yzLuRC/playlist.m3u8",
-    "logo": "https://i.imgur.com/ZWFxlU1.png",
-    "grupo": "General",
-    "pais": "🇧🇷 Brasil",
-    "cors_star": 1,
-    "categoria": "📺 TV Aberta Brasil"
-  },
-  {
     "nome": "Rede Brasil",
     "url": "https://video09.logicahost.com.br/redebrasiloficial/redebrasiloficial/playlist.m3u8",
     "logo": "https://upload.wikimedia.org/wikipedia/commons/d/d1/Marca_rede_brasil_rgb-color.png",
@@ -1380,15 +1398,6 @@
     "nome": "Rede SPTV (360p)",
     "url": "https://video01.logicahost.com.br/websptv/websptv/playlist.m3u8",
     "logo": "https://i.imgur.com/kh3LGAP.png",
-    "grupo": "General",
-    "pais": "🇧🇷 Brasil",
-    "cors_star": 1,
-    "categoria": "📺 TV Aberta Brasil"
-  },
-  {
-    "nome": "Rede TV! Mais (720p)",
-    "url": "https://cdn.live.br1.jmvstream.com/webtv/AVJ-15235/playlist/playlist.m3u8",
-    "logo": "https://i.ibb.co/F0Tm2WP/2103f4c07b851d64b4c96955765a9a95.png",
     "grupo": "General",
     "pais": "🇧🇷 Brasil",
     "cors_star": 1,
@@ -1764,6 +1773,15 @@
     "categoria": "📺 TV Aberta Brasil"
   },
   {
+    "nome": "TV Vila Real (720p)",
+    "url": "https://cdn.jmvstream.com/w/LVW-10841/LVW10841_mT77z9o2cP/playlist.m3u8",
+    "logo": "https://i.imgur.com/Z1uWe7g.png",
+    "grupo": "Undefined",
+    "pais": "🇧🇷 Brasil",
+    "cors_star": 1,
+    "categoria": "📺 TV Aberta Brasil"
+  },
+  {
     "nome": "TV+Pet",
     "url": "https://stmv5.samcast.com.br/tvmaispet6354/tvmaispet6354/playlist.m3u8",
     "logo": "https://www.tvmaispet.com.br/images/tvpet-logo.png",
@@ -1821,6 +1839,15 @@
     "nome": "TVM Pará [TV Aberta]",
     "url": "https://video09.logicahost.com.br/tvmpara/tvmpara/playlist.m3u8",
     "logo": "",
+    "grupo": "General",
+    "pais": "🇧🇷 Brasil",
+    "cors_star": 1,
+    "categoria": "📺 TV Aberta Brasil"
+  },
+  {
+    "nome": "TVNBN (720p)",
+    "url": "https://cdn.jmvstream.com/w/LVW-8410/LVW8410_uiZOVm6vz1/playlist.m3u8",
+    "logo": "https://i.imgur.com/zoHBxn1.png",
     "grupo": "General",
     "pais": "🇧🇷 Brasil",
     "cors_star": 1,

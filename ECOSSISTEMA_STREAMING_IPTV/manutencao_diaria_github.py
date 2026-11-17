@@ -73,7 +73,10 @@ def main():
     conn.close()
     print(f"Auditoria concluída: {atualizados} atualizados | {desativados} links mortos (404/410) desativados.")
 
-    print("=== [3/3] Regerando Central CinePro TV (docs/index.html) ===")
+    print("=== [3/4] Atualizando Guia de Programação (EPG) Real Brasileiro ===")
+    subprocess.run([sys.executable, "-W", "error", str(BASE_DIR / "atualizar_epg_br.py")], check=True)
+
+    print("=== [4/4] Regerando Central CinePro TV (docs/index.html + docs/canais.json) ===")
     subprocess.run([sys.executable, "-W", "error", str(BASE_DIR / "atualizar_central_pro.py")], check=True)
     print("Manutenção diária finalizada com sucesso!")
 

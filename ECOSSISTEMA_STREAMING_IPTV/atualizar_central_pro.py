@@ -3,6 +3,7 @@ import sqlite3
 import json
 import re
 import shutil
+import unicodedata
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent
@@ -1275,6 +1276,44 @@ c.execute(f"""
 rows = c.fetchall()
 conn.close()
 
+def _chave_emissora_reserva(nome_txt: str) -> str:
+    txt = unicodedata.normalize("NFKD", (nome_txt or "").split("|")[0]).encode("ascii", "ignore").decode("ascii").lower()
+    txt = re.sub(r"\([^)]*\)|\[[^\]]*\]|~.*", " ", txt)
+    txt = re.sub(r"\b(hd|fhd|sd|uhd|4k|br|brasil|oficial|fibra|leve|digital|nacional|link\s*\d+|ao\s*vivo)\b", " ", txt)
+    txt = re.sub(r"[^a-z0-9]+", " ", txt).strip()
+    return txt
+
+# Índice de múltiplas fontes HTTPS ativas no próprio banco para ampliar o Plano B (Link Reserva)
+fontes_https_por_emissora = {}
+for _r in rows:
+    _r_nome, _r_url = _r[1], (_r[2] or "").strip()
+    _r_cors = bool(_r[11]) if len(_r) > 11 else False
+    if not _r_url.startswith("https://") or "170.83." in _r_url:
+        continue
+    _ch = _chave_emissora_reserva(_r_nome)
+    if len(_ch) >= 4:
+        fontes_https_por_emissora.setdefault(_ch, []).append((_r_cors, _r_url))
+
+for _ch in fontes_https_por_emissora:
+    # Prioriza fontes com CORS=* como reserva mais amigável para navegadores
+    fontes_https_por_emissora[_ch].sort(key=lambda item: (0 if item[0] else 1, len(item[1])))
+
+# Reservas manuais extras para grandes emissoras com múltiplas variações de nome no catálogo
+RESERVAS_PRINCIPAIS_EXTRAS = [
+    ("band tv", "https://cdn.live.br1.jmvstream.com/w/LVW-15748/LVW15748_Yed7yzLuRC/playlist.m3u8"),
+    ("rbatv", "https://cdn.live.br1.jmvstream.com/w/LVW-15748/LVW15748_Yed7yzLuRC/playlist.m3u8"),
+    ("sbt news", "https://amg00527-amg00527c5-amgplt0026.playouts.now.amagi.tv/playlist/amg00527-amg00527c5-amgplt0026/playlist.m3u8"),
+    ("tv brasil", "https://ebctvbrasil.akamaized.net/hls/live/2023301/ebctvbrasil/index.m3u8"),
+    ("jovem pan", "https://d25usgadhphvwi.cloudfront.net/hls/main.m3u8"),
+    ("pluto tv anime", "https://service-stitcher.clusters.pluto.tv/v1/stitch/embed/hls/channel/5f12136385bccc00070142ed/master.m3u8?deviceId=channel&deviceModel=web&deviceVersion=1.0&appVersion=1.0&deviceType=rokuChannel&deviceMake=rokuChannel&deviceDNT=1"),
+    ("rede seculo 21", "https://cdn.live.br1.jmvstream.com/w/LVW-19954/LVW19954_V2nXt9iI2m/master.m3u8"),
+    ("cancao nova", "https://5c65286fc6ace.streamlock.net/cancaonova/CancaoNova.stream/playlist.m3u8"),
+    ("nickonline", "https://x1colegal.com/hls/stream.m3u8"),
+    ("recordtv", "https://cdn.live.br1.jmvstream.com/w/LVW-10842/LVW10842_513N26MDBL/playlist.m3u8"),
+    ("runtime", "https://stream.ads.ottera.tv/playlist.m3u8?network_id=2153"),
+]
+total_com_reserva = 0
+
 # Normalizar dados e aplicar o sistema de Tags Ricas + Whitelist Rigorosa Brasil + Subdivisões Claras
 canais_estruturados = []
 contagem_paises = {"BR": 0, "PT": 0, "LATAM": 0, "GLOBAL": 0}
@@ -1643,8 +1682,24 @@ for r in rows:
     elif "cnn brasil" in nome_lower and "170.83.16.50" in url_lower:
         reserva_url = "https://d25usgadhphvwi.cloudfront.net/hls/main.m3u8"
 
+    if not reserva_url:
+        _chave_res = _chave_emissora_reserva(nome)
+        for _cors_alt, _url_alt in fontes_https_por_emissora.get(_chave_res, []):
+            if _url_alt != url:
+                reserva_url = _url_alt
+                break
+
+    if not reserva_url:
+        _nome_norm_res = _chave_emissora_reserva(nome)
+        for _kw_res, _url_kw in RESERVAS_PRINCIPAIS_EXTRAS:
+            if _kw_res in _nome_norm_res and _url_kw != url:
+                reserva_url = _url_kw
+                break
+
     if reserva_url == url:
         reserva_url = ""
+    if reserva_url:
+        total_com_reserva += 1
 
     canais_estruturados.append({
         "id": c_id,
@@ -1711,13 +1766,17 @@ for i, ch in enumerate(canais_estruturados, start=1):
 
 total_canais = len(canais_estruturados)
 print(f"Total de canais estruturados: {total_canais}")
+print(f"Canais com Link Reserva (Plano B): {total_com_reserva}")
 print(f"Contagem por País: {contagem_paises}")
 print(f"Contagem por Tags: {contagem_tags}")
 
-# Gravar JSON limpo
+# Gravar JSON limpo e versão compacta ultra-leve para carregamento instantâneo
 json_path = SAIDA_DIR / "canais_leves.json"
 with open(json_path, "w", encoding="utf-8") as f:
     json.dump(canais_estruturados, f, ensure_ascii=False, indent=2)
+
+json_compacto = json.dumps(canais_estruturados, ensure_ascii=False, separators=(",", ":"))
+(SAIDA_DIR / "canais.json").write_text(json_compacto, encoding="utf-8")
 
 # Playlists Desktop M3U dedicadas para os gostos do Jonas
 def gerar_m3u(caminho, lista, titulo):
@@ -1737,9 +1796,7 @@ gerar_m3u(DESKTOP_DIR / "CANAIS_COMEDIA.m3u", [c for c in canais_estruturados if
 gerar_m3u(DESKTOP_DIR / "CANAIS_SHOWS_E_MUSICA.m3u", [c for c in canais_estruturados if "shows" in c["tags"] or "musica" in c["tags"]], "Canais de Shows e Música")
 gerar_m3u(DESKTOP_DIR / "CANAIS_ENTRETENIMENTO.m3u", [c for c in canais_estruturados if "entretenimento" in c["tags"]], "Canais de Entretenimento")
 
-# Gerar HTML Player Profissional
-json_canais_str = json.dumps(canais_estruturados, ensure_ascii=False)
-
+# Gerar HTML Player Profissional Ultra-Leve (catálogo carregado via canais.json)
 html_code = f"""<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -4238,8 +4295,8 @@ html_code = f"""<!DOCTYPE html>
     </div>
 
     <script>
-        const TODOS_CANAIS = {json_canais_str};
-        const CANAIS_BASE_QTD = TODOS_CANAIS.length;
+        let TODOS_CANAIS = [];
+        let CANAIS_BASE_QTD = 0;
         const CHAVE_MEUS_CANAIS = 'cinepro_meus_canais_v1';
         let hls = null;
         let canalAtualIndex = 0;
@@ -4306,7 +4363,6 @@ html_code = f"""<!DOCTYPE html>
             const badgeTotal = document.getElementById('totalCanaisBadge');
             if (badgeTotal) badgeTotal.textContent = TODOS_CANAIS.length;
         }}
-        recarregarMeusCanaisNoCatalogo();
 
         function renderizarListaMeusCanaisModal() {{
             const salvos = lerMeusCanaisStorage();
@@ -4597,8 +4653,98 @@ html_code = f"""<!DOCTYPE html>
             window.hudTimer = setTimeout(() => hudToast.classList.remove('show'), 2400);
         }}
 
+        let EPG_REAL_MAP = {{}};
+        let EPG_REAL_KEYS_SORTED = [];
+
+        function normalizarNomeEpgCliente(nomeStr) {{
+            const base = String(nomeStr || '').split('|')[0];
+            return base
+                .normalize('NFD').replace(/[\\u0300-\\u036f]/g, '')
+                .toLowerCase()
+                .replace(/\\([^)]*\\)|\\[[^\\]]*\\]/g, ' ')
+                .replace(/\\b(hd|fhd|sd|uhd|4k|fibra|leve|digital|oficial|ao vivo)\\b/g, ' ')
+                .replace(/[^a-z0-9]+/g, ' ')
+                .trim();
+        }}
+
+        function formatarHoraUnix(tsSec) {{
+            const d = new Date(tsSec * 1000);
+            return `${{String(d.getHours()).padStart(2, '0')}}:${{String(d.getMinutes()).padStart(2, '0')}}`;
+        }}
+
+        function buscarGradeRealEpg(canalObj) {{
+            if (!EPG_REAL_KEYS_SORTED.length) return null;
+            const k = normalizarNomeEpgCliente(canalObj.nome || '');
+            if (!k || k.length < 3) return null;
+
+            let lista = EPG_REAL_MAP[k] || null;
+            if (!lista) {{
+                const pk = ` ${{k}} `;
+                for (let i = 0; i < EPG_REAL_KEYS_SORTED.length; i++) {{
+                    const ek = EPG_REAL_KEYS_SORTED[i];
+                    if (ek.length < 4) continue;
+                    if (ek === 'tv brasil' && !k.startsWith('tv brasil')) continue;
+                    if (pk.includes(` ${{ek}} `)) {{
+                        lista = EPG_REAL_MAP[ek];
+                        break;
+                    }}
+                }}
+            }}
+            if (!Array.isArray(lista) || !lista.length) return null;
+
+            const agoraSec = Math.floor(Date.now() / 1000);
+            let idxAtual = lista.findIndex(p => p[0] <= agoraSec && agoraSec < p[1]);
+            if (idxAtual < 0) {{
+                idxAtual = lista.findIndex(p => p[1] > agoraSec);
+                if (idxAtual < 0) return null;
+            }}
+
+            const atual = lista[idxAtual];
+            const prox = lista[idxAtual + 1] || null;
+            const depois = lista[idxAtual + 2] || null;
+            const duracao = Math.max(60, atual[1] - atual[0]);
+            const progresso = Math.max(4, Math.min(98, Math.round(((agoraSec - atual[0]) / duracao) * 100)));
+
+            return {{
+                ehReal: true,
+                faixa: `${{formatarHoraUnix(atual[0])}} - ${{formatarHoraUnix(atual[1])}}`,
+                titulo: atual[2],
+                descricao: atual[3] || `Transmissão ao vivo • ${{canalObj.categoria || ''}}`,
+                progresso: progresso,
+                proximaFaixa: prox ? `${{formatarHoraUnix(prox[0])}} - ${{formatarHoraUnix(prox[1])}}` : 'Em seguida',
+                proximoTitulo: prox ? prox[2] : 'Programação contínua 24h',
+                proximaDesc: prox ? (prox[3] || '') : '',
+                depoisFaixa: depois ? `${{formatarHoraUnix(depois[0])}} - ${{formatarHoraUnix(depois[1])}}` : 'Mais tarde',
+                depoisTitulo: depois ? depois[2] : 'Sequência da grade ao vivo',
+                depoisDesc: depois ? (depois[3] || '') : '',
+                listaCompleta: lista.slice(idxAtual, idxAtual + 6).map((item, pos) => ({{
+                    atual: pos === 0 && item[0] <= agoraSec && agoraSec < item[1],
+                    faixa: `${{formatarHoraUnix(item[0])}} - ${{formatarHoraUnix(item[1])}}`,
+                    titulo: item[2],
+                    desc: item[3] || `Grade oficial • ${{canalObj.nome}}`,
+                    progresso: pos === 0 ? progresso : 0
+                }}))
+            }};
+        }}
+
+        function atualizarCartaoEpgAtual() {{
+            if (!TODOS_CANAIS.length || canalAtualIndex < 0 || canalAtualIndex >= TODOS_CANAIS.length) return;
+            const c = TODOS_CANAIS[canalAtualIndex];
+            const epg = obterEpgDinamico(c);
+            const audioProgEl = document.getElementById('audioOverlayProg');
+            const epgTimeEl = document.getElementById('epgTimeBadge');
+            const epgProgEl = document.getElementById('epgProgBadge');
+            const epgNext = document.getElementById('epgNextBadge');
+            if (audioProgEl) audioProgEl.textContent = `${{epg.titulo}} • ${{c.categoria}}`;
+            if (epgTimeEl) epgTimeEl.textContent = epg.faixa;
+            if (epgProgEl) epgProgEl.textContent = epg.ehReal ? `📡 ${{epg.titulo}}` : epg.titulo;
+            if (epgNext) epgNext.textContent = `${{epg.proximaFaixa.split(' - ')[0]}} • ${{epg.proximoTitulo}}`;
+        }}
+
         function obterEpgDinamico(canalObj) {{
             const c = typeof canalObj === 'object' && canalObj !== null ? canalObj : {{ nome: String(canalObj || 'Canal Ao Vivo'), categoria: '' }};
+            const real = buscarGradeRealEpg(c);
+            if (real) return real;
             const nomeLimpo = (c.nome || 'Canal').replace('(Digital Leve)', '').replace('(Fibra Leve)', '').trim();
             const cat = (c.categoria || '').toLowerCase();
             const agora = new Date();
@@ -4635,8 +4781,10 @@ html_code = f"""<!DOCTYPE html>
             const idxDepois = (h + 2) % grade.length;
 
             return {{
+                ehReal: false,
                 faixa: `${{formatHora(inicioBloco, 0)}} - ${{formatHora(fimBloco, 0)}}`,
                 titulo: grade[idxProg],
+                descricao: `Transmissão ao vivo em andamento • ${{c.categoria || ''}}`,
                 progresso: progresso,
                 proximaFaixa: `${{formatHora(fimBloco, 0)}} - ${{formatHora(fimBloco + 1, 0)}}`,
                 proximoTitulo: grade[idxProx],
@@ -5470,39 +5618,55 @@ html_code = f"""<!DOCTYPE html>
             const chLogo = document.getElementById('epgModalLogo');
             if (!modal || !list) return;
             const c = TODOS_CANAIS[canalAtualIndex] || TODOS_CANAIS[0];
+            if (!c) return;
             const epg = obterEpgDinamico(c);
             if (chName) chName.textContent = `#${{c.numero_str}} • ${{c.nome}}`;
-            if (chCat) chCat.textContent = `${{c.categoria}} • ${{c.pais}} • Grade Automática 24h`;
+            if (chCat) chCat.textContent = epg.ehReal
+                ? `${{c.categoria}} • 📡 Guia Real XMLTV Hoje`
+                : `${{c.categoria}} • ${{c.pais}} • Grade Automática 24h`;
             if (chLogo) {{
                 const safeName = c.nome.replace(/'/g, "\\'");
                 chLogo.innerHTML = c.logo ? `<img src="${{c.logo}}" alt="${{c.nome}}" onerror="this.outerHTML=obterBadgeSvgCliente('${{safeName}}')">` : obterBadgeSvgCliente(c.nome);
             }}
-            list.innerHTML = `
-                <div class="epg-item current">
-                    <div class="epg-item-header">
-                        <span class="epg-item-time">🕒 ${{epg.faixa}}</span>
-                        <span class="epg-item-badge badge-live">🔴 NO AR AGORA • ${{epg.progresso}}%</span>
+            if (epg.ehReal && Array.isArray(epg.listaCompleta) && epg.listaCompleta.length) {{
+                list.innerHTML = epg.listaCompleta.map((item, idx) => `
+                    <div class="epg-item ${{item.atual ? 'current' : ''}}">
+                        <div class="epg-item-header">
+                            <span class="epg-item-time">🕒 ${{item.faixa}}</span>
+                            <span class="epg-item-badge ${{item.atual ? 'badge-live' : 'badge-upcoming'}}">${{item.atual ? `🔴 NO AR AGORA • ${{item.progresso}}%` : (idx === 1 ? '⏭️ A SEGUIR' : '📅 MAIS TARDE')}}</span>
+                        </div>
+                        <div class="epg-item-title">${{item.titulo}}</div>
+                        <div class="epg-item-desc">${{item.desc}}</div>
                     </div>
-                    <div class="epg-item-title">${{epg.titulo}}</div>
-                    <div class="epg-item-desc">Transmissão ao vivo em andamento • ${{c.categoria}}</div>
-                </div>
-                <div class="epg-item">
-                    <div class="epg-item-header">
-                        <span class="epg-item-time">🕒 ${{epg.proximaFaixa}}</span>
-                        <span class="epg-item-badge badge-upcoming">⏭️ A SEGUIR</span>
+                `).join('');
+            }} else {{
+                list.innerHTML = `
+                    <div class="epg-item current">
+                        <div class="epg-item-header">
+                            <span class="epg-item-time">🕒 ${{epg.faixa}}</span>
+                            <span class="epg-item-badge badge-live">🔴 NO AR AGORA • ${{epg.progresso}}%</span>
+                        </div>
+                        <div class="epg-item-title">${{epg.titulo}}</div>
+                        <div class="epg-item-desc">Transmissão ao vivo em andamento • ${{c.categoria}}</div>
                     </div>
-                    <div class="epg-item-title">${{epg.proximoTitulo}}</div>
-                    <div class="epg-item-desc">Próxima atração programada na sequência • ${{c.nome}}</div>
-                </div>
-                <div class="epg-item">
-                    <div class="epg-item-header">
-                        <span class="epg-item-time">🕒 ${{epg.depoisFaixa}}</span>
-                        <span class="epg-item-badge badge-upcoming">📅 MAIS TARDE</span>
+                    <div class="epg-item">
+                        <div class="epg-item-header">
+                            <span class="epg-item-time">🕒 ${{epg.proximaFaixa}}</span>
+                            <span class="epg-item-badge badge-upcoming">⏭️ A SEGUIR</span>
+                        </div>
+                        <div class="epg-item-title">${{epg.proximoTitulo}}</div>
+                        <div class="epg-item-desc">Próxima atração programada na sequência • ${{c.nome}}</div>
                     </div>
-                    <div class="epg-item-title">${{epg.depoisTitulo}}</div>
-                    <div class="epg-item-desc">Continuação da grade digital 24h • ${{c.pais}}</div>
-                </div>
-            `;
+                    <div class="epg-item">
+                        <div class="epg-item-header">
+                            <span class="epg-item-time">🕒 ${{epg.depoisFaixa}}</span>
+                            <span class="epg-item-badge badge-upcoming">📅 MAIS TARDE</span>
+                        </div>
+                        <div class="epg-item-title">${{epg.depoisTitulo}}</div>
+                        <div class="epg-item-desc">Continuação da grade digital 24h • ${{c.pais}}</div>
+                    </div>
+                `;
+            }}
             modal.classList.add('open');
         }}
         window.abrirModalEpg = abrirModalEpg;
@@ -5863,12 +6027,51 @@ html_code = f"""<!DOCTYPE html>
         window.addEventListener('touchstart', resetarInatividadeMouse);
         resetarInatividadeMouse();
 
-        // INICIALIZAÇÃO AUTOMÁTICA
-        atualizarPainelSaude();
-        aplicarEnquadramento(enquadramentoIndex, false);
-        aplicarFiltros(true);
-        const primeiroCanalValidoIdx = TODOS_CANAIS.findIndex(c => c.pais_codigo === paisFiltro && ehCanalDisponivelAgora(c));
-        sintonizar(primeiroCanalValidoIdx >= 0 ? primeiroCanalValidoIdx : 0);
+        // INICIALIZAÇÃO AUTOMÁTICA ULTRA-LEVE (canais.json + epg_br.json)
+        async function inicializarCatalogoLeve() {{
+            atualizarPainelSaude();
+            aplicarEnquadramento(enquadramentoIndex, false);
+            const listEl = document.getElementById('channelListBody');
+            if (listEl) {{
+                listEl.innerHTML = '<div style="padding:24px; text-align:center; color:#94a3b8; font-size:13px;">⚡ Carregando catálogo leve de canais...</div>';
+            }}
+
+            const reqEpg = fetch('./epg_br.json')
+                .then(r => (r.ok ? r.json() : null))
+                .then(dadosEpg => {{
+                    if (dadosEpg && dadosEpg.canais) {{
+                        EPG_REAL_MAP = dadosEpg.canais;
+                        EPG_REAL_KEYS_SORTED = Object.keys(EPG_REAL_MAP).sort((a, b) => b.length - a.length);
+                        atualizarCartaoEpgAtual();
+                    }}
+                }})
+                .catch(() => {{}});
+
+            try {{
+                const respCanais = await fetch('./canais.json');
+                if (!respCanais.ok) throw new Error('HTTP ' + respCanais.status);
+                const listaCanais = await respCanais.json();
+                if (Array.isArray(listaCanais)) {{
+                    TODOS_CANAIS = listaCanais;
+                    CANAIS_BASE_QTD = TODOS_CANAIS.length;
+                }}
+            }} catch (err) {{
+                if (listEl) {{
+                    listEl.innerHTML = '<div style="padding:24px; text-align:center; color:#fca5a5; font-size:13px;">⚠️ Falha ao baixar canais.json. Recarregue a página.</div>';
+                }}
+                return;
+            }}
+
+            recarregarMeusCanaisNoCatalogo();
+            atualizarPainelSaude();
+            aplicarFiltros(true);
+            const primeiroCanalValidoIdx = TODOS_CANAIS.findIndex(c => c.pais_codigo === paisFiltro && ehCanalDisponivelAgora(c));
+            if (TODOS_CANAIS.length) {{
+                sintonizar(primeiroCanalValidoIdx >= 0 ? primeiroCanalValidoIdx : 0);
+            }}
+            await reqEpg;
+        }}
+        inicializarCatalogoLeve();
     </script>
 </body>
 </html>
@@ -5883,5 +6086,8 @@ html_docs_path = docs_dir / "index.html"
 html_saida_path.write_text(html_code, encoding="utf-8")
 shutil.copyfile(html_saida_path, html_desktop_path)
 shutil.copyfile(html_saida_path, html_docs_path)
+shutil.copyfile(SAIDA_DIR / "canais.json", docs_dir / "canais.json")
+if DESKTOP_DIR.exists():
+    shutil.copyfile(SAIDA_DIR / "canais.json", DESKTOP_DIR / "canais.json")
 
 print("ATUALIZAÇÃO COM PADRÃO 16:9 FIXO, ENQUADRAMENTO E ZERO TRAVAMENTO FINALIZADA COM SUCESSO!")
