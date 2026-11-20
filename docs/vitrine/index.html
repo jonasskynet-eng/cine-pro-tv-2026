@@ -1,0 +1,1725 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#07090e">
+    <meta name="description" content="Jonas Digital • Soluções definitivas em TV ao Vivo (939 canais), Rádios de Estúdio, Som Comercial e Centrais Multimídia. A partir de R$ 30 em pagamento único, sem mensalidades.">
+    <title>Jonas Digital • TV Ao Vivo, Som Comercial e Centrais Multimídia</title>
+    
+    <!-- FONTES MODERNAS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@500;700;900&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-base: #07090e;
+            --bg-surface: #0c1017;
+            --bg-card: rgba(16, 22, 34, 0.75);
+            --bg-card-hover: rgba(24, 33, 50, 0.88);
+            --border-subtle: rgba(255, 255, 255, 0.08);
+            --border-highlight: rgba(16, 185, 129, 0.35);
+            --emerald-main: #10b981;
+            --emerald-glow: rgba(16, 185, 129, 0.25);
+            --emerald-dark: #04241a;
+            --amber-accent: #f59e0b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --text-dim: #64748b;
+            --radius-sm: 8px;
+            --radius-md: 14px;
+            --radius-lg: 22px;
+            --font-main: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            --font-mono: 'Space Grotesk', monospace;
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--bg-base);
+            color: var(--text-main);
+            font-family: var(--font-main);
+            line-height: 1.6;
+            overflow-x: clip;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1180px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* BARRA SUPERIOR DE STATUS */
+        .top-notification {
+            background: linear-gradient(90deg, #064e3b, #047857, #064e3b);
+            color: #ecfdf5;
+            font-size: 12.5px;
+            font-weight: 700;
+            text-align: center;
+            padding: 8px 16px;
+            letter-spacing: 0.02em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .live-dot {
+            width: 8px;
+            height: 8px;
+            background: #34d399;
+            border-radius: 50%;
+            box-shadow: 0 0 8px #34d399;
+            animation: pulseDot 1.5s infinite;
+        }
+
+        @keyframes pulseDot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(0.8); }
+        }
+
+        /* HEADER ELEGANTE */
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 90;
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            background: rgba(7, 9, 14, 0.82);
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .nav-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 74px;
+        }
+
+        .brand-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: var(--text-main);
+            font-weight: 900;
+            font-size: 18px;
+            letter-spacing: -0.03em;
+        }
+
+        .brand-badge {
+            background: linear-gradient(135deg, #059669, #10b981);
+            color: #ffffff;
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 17px;
+            box-shadow: 0 0 16px var(--emerald-glow);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 26px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-muted);
+            font-size: 14px;
+            font-weight: 600;
+            transition: color 0.16s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--text-main);
+        }
+
+        .btn-header-cta {
+            background: var(--emerald-main);
+            color: var(--emerald-dark);
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-size: 13.5px;
+            font-weight: 800;
+            text-decoration: none;
+            box-shadow: 0 0 18px rgba(16, 185, 129, 0.35);
+            transition: transform 0.12s ease, opacity 0.16s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-header-cta:hover {
+            transform: translateY(-1px);
+            opacity: 0.94;
+        }
+
+        /* HERO SECTION */
+        .hero {
+            padding: 70px 0 50px;
+            position: relative;
+        }
+
+        .hero-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            color: #34d399;
+            padding: 6px 14px;
+            border-radius: 30px;
+            font-size: 12.5px;
+            font-weight: 700;
+            margin-bottom: 22px;
+        }
+
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1.18fr 0.88fr;
+            gap: 44px;
+            align-items: center;
+        }
+
+        .hero-title {
+            font-size: clamp(2.4rem, 4.8vw, 3.9rem);
+            font-weight: 900;
+            line-height: 1.08;
+            letter-spacing: -0.04em;
+        }
+
+        .hero-highlight {
+            background: linear-gradient(135deg, #34d399, #10b981, #059669);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-description {
+            margin-top: 20px;
+            font-size: 17px;
+            color: var(--text-muted);
+            max-width: 52ch;
+        }
+
+        .hero-badges-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        .hero-mini-badge {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border-subtle);
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #cbd5e1;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .hero-btns {
+            margin-top: 32px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+        }
+
+        .btn-main {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--emerald-main);
+            color: var(--emerald-dark);
+            padding: 14px 26px;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 800;
+            text-decoration: none;
+            box-shadow: 0 0 24px var(--emerald-glow);
+            transition: transform 0.12s ease, opacity 0.16s ease;
+        }
+
+        .btn-main:hover {
+            transform: translateY(-2px);
+            opacity: 0.94;
+        }
+
+        .btn-outline {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.04);
+            color: var(--text-main);
+            border: 1px solid var(--border-subtle);
+            padding: 14px 22px;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: background 0.16s ease, border-color 0.16s ease;
+        }
+
+        .btn-outline:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.25);
+        }
+
+        /* CARD DE DEMONSTRAÇÃO AO VIVO */
+        .live-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            box-shadow: 0 24px 50px -18px rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(14px);
+            position: relative;
+        }
+
+        .live-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 20%;
+            right: 20%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--emerald-main), transparent);
+        }
+
+        .live-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 14px;
+            border-bottom: 1px solid var(--border-subtle);
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-muted);
+        }
+
+        .live-card-items {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 14px;
+        }
+
+        .demo-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 16px;
+            background: rgba(7, 9, 14, 0.65);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            text-decoration: none;
+            color: var(--text-main);
+            transition: all 0.16s ease;
+        }
+
+        .demo-row:hover {
+            border-color: var(--emerald-main);
+            background: rgba(16, 185, 129, 0.06);
+            transform: translateX(4px);
+        }
+
+        .demo-title {
+            font-size: 15px;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .demo-sub {
+            font-size: 12.5px;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        .demo-tag {
+            font-size: 11px;
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-weight: 800;
+            background: rgba(16, 185, 129, 0.15);
+            color: #34d399;
+        }
+
+        /* MARQUEE DE CANAIS */
+        .marquee-section {
+            padding: 24px 0 40px;
+            overflow: hidden;
+            border-top: 1px solid var(--border-subtle);
+            border-bottom: 1px solid var(--border-subtle);
+            background: rgba(12, 16, 23, 0.5);
+        }
+
+        .marquee-track {
+            display: flex;
+            gap: 20px;
+            width: max-content;
+            animation: scrollMarquee 35s linear infinite;
+        }
+
+        .marquee-track:hover {
+            animation-play-state: paused;
+        }
+
+        @keyframes scrollMarquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        .marquee-item {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border-subtle);
+            padding: 8px 16px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 700;
+            color: #e2e8f0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+        }
+
+        /* BUSCADOR INTERATIVO DE CANAIS */
+        .search-demo-section {
+            padding: 70px 0;
+            background: var(--bg-surface);
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .search-container {
+            max-width: 820px;
+            margin: 0 auto;
+        }
+
+        .search-box-wrapper {
+            position: relative;
+            margin-bottom: 24px;
+        }
+
+        .search-input {
+            width: 100%;
+            background: rgba(7, 9, 14, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            border-radius: 14px;
+            padding: 16px 20px 16px 50px;
+            font-size: 16px;
+            color: var(--text-main);
+            font-family: inherit;
+            outline: none;
+            transition: border-color 0.16s ease, box-shadow 0.16s ease;
+        }
+
+        .search-input:focus {
+            border-color: var(--emerald-main);
+            box-shadow: 0 0 20px var(--emerald-glow);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 18px;
+            color: var(--text-muted);
+        }
+
+        .search-pills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 24px;
+        }
+
+        .filter-pill {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-muted);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.14s ease;
+        }
+
+        .filter-pill:hover, .filter-pill.active {
+            background: rgba(16, 185, 129, 0.15);
+            border-color: var(--emerald-main);
+            color: #34d399;
+        }
+
+        .channels-result-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 14px;
+        }
+
+        .channel-card-demo {
+            background: rgba(7, 9, 14, 0.7);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            padding: 14px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: transform 0.12s ease, border-color 0.16s ease;
+        }
+
+        .channel-card-demo:hover {
+            transform: translateY(-2px);
+            border-color: var(--emerald-main);
+        }
+
+        .channel-info-left {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .channel-badge-num {
+            font-size: 11px;
+            font-family: var(--font-mono);
+            color: #34d399;
+            font-weight: 700;
+        }
+
+        .channel-name-txt {
+            font-size: 14.5px;
+            font-weight: 800;
+            color: var(--text-main);
+            margin: 2px 0;
+        }
+
+        .channel-cat-txt {
+            font-size: 11.5px;
+            color: var(--text-muted);
+        }
+
+        .channel-tag-status {
+            font-size: 10.5px;
+            font-weight: 800;
+            padding: 3px 6px;
+            border-radius: 4px;
+            background: rgba(16, 185, 129, 0.12);
+            color: #10b981;
+        }
+
+        /* ONDE FUNCIONA (DISPOSITIVOS) */
+        .devices-section {
+            padding: 70px 0;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .devices-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-top: 36px;
+        }
+
+        .device-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            padding: 24px;
+            text-align: center;
+            transition: border-color 0.16s ease, transform 0.16s ease;
+        }
+
+        .device-card:hover {
+            border-color: var(--emerald-main);
+            transform: translateY(-3px);
+        }
+
+        .device-icon {
+            font-size: 34px;
+            margin-bottom: 12px;
+        }
+
+        .device-title {
+            font-size: 16px;
+            font-weight: 800;
+            margin-bottom: 6px;
+        }
+
+        .device-desc {
+            font-size: 13px;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        /* COMPARAÇÃO DE ECONOMIA */
+        .comparison-section {
+            padding: 70px 0;
+            border-bottom: 1px solid var(--border-subtle);
+            background: rgba(12, 16, 23, 0.4);
+        }
+
+        .section-header {
+            text-align: center;
+            max-width: 650px;
+            margin: 0 auto 48px;
+        }
+
+        .section-header h2 {
+            font-size: clamp(1.9rem, 3.4vw, 2.6rem);
+            font-weight: 900;
+            letter-spacing: -0.03em;
+        }
+
+        .section-header p {
+            font-size: 16px;
+            color: var(--text-muted);
+            margin-top: 10px;
+        }
+
+        .comp-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+        }
+
+        .comp-card {
+            border-radius: var(--radius-lg);
+            padding: 34px;
+            border: 1px solid var(--border-subtle);
+        }
+
+        .comp-card.bad {
+            background: rgba(239, 68, 68, 0.04);
+            border-color: rgba(239, 68, 68, 0.2);
+        }
+
+        .comp-card.good {
+            background: rgba(16, 185, 129, 0.06);
+            border-color: rgba(16, 185, 129, 0.4);
+            position: relative;
+            box-shadow: 0 0 35px rgba(16, 185, 129, 0.1);
+        }
+
+        .badge-recommended {
+            position: absolute;
+            top: -14px;
+            right: 24px;
+            background: var(--emerald-main);
+            color: var(--emerald-dark);
+            font-size: 11px;
+            font-weight: 900;
+            padding: 4px 12px;
+            border-radius: 20px;
+            letter-spacing: 0.04em;
+        }
+
+        .comp-title {
+            font-size: 20px;
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+
+        .comp-price {
+            font-size: 30px;
+            font-weight: 900;
+            margin-bottom: 18px;
+            font-family: var(--font-mono);
+        }
+
+        .comp-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+
+        .comp-list li {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* CATÁLOGO DE PLANOS */
+        .plans-section {
+            padding: 80px 0;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .plans-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        .plan-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            padding: 28px 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: border-color 0.16s ease, transform 0.16s ease;
+            position: relative;
+        }
+
+        .plan-card:hover {
+            border-color: var(--emerald-main);
+            transform: translateY(-4px);
+        }
+
+        .plan-card.featured {
+            border-color: var(--emerald-main);
+            box-shadow: 0 0 30px var(--emerald-glow);
+            background: rgba(16, 26, 42, 0.9);
+        }
+
+        .plan-badge-destaque {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--emerald-main);
+            color: var(--emerald-dark);
+            font-size: 11px;
+            font-weight: 900;
+            padding: 3px 12px;
+            border-radius: 12px;
+            white-space: nowrap;
+        }
+
+        .plan-tag {
+            font-size: 11px;
+            font-weight: 800;
+            color: #34d399;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .plan-name {
+            font-size: 19px;
+            font-weight: 800;
+            margin-top: 6px;
+        }
+
+        .plan-price {
+            font-size: 34px;
+            font-weight: 900;
+            color: var(--text-main);
+            margin: 14px 0 16px;
+            font-family: var(--font-mono);
+        }
+
+        .plan-price span {
+            font-size: 13px;
+            color: var(--text-muted);
+            font-weight: 600;
+            font-family: var(--font-main);
+        }
+
+        .plan-features {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            font-size: 13.5px;
+            color: var(--text-muted);
+            margin-bottom: 24px;
+        }
+
+        .plan-features li::before {
+            content: '✓ ';
+            color: var(--emerald-main);
+            font-weight: 900;
+        }
+
+        .btn-plan {
+            width: 100%;
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 800;
+            text-align: center;
+            cursor: pointer;
+            border: 1px solid var(--border-subtle);
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-main);
+            transition: all 0.16s ease;
+        }
+
+        .btn-plan:hover, .btn-plan.primary {
+            background: var(--emerald-main);
+            color: var(--emerald-dark);
+            border-color: var(--emerald-main);
+            font-weight: 900;
+        }
+
+        /* CALCULADORA DE PEDIDO RÁPIDO */
+        .calculator-section {
+            padding: 80px 0;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .calc-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            padding: 36px;
+            display: grid;
+            grid-template-columns: 1.15fr 0.85fr;
+            gap: 36px;
+        }
+
+        .calc-options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .calc-btn-opt {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px;
+            border-radius: var(--radius-md);
+            background: rgba(7, 9, 14, 0.7);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-main);
+            cursor: pointer;
+            font-family: inherit;
+            text-align: left;
+            transition: all 0.16s ease;
+        }
+
+        .calc-btn-opt:hover {
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .calc-btn-opt.active {
+            border-color: var(--emerald-main);
+            background: rgba(16, 185, 129, 0.1);
+        }
+
+        .opt-title {
+            font-size: 15px;
+            font-weight: 800;
+        }
+
+        .opt-desc {
+            font-size: 12.5px;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        .opt-price {
+            font-size: 17px;
+            font-weight: 900;
+            color: #34d399;
+            font-family: var(--font-mono);
+        }
+
+        .calc-checkout {
+            background: rgba(7, 9, 14, 0.85);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .checkout-total-label {
+            font-size: 12.5px;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        .checkout-total-price {
+            font-size: 40px;
+            font-weight: 900;
+            color: var(--text-main);
+            font-family: var(--font-mono);
+        }
+
+        .checkout-input {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-subtle);
+            border-radius: 10px;
+            padding: 12px 14px;
+            color: var(--text-main);
+            font-size: 14px;
+            font-family: inherit;
+            outline: none;
+        }
+
+        .checkout-input:focus {
+            border-color: var(--emerald-main);
+        }
+
+        .checkout-preview {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            padding: 12px;
+            font-size: 13px;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        .btn-whatsapp-send {
+            background: linear-gradient(135deg, #059669, #10b981);
+            color: var(--emerald-dark);
+            padding: 15px;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 900;
+            text-align: center;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 0 20px var(--emerald-glow);
+            transition: transform 0.12s ease;
+        }
+
+        .btn-whatsapp-send:hover {
+            transform: scale(1.02);
+        }
+
+        /* DEPOIMENTOS */
+        .testimonials-section {
+            padding: 70px 0;
+            border-bottom: 1px solid var(--border-subtle);
+            background: rgba(12, 16, 23, 0.3);
+        }
+
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-top: 36px;
+        }
+
+        .test-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .test-text {
+            font-size: 14px;
+            color: #cbd5e1;
+            font-style: italic;
+            margin-bottom: 16px;
+            line-height: 1.6;
+        }
+
+        .test-author {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .test-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #10b981, #047857);
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 14px;
+        }
+
+        .test-name {
+            font-size: 14px;
+            font-weight: 800;
+        }
+
+        .test-role {
+            font-size: 12px;
+            color: var(--text-dim);
+        }
+
+        /* PERGUNTAS FREQUENTES (FAQ) */
+        .faq-section {
+            padding: 70px 0;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .faq-accordion {
+            max-width: 760px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .faq-item {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            overflow: hidden;
+        }
+
+        .faq-question {
+            padding: 18px 22px;
+            font-size: 15.5px;
+            font-weight: 800;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            user-select: none;
+        }
+
+        .faq-answer {
+            padding: 0 22px 18px;
+            font-size: 14px;
+            color: var(--text-muted);
+            line-height: 1.6;
+            display: none;
+        }
+
+        .faq-item.open .faq-answer {
+            display: block;
+        }
+
+        .faq-item.open .faq-icon {
+            transform: rotate(45deg);
+        }
+
+        .faq-icon {
+            font-size: 20px;
+            color: var(--emerald-main);
+            transition: transform 0.2s ease;
+        }
+
+        /* BOTÃO FLUTUANTE DO WHATSAPP COM NOTIFICAÇÃO */
+        .floating-whatsapp {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: #25d366;
+            color: #ffffff;
+            width: 58px;
+            height: 58px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            box-shadow: 0 8px 26px rgba(37, 211, 102, 0.45);
+            text-decoration: none;
+            z-index: 99;
+            transition: transform 0.16s ease;
+        }
+
+        .floating-whatsapp:hover {
+            transform: scale(1.1);
+        }
+
+        .unread-badge {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            background: #ef4444;
+            color: #ffffff;
+            font-size: 11px;
+            font-weight: 900;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid var(--bg-base);
+        }
+
+        /* FOOTER */
+        footer {
+            padding: 44px 0;
+            font-size: 13px;
+            color: var(--text-muted);
+            text-align: center;
+        }
+
+        @media (max-width: 992px) {
+            .hero-grid, .comp-grid, .calc-box { grid-template-columns: 1fr; }
+            .plans-grid { grid-template-columns: repeat(2, 1fr); }
+            .devices-grid { grid-template-columns: repeat(2, 1fr); }
+            .testimonials-grid { grid-template-columns: 1fr; }
+            .nav-links { display: none; }
+        }
+
+        @media (max-width: 580px) {
+            .plans-grid { grid-template-columns: 1fr; }
+            .devices-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- BARRA SUPERIOR DE ALERTA DE STATUS -->
+    <div class="top-notification">
+        <span class="live-dot"></span>
+        <span>SISTEMA 100% ATIVO NA NUVEM: 939 Canais de TV & 28 Rádios Online sem necessidade de PC ligado.</span>
+    </div>
+
+    <!-- CABEÇALHO -->
+    <header>
+        <div class="container nav-wrapper">
+            <a href="#" class="brand-logo">
+                <div class="brand-badge">⚡</div>
+                <span>Jonas Digital</span>
+            </a>
+            <nav class="nav-links">
+                <a href="#solucoes">Demonstrações</a>
+                <a href="#busca">Buscador de Canais</a>
+                <a href="#dispositivos">Onde Funciona</a>
+                <a href="#comparativo">Economia</a>
+                <a href="#planos">Tabela de Preços</a>
+                <a href="#orcamento">Calculadora</a>
+                <a href="#faq">Dúvidas</a>
+            </nav>
+            <a href="#orcamento" class="btn-header-cta">
+                <span>💬 Pedir no WhatsApp</span>
+            </a>
+        </div>
+    </header>
+
+    <!-- HERO PRINCIPAL -->
+    <main>
+        <section class="hero" id="solucoes">
+            <div class="container hero-grid">
+                <div>
+                    <div class="hero-pill">
+                        <span>⚡ ATIVAÇÃO IMEDIATA VIA PIX • PAGAMENTO ÚNICO</span>
+                    </div>
+                    <h1 class="hero-title">
+                        Chega de pagar mensalidades caras. Tenha <span class="hero-highlight">939 Canais & 28 Rádios</span> na sua tela.
+                    </h1>
+                    <p class="hero-description">
+                        Sistemas web ultra-rápidos para Celular, Smart TV, TV Box e Computador. Maratonas FAST 24h oficiais, som ambiente para comércios e controle remoto pelo celular via QR Code.
+                    </p>
+                    
+                    <div class="hero-badges-row">
+                        <div class="hero-mini-badge">✓ 939 Canais & 28 Rádios</div>
+                        <div class="hero-mini-badge">✓ Zero Mensalidade</div>
+                        <div class="hero-mini-badge">✓ 100% na Nuvem 24h</div>
+                        <div class="hero-mini-badge">✓ Controle Remoto QR</div>
+                    </div>
+
+                    <div class="hero-btns">
+                        <a href="https://jonasskynet-eng.github.io/cine-pro-tv-2026/" target="_blank" rel="noopener" class="btn-main">
+                            <span>📺 Testar CinePro TV Ao Vivo</span>
+                            <span>↗</span>
+                        </a>
+                        <a href="#orcamento" class="btn-outline">
+                            <span>💬 Montar Pacote no WhatsApp</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- CARTÃO DE DEMONSTRAÇÕES AO VIVO -->
+                <div class="live-card">
+                    <div class="live-card-header">
+                        <span>Demonstrações Funcionais na Nuvem</span>
+                        <span style="color:#10b981; font-weight:800;">● Online Agora</span>
+                    </div>
+                    <div class="live-card-items">
+                        <a href="https://jonasskynet-eng.github.io/cine-pro-tv-2026/" target="_blank" rel="noopener" class="demo-row">
+                            <div>
+                                <div class="demo-title">CinePro TV 2026 <span class="demo-tag">939 Canais</span></div>
+                                <div class="demo-sub">TV aberta nacional, MasterChef 24h, Bob Esponja, Naruto e Filmes</div>
+                            </div>
+                            <span style="color:var(--emerald-main); font-weight:800;">↗</span>
+                        </a>
+                        <a href="https://jonasskynet-eng.github.io/central-radios-pro/" target="_blank" rel="noopener" class="demo-row">
+                            <div>
+                                <div class="demo-title">RádioPro Brasil <span class="demo-tag">28 Rádios</span></div>
+                                <div class="demo-sub">FMs de alta fidelidade de todo o país (Super leve: 39 KB)</div>
+                            </div>
+                            <span style="color:var(--emerald-main); font-weight:800;">↗</span>
+                        </a>
+                        <a href="https://jonasskynet-eng.github.io/central-radios-pro/?loja=1" target="_blank" rel="noopener" class="demo-row">
+                            <div>
+                                <div class="demo-title">Som Comercial para Lojas <span class="demo-tag">Modo Balcão</span></div>
+                                <div class="demo-sub">Trava anti-troca acidental para mercados, barbearias e clínicas</div>
+                            </div>
+                            <span style="color:var(--emerald-main); font-weight:800;">↗</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FAIXA ROLANTE (MARQUEE) DE CANAIS DE DESTAQUE -->
+        <section class="marquee-section">
+            <div class="marquee-track">
+                <div class="marquee-item">📺 SBT Nacional HD</div>
+                <div class="marquee-item">📺 TV Cultura SP HD</div>
+                <div class="marquee-item">📺 RecordTV HD</div>
+                <div class="marquee-item">📺 Band TV Ao Vivo</div>
+                <div class="marquee-item">⚡ MasterChef 24h</div>
+                <div class="marquee-item">⚡ Bob Esponja 24h HD</div>
+                <div class="marquee-item">⚡ Naruto Brazil 24h</div>
+                <div class="marquee-item">⚡ Turma da Mônica 24h</div>
+                <div class="marquee-item">⚡ PFL MMA & Lutas</div>
+                <div class="marquee-item">⚡ Pluto Cine Terror</div>
+                <div class="marquee-item">⚡ Pluto TV Ação</div>
+                <div class="marquee-item">📻 Alpha FM 101.7</div>
+                <div class="marquee-item">📻 Jovem Pan FM</div>
+                <div class="marquee-item">📻 Antena 1</div>
+                <div class="marquee-item">📻 Rádio Disney</div>
+                <!-- DUPLICAÇÃO PARA EFEITO INFINITO -->
+                <div class="marquee-item">📺 SBT Nacional HD</div>
+                <div class="marquee-item">📺 TV Cultura SP HD</div>
+                <div class="marquee-item">📺 RecordTV HD</div>
+                <div class="marquee-item">📺 Band TV Ao Vivo</div>
+                <div class="marquee-item">⚡ MasterChef 24h</div>
+                <div class="marquee-item">⚡ Bob Esponja 24h HD</div>
+                <div class="marquee-item">⚡ Naruto Brazil 24h</div>
+                <div class="marquee-item">⚡ Turma da Mônica 24h</div>
+                <div class="marquee-item">⚡ PFL MMA & Lutas</div>
+                <div class="marquee-item">⚡ Pluto Cine Terror</div>
+                <div class="marquee-item">⚡ Pluto TV Ação</div>
+                <div class="marquee-item">📻 Alpha FM 101.7</div>
+                <div class="marquee-item">📻 Jovem Pan FM</div>
+                <div class="marquee-item">📻 Antena 1</div>
+                <div class="marquee-item">📻 Rádio Disney</div>
+            </div>
+        </section>
+
+        <!-- BUSCADOR INTERATIVO AO VIVO DE CANAIS -->
+        <section class="search-demo-section" id="busca">
+            <div class="container search-container">
+                <div class="section-header">
+                    <h2>Consulte os Canais Disponíveis</h2>
+                    <p>Faça uma busca em tempo real entre as maratonas FAST 24h, desenhos, filmes e canais abertos disponíveis na grade.</p>
+                </div>
+
+                <div class="search-box-wrapper">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" id="inputBuscaCanais" class="search-input" placeholder="Digite o que você quer assistir (ex: Naruto, Bob Esponja, Terror, SBT, MasterChef)...">
+                </div>
+
+                <div class="search-pills">
+                    <button type="button" class="filter-pill active" onclick="filtrarPorPill('')">Todos</button>
+                    <button type="button" class="filter-pill" onclick="filtrarPorPill('Desenhos')">Infantil & Desenhos</button>
+                    <button type="button" class="filter-pill" onclick="filtrarPorPill('Filmes')">Filmes & Séries</button>
+                    <button type="button" class="filter-pill" onclick="filtrarPorPill('Aberta')">TV Aberta</button>
+                    <button type="button" class="filter-pill" onclick="filtrarPorPill('Lutas')">Esportes & Lutas</button>
+                    <button type="button" class="filter-pill" onclick="filtrarPorPill('Rádio')">Rádios FM</button>
+                </div>
+
+                <div class="channels-result-grid" id="gradeCanaisDestaque">
+                    <!-- CARREGADO VIA JAVASCRIPT -->
+                </div>
+            </div>
+        </section>
+
+        <!-- ONDE FUNCIONA (DISPOSITIVOS SUPORTADOS) -->
+        <section class="devices-section" id="dispositivos">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Funciona em Todos os seus Aparelhos</h2>
+                    <p>Sem configurações difíceis. Instalação rápida via navegador ou aplicativo leve.</p>
+                </div>
+
+                <div class="devices-grid">
+                    <div class="device-card">
+                        <div class="device-icon">📱</div>
+                        <h3 class="device-title">Celulares & Tablets</h3>
+                        <p class="device-desc">Android e iPhone. Cria atalho direto na tela inicial em 1 toque, sem gastar memória do telefone.</p>
+                    </div>
+
+                    <div class="device-card">
+                        <div class="device-icon">📺</div>
+                        <h3 class="device-title">Smart TVs</h3>
+                        <p class="device-desc">Samsung Tizen, LG webOS, Android TV e TCL. Assista em tela cheia com controle remoto QR.</p>
+                    </div>
+
+                    <div class="device-card">
+                        <div class="device-icon">📦</div>
+                        <h3 class="device-title">TV Box & Fire Stick</h3>
+                        <p class="device-desc">Compatível com TiviMate, VLC e qualquer app de IPTV M3U8. Roda liso sem travamentos.</p>
+                    </div>
+
+                    <div class="device-card">
+                        <div class="device-icon">💻</div>
+                        <h3 class="device-title">Computador / PC</h3>
+                        <p class="device-desc">Chrome, Edge, Opera e Firefox. Navegue na grade, filtre canais e ouça rádios em segundo plano.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- COMPARAÇÃO DIRETA DE ECONOMIA -->
+        <section class="comparison-section" id="comparativo">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Compare e Veja a Economia Real</h2>
+                    <p>Veja por que tantas famílias e comércios cancelam pacotes mensais e adotam a solução independente do Jonas Digital.</p>
+                </div>
+
+                <div class="comp-grid">
+                    <div class="comp-card bad">
+                        <h3 class="comp-title">Operadoras & Streamings Tradicionais</h3>
+                        <div class="comp-price" style="color:#ef4444;">R$ 180 a 250 <span>/ mês</span></div>
+                        <ul class="comp-list">
+                            <li>❌ Cobrança recorrente todo mês no cartão de crédito</li>
+                            <li>❌ Bloqueio de compartilhamento fora da mesma casa</li>
+                            <li>❌ Aparelho receptor antigo esquenta e trava com frequência</li>
+                            <li>❌ Contratos com multa e fidelidade obrigatória de 12 meses</li>
+                            <li>❌ Mais de R$ 2.400 gastos todo ano sem você ser dono de nada</li>
+                        </ul>
+                    </div>
+
+                    <div class="comp-card good">
+                        <span class="badge-recommended">SOLUÇÃO JONAS DIGITAL</span>
+                        <h3 class="comp-title">CinePro TV & RádioPro Brasil</h3>
+                        <div class="comp-price" style="color:#10b981;">A partir de R$ 30 <span>pagamento único</span></div>
+                        <ul class="comp-list">
+                            <li>✓ Zero mensalidades surpresa — você é o dono vitalício do acesso</li>
+                            <li>✓ Servidores em nuvem global 24h sem precisar de computador ligado</li>
+                            <li>✓ Controle remoto exclusivo pelo celular via QR Code</li>
+                            <li>✓ Maratonas FAST 24h oficiais (MasterChef, Bob Esponja, Naruto, Filmes)</li>
+                            <li>✓ Economia imediata de mais de R$ 2.200 já no primeiro ano</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CATÁLOGO DE PLANOS -->
+        <section class="plans-section" id="planos">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Escolha o Pacote Ideal para Você</h2>
+                    <p>Desde acesso prático para celulares e PCs até instalação completa de TV Corporativa e central familiar 4K.</p>
+                </div>
+
+                <div class="plans-grid">
+                    <!-- PLANO 1 -->
+                    <div class="plan-card">
+                        <div>
+                            <span class="plan-tag">Individual / Básico</span>
+                            <h3 class="plan-name">Acesso Prático TV</h3>
+                            <div class="plan-price">R$ 30 <span>único</span></div>
+                            <ul class="plan-features">
+                                <li>Acesso à lista na nuvem (939 canais)</li>
+                                <li>TV aberta nacional + 28 rádios</li>
+                                <li>Roda no celular e computador</li>
+                                <li>Guia passo a passo ilustrado</li>
+                                <li>Suporte de ativação via WhatsApp</li>
+                            </ul>
+                        </div>
+                        <button type="button" class="btn-plan" onclick="selecionarPlano('Acesso Prático TV', 30)">Escolher este</button>
+                    </div>
+
+                    <!-- PLANO 2 -->
+                    <div class="plan-card">
+                        <div>
+                            <span class="plan-tag">Família Protegida</span>
+                            <h3 class="plan-name">Kit Família & Desenhos</h3>
+                            <div class="plan-price">R$ 60 <span>único</span></div>
+                            <ul class="plan-features">
+                                <li>Grade limpa para crianças</li>
+                                <li>Bob Esponja, Naruto e Turma da Mônica 24h</li>
+                                <li>Atalho direto no tablet e celular</li>
+                                <li>Sem risco de anúncios impróprios</li>
+                                <li>Suporte para até 3 aparelhos</li>
+                            </ul>
+                        </div>
+                        <button type="button" class="btn-plan" onclick="selecionarPlano('Kit Família & Desenhos', 60)">Escolher este</button>
+                    </div>
+
+                    <!-- PLANO 3 (DESTAQUE) -->
+                    <div class="plan-card featured">
+                        <div class="plan-badge-destaque">★ MAIS ESCOLHIDO</div>
+                        <div>
+                            <span class="plan-tag">Completo / Sala 4K</span>
+                            <h3 class="plan-name">Central CinePro 4K</h3>
+                            <div class="plan-price">R$ 120 <span>único</span></div>
+                            <ul class="plan-features">
+                                <li>Grade total de 939 canais + 28 rádios</li>
+                                <li>Todas as maratonas FAST 24h liberadas</li>
+                                <li>Controle remoto via QR Code no celular</li>
+                                <li>Configuração VIP para Smart TV e TV Box</li>
+                                <li>Atualizações automáticas de canais</li>
+                            </ul>
+                        </div>
+                        <button type="button" class="btn-plan primary" onclick="selecionarPlano('Central CinePro 4K', 120)">Quero Este Pacote</button>
+                    </div>
+
+                    <!-- PLANO 4 -->
+                    <div class="plan-card">
+                        <div>
+                            <span class="plan-tag">Comércio & Negócios</span>
+                            <h3 class="plan-name">TV & Som Comercial</h3>
+                            <div class="plan-price">R$ 180 <span>único</span></div>
+                            <ul class="plan-features">
+                                <li>Painel exclusivo com Modo Balcão</li>
+                                <li>Trava anti-troca acidental de estação</li>
+                                <li>Som ambiente sem propagandas locais</li>
+                                <li>Personalização com o logotipo da sua loja</li>
+                                <li>Ideal para lojas, clínicas e barbearias</li>
+                            </ul>
+                        </div>
+                        <button type="button" class="btn-plan" onclick="selecionarPlano('TV & Som Comercial', 180)">Escolher este</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CALCULADORA DE PEDIDO RÁPIDO -->
+        <section class="calculator-section" id="orcamento">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Monte seu Pedido e Ative na Hora</h2>
+                    <p>Selecione seu pacote, confirme seu aparelho e envie a mensagem pronta direto para o WhatsApp do Jonas.</p>
+                </div>
+
+                <div class="calc-box">
+                    <div class="calc-options">
+                        <button type="button" class="calc-btn-opt active" data-name="Acesso Prático TV" data-price="30" onclick="marcarOpcao(this)">
+                            <div>
+                                <div class="opt-title">Acesso Prático TV (Celular e PC)</div>
+                                <div class="opt-desc">Lista na nuvem, canais abertos e 28 rádios FM</div>
+                            </div>
+                            <span class="opt-price">R$ 30</span>
+                        </button>
+
+                        <button type="button" class="calc-btn-opt" data-name="Kit Família & Desenhos" data-price="60" onclick="marcarOpcao(this)">
+                            <div>
+                                <div class="opt-title">Kit Família & Desenhos 24h (Crianças)</div>
+                                <div class="opt-desc">Bob Esponja, Naruto, Toons e sem anúncios ruins</div>
+                            </div>
+                            <span class="opt-price">R$ 60</span>
+                        </button>
+
+                        <button type="button" class="calc-btn-opt" data-name="Central CinePro 4K" data-price="120" onclick="marcarOpcao(this)">
+                            <div>
+                                <div class="opt-title">Central CinePro 4K Completa (Recomendado)</div>
+                                <div class="opt-desc">Controle no celular, 939 canais, maratonas e Smart TV</div>
+                            </div>
+                            <span class="opt-price">R$ 120</span>
+                        </button>
+
+                        <button type="button" class="calc-btn-opt" data-name="TV & Som Comercial" data-price="180" onclick="marcarOpcao(this)">
+                            <div>
+                                <div class="opt-title">TV Corporativa & Som para Comércios</div>
+                                <div class="opt-desc">Para lojas, barbearias e clínicas com trava balcão</div>
+                            </div>
+                            <span class="opt-price">R$ 180</span>
+                        </button>
+                    </div>
+
+                    <div class="calc-checkout">
+                        <div>
+                            <div class="checkout-total-label">Investimento Único (Sem Mensalidades)</div>
+                            <div class="checkout-total-price" id="displayPreco">R$ 30</div>
+                        </div>
+
+                        <div>
+                            <label style="font-size:12px; color:var(--text-muted); font-weight:700; display:block; margin-bottom:6px;">SEU NOME OU NOME DA LOJA:</label>
+                            <input type="text" id="inputNomeCliente" class="checkout-input" placeholder="Ex: Carlos Eduardo ou Barbearia VIP">
+                        </div>
+
+                        <div>
+                            <label style="font-size:12px; color:var(--text-muted); font-weight:700; display:block; margin-bottom:6px;">APARELHO PRINCIPAL:</label>
+                            <select id="selectAparelho" class="checkout-input" onchange="atualizarCheckout()">
+                                <option value="Smart TV">Smart TV (Samsung, LG, Android TV)</option>
+                                <option value="Celular Android / iPhone">Celular (Android ou iPhone)</option>
+                                <option value="TV Box / Fire Stick">TV Box ou TV Stick</option>
+                                <option value="Computador / Notebook">Computador ou Notebook</option>
+                                <option value="Som de Loja / Balcão">Som de Loja / Estabelecimento Comercial</option>
+                            </select>
+                        </div>
+                        
+                        <div class="checkout-preview" id="displayMensagem"></div>
+
+                        <a id="btnEnviarWhats" href="#" target="_blank" rel="noopener" class="btn-whatsapp-send">
+                            <span>💬 Enviar Pedido no WhatsApp do Jonas</span>
+                        </a>
+
+                        <div style="font-size:12px; color:var(--text-muted); text-align:center;">
+                            Atendimento pessoal com <strong>Jonas</strong>: <strong>(11) 96670-7293</strong> • Pagamento seguro via Pix
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- DEPOIMENTOS DE CLIENTES REAIS -->
+        <section class="testimonials-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2>O que Dizem Quem Já Usa</h2>
+                    <p>Experiências reais de quem trocou pacotes caros pela praticidade dos nossos sistemas.</p>
+                </div>
+
+                <div class="testimonials-grid">
+                    <div class="test-card">
+                        <p class="test-text">"Instalei o Som Comercial na minha barbearia no Tatuapé. Acabou aquele problema de funcionário trocar de rádio ou ficar tocando comercial chato. Os clientes sempre elogiam a trilha sonora."</p>
+                        <div class="test-author">
+                            <div class="test-avatar">CE</div>
+                            <div>
+                                <div class="test-name">Carlos Eduardo</div>
+                                <div class="test-role">Dono de Barbearia • São Paulo - SP</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="test-card">
+                        <p class="test-text">"O canal 24 horas do Bob Esponja e do Naruto no tablet salvou meus finais de semana com as crianças. Carrega super rápido, não trava e não tem aquelas propagandas estranhas."</p>
+                        <div class="test-author">
+                            <div class="test-avatar">MR</div>
+                            <div>
+                                <div class="test-name">Mariana & Rafael</div>
+                                <div class="test-role">Pais de 2 filhos • Campinas - SP</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="test-card">
+                        <p class="test-text">"O Jonas me atendeu no WhatsApp com muita calma e colocou na TV da minha sala. Agora assisto meus jornais, futebol e o Canal do Boi com imagem perfeita sem pagar mensalidade."</p>
+                        <div class="test-author">
+                            <div class="test-avatar">AS</div>
+                            <div>
+                                <div class="test-name">Antenor Souza</div>
+                                <div class="test-role">Aposentado • São Bernardo do Campo - SP</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PERGUNTAS FREQUENTES (FAQ) -->
+        <section class="faq-section" id="faq">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Perguntas Frequentes</h2>
+                    <p>Tire suas dúvidas antes de fazer o seu pedido.</p>
+                </div>
+
+                <div class="faq-accordion">
+                    <div class="faq-item open">
+                        <div class="faq-question" onclick="toggleFaq(this)">
+                            <span>Vou precisar pagar alguma mensalidade depois?</span>
+                            <span class="faq-icon">+</span>
+                        </div>
+                        <div class="faq-answer">
+                            Não. O investimento é único para a configuração e entrega do acesso aos sistemas e listas na nuvem. Você não recebe nenhuma cobrança recorrente.
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFaq(this)">
+                            <span>A Anatel pode bloquear esses canais?</span>
+                            <span class="faq-icon">+</span>
+                        </div>
+                        <div class="faq-answer">
+                            Não há esse risco. O CinePro TV agrega emissoras abertas públicas oficiais e canais da modalidade FAST (como a Pluto TV), que são 100% legalizados e transmitidos abertamente na internet.
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFaq(this)">
+                            <span>Preciso deixar meu computador ligado para funcionar?</span>
+                            <span class="faq-icon">+</span>
+                        </div>
+                        <div class="faq-answer">
+                            Não! Todo o sistema e as playlists ficam hospedados 24 horas por dia em servidores na nuvem (GitHub Pages e rede Cloudflare global). Funciona no celular e na TV mesmo com seu PC totalmente desligado.
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFaq(this)">
+                            <span>Como é feita a entrega após o pagamento?</span>
+                            <span class="faq-icon">+</span>
+                        </div>
+                        <div class="faq-answer">
+                            A entrega é imediata no seu próprio WhatsApp em até 5 minutos. Você recebe os links diretos prontos para abrir no navegador, o link M3U para aplicativos de TV e um vídeo curto mostrando como usar.
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFaq(this)">
+                            <span>Funciona em Smart TV Samsung, LG ou TV Box?</span>
+                            <span class="faq-icon">+</span>
+                        </div>
+                        <div class="faq-answer">
+                            Sim! Você pode abrir diretamente pelo navegador de internet da TV (com controle remoto no celular via QR Code) ou importar a lista nos principais reprodutores de IPTV como TiviMate, VLC e IPTV Smarters.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- BOTÃO FLUTUANTE DO WHATSAPP -->
+    <a href="https://wa.me/5511966707293?text=Ol%C3%A1%2C%20Jonas!%20Gostaria%20de%20tirar%20uma%20d%C3%BAvida%20sobre%20os%20sistemas%20de%20TV%20e%20som." target="_blank" rel="noopener" class="floating-whatsapp" title="Falar com Jonas no WhatsApp">
+        <span class="unread-badge">1</span>
+        💬
+    </a>
+
+    <!-- RODAPÉ -->
+    <footer>
+        <div class="container">
+            <p><strong>Jonas Digital</strong> • Sistemas Web de Alto Desempenho, TV Digital e Automação Comercial</p>
+            <p style="margin-top:6px; color:var(--text-dim);">Atendimento e Suporte Direto: WhatsApp (11) 96670-7293 • E-mail: jonas.skynet@gmail.com</p>
+            <p style="margin-top:4px; font-size:11.5px; color:#475569;">Desenvolvido com tecnologia de ponta • Hospedado 24h na Nuvem</p>
+        </div>
+    </footer>
+
+    <!-- DADOS DOS CANAIS DE AMOSTRA E SCRIPTS DE INTERAÇÃO -->
+    <script>
+        const WHATSAPP_NUMERO = '5511966707293';
+        let planoEscolhido = 'Acesso Prático TV';
+        let valorEscolhido = 30;
+
+        // CANAIS DE DESTAQUE PARA O BUSCADOR INTERATIVO
+        const CANAIS_DEMO = [
+            { num: '011', nome: 'Pluto TV Filmes Ação', cat: 'Filmes', tag: '1080p FAST' },
+            { num: '012', nome: 'Pluto TV Cine Comédia', cat: 'Filmes', tag: '1080p FAST' },
+            { num: '013', nome: 'Pluto TV Cine Terror', cat: 'Filmes', tag: '1080p FAST' },
+            { num: '014', nome: 'Pluto TV Anime 24h', cat: 'Desenhos', tag: '24h Anime' },
+            { num: '015', nome: 'Pluto TV Investigação', cat: 'Filmes', tag: 'Crimes Reais' },
+            { num: '016', nome: 'Turma da Mônica 24h', cat: 'Desenhos', tag: 'Infantil' },
+            { num: '017', nome: 'PFL MMA & Lutas', cat: 'Lutas', tag: 'Esportes' },
+            { num: '018', nome: 'MasterChef Brasil 24h', cat: 'Filmes', tag: 'Culinária 24h' },
+            { num: '019', nome: 'Bob Esponja 24h HD', cat: 'Desenhos', tag: 'Nick 1080p' },
+            { num: '020', nome: 'Naruto Brazil 24h', cat: 'Desenhos', tag: 'Anime Oficial' },
+            { num: '001', nome: 'SBT Nacional HD', cat: 'Aberta', tag: 'TV Aberta' },
+            { num: '002', nome: 'TV Cultura SP HD', cat: 'Aberta', tag: 'TV Aberta' },
+            { num: '004', nome: 'RecordTV HD', cat: 'Aberta', tag: 'TV Aberta' },
+            { num: '005', nome: 'Band TV Ao Vivo', cat: 'Aberta', tag: 'TV Aberta' },
+            { num: 'R01', nome: 'Alpha FM 101.7', cat: 'Rádio', tag: 'Som Estúdio' },
+            { num: 'R02', nome: 'Jovem Pan FM', cat: 'Rádio', tag: 'Notícias & Hits' }
+        ];
+
+        function renderizarCanais(lista) {
+            const container = document.getElementById('gradeCanaisDestaque');
+            if (!container) return;
+            
+            if (lista.length === 0) {
+                container.innerHTML = '<div style="grid-column: 1/-1; text-align:center; padding:30px; color:var(--text-muted);">Nenhum canal encontrado com esse termo. Temos mais de 900 canais na grade completa!</div>';
+                return;
+            }
+
+            container.innerHTML = lista.map(c => `
+                <div class="channel-card-demo">
+                    <div class="channel-info-left">
+                        <span class="channel-badge-num">#${c.num}</span>
+                        <span class="channel-name-txt">${c.nome}</span>
+                        <span class="channel-cat-txt">${c.cat}</span>
+                    </div>
+                    <span class="channel-tag-status">${c.tag}</span>
+                </div>
+            `).join('');
+        }
+
+        function filtrarCanais() {
+            const query = (document.getElementById('inputBuscaCanais').value || '').toLowerCase().trim();
+            const filtrados = CANAIS_DEMO.filter(c => 
+                c.nome.toLowerCase().includes(query) || 
+                c.cat.toLowerCase().includes(query) ||
+                c.tag.toLowerCase().includes(query)
+            );
+            renderizarCanais(filtrados);
+        }
+
+        function filtrarPorPill(categoria) {
+            document.querySelectorAll('.filter-pill').forEach(btn => {
+                btn.classList.toggle('active', btn.textContent.includes(categoria) || (categoria === '' && btn.textContent === 'Todos'));
+            });
+            if (!categoria) {
+                renderizarCanais(CANAIS_DEMO);
+            } else {
+                const filtrados = CANAIS_DEMO.filter(c => c.cat.toLowerCase().includes(categoria.toLowerCase()));
+                renderizarCanais(filtrados);
+            }
+        }
+
+        function atualizarCheckout() {
+            const nome = (document.getElementById('inputNomeCliente').value || '').trim();
+            const aparelho = document.getElementById('selectAparelho').value;
+            document.getElementById('displayPreco').textContent = `R$ ${valorEscolhido}`;
+            
+            const identificacao = nome ? ` para "${nome}"` : '';
+            const mensagem = `Olá, Jonas! Tenho interesse no pacote "${planoEscolhido}"${identificacao} por R$ ${valorEscolhido} (pagamento único via Pix). Meu aparelho principal é: ${aparelho}. Como faço para ativar agora?`;
+            
+            document.getElementById('displayMensagem').textContent = mensagem;
+
+            const btn = document.getElementById('btnEnviarWhats');
+            if (btn) {
+                btn.href = `https://wa.me/${WHATSAPP_NUMERO}?text=${encodeURIComponent(mensagem)}`;
+            }
+        }
+
+        function marcarOpcao(btn) {
+            document.querySelectorAll('.calc-btn-opt').forEach(el => el.classList.remove('active'));
+            btn.classList.add('active');
+            planoEscolhido = btn.getAttribute('data-name');
+            valorEscolhido = parseInt(btn.getAttribute('data-price'), 10);
+            atualizarCheckout();
+        }
+
+        function selecionarPlano(nome, preco) {
+            planoEscolhido = nome;
+            valorEscolhido = preco;
+            document.querySelectorAll('.calc-btn-opt').forEach(el => {
+                el.classList.toggle('active', el.getAttribute('data-name') === nome);
+            });
+            atualizarCheckout();
+            document.getElementById('orcamento').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function toggleFaq(el) {
+            const item = el.parentElement;
+            item.classList.toggle('open');
+        }
+
+        document.getElementById('inputNomeCliente').addEventListener('input', atualizarCheckout);
+        document.getElementById('inputBuscaCanais').addEventListener('input', filtrarCanais);
+
+        // INICIALIZAÇÃO
+        renderizarCanais(CANAIS_DEMO);
+        atualizarCheckout();
+    </script>
+</body>
+</html>
