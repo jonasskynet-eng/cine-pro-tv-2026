@@ -1,0 +1,9 @@
+name = "cinepro-tv-proxy"
+main = "worker.js"
+compatibility_date = "2025-11-01"
+workers_dev = true
+
+[[d1_databases]]
+binding = "DB"
+database_name = "cinepro-telemetria"
+database_id = "16ff8e08-a366-43dd-bb03-44a42376b228"

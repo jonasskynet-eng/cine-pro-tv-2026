@@ -1,0 +1,236 @@
+{
+  "versao": "1.0",
+  "gerado_em": "2026-11-13",
+  "cursos": [
+    {
+      "id": 1,
+      "nome": "Tecnologia da Informação",
+      "sigla": "TI"
+    },
+    {
+      "id": 2,
+      "nome": "Gestão de Logística",
+      "sigla": "LOGISTICA"
+    }
+  ],
+  "disciplinas": [
+    {
+      "id": 1,
+      "curso_id": 1,
+      "codigo": "937564",
+      "nome": "Lógica de Programação e Algoritmos",
+      "status": "Em Andamento",
+      "prazo": "13/12/2026",
+      "pendencias": 1
+    },
+    {
+      "id": 2,
+      "curso_id": 1,
+      "codigo": "937563",
+      "nome": "Ferramentas de Desenvolvimento Web",
+      "status": "Em Andamento",
+      "prazo": "13/12/2026",
+      "pendencias": 1
+    },
+    {
+      "id": 3,
+      "curso_id": 1,
+      "codigo": "937893",
+      "nome": "Análise e Modelagem de Sistemas",
+      "status": "Em Andamento",
+      "prazo": "13/12/2026",
+      "pendencias": 1
+    },
+    {
+      "id": 4,
+      "curso_id": 1,
+      "codigo": "937890",
+      "nome": "Pré-Cálculo",
+      "status": "Em Andamento",
+      "prazo": "13/12/2026",
+      "pendencias": 1
+    },
+    {
+      "id": 5,
+      "curso_id": 1,
+      "codigo": "937566",
+      "nome": "Formação Inicial em Educação a Distância",
+      "status": "Concluída",
+      "prazo": "13/12/2026",
+      "pendencias": 0
+    },
+    {
+      "id": 6,
+      "curso_id": 1,
+      "codigo": "937565",
+      "nome": "Produção Textual",
+      "status": "Concluída",
+      "prazo": "13/12/2026",
+      "pendencias": 0
+    },
+    {
+      "id": 7,
+      "curso_id": 2,
+      "codigo": "948739",
+      "nome": "Termos Técnicos ao Comércio Exterior",
+      "status": "Em Andamento",
+      "prazo": "05/12/2026",
+      "pendencias": 1
+    },
+    {
+      "id": 8,
+      "curso_id": 2,
+      "codigo": "946976",
+      "nome": "Roteirização e Programação de Transportes",
+      "status": "Em Andamento",
+      "prazo": "05/12/2026",
+      "pendencias": 0
+    },
+    {
+      "id": 9,
+      "curso_id": 2,
+      "codigo": "946970",
+      "nome": "Atividade Extensionista I: Empreendedorismo",
+      "status": "Em Andamento",
+      "prazo": "05/12/2026",
+      "pendencias": 2
+    }
+  ],
+  "livros": [
+    {
+      "id": 1,
+      "disciplina_id": 1,
+      "titulo": "Python 3 — Conceitos e Aplicações",
+      "subtitulo": "Uma Abordagem Didática",
+      "autores": "Sérgio Luiz Banin",
+      "editora": "Editora Érica / Saraiva (Grupo GEN)",
+      "ano_edicao": "1ª Ed. / 2018",
+      "isbn_fisico": "9788536530253",
+      "isbn_digital": "9788536530253",
+      "paginas": 288,
+      "plataforma": "Minha Biblioteca",
+      "link_acesso": "https://integrada.minhabiblioteca.com.br/reader/books/9788536530253/pageid/0",
+      "sinopse": "Introdução completa e prática à programação de computadores utilizando a linguagem Python 3, cobrindo variáveis, operadores, laços de repetição, estruturas de dados (listas, tuplas, dicionários) e funções."
+    },
+    {
+      "id": 2,
+      "disciplina_id": 2,
+      "titulo": "HTML & CSS: aprenda como construir páginas web",
+      "subtitulo": "Desenvolvimento Web Front-End",
+      "autores": "Jon Duckett / Alta Books",
+      "editora": "Alta Books / Minha Biblioteca",
+      "ano_edicao": "1ª Ed. / 2021",
+      "isbn_fisico": "9786558110187",
+      "isbn_digital": "9786558110187",
+      "paginas": 512,
+      "plataforma": "Minha Biblioteca",
+      "link_acesso": "https://integrada.minhabiblioteca.com.br/reader/books/9786558110187/epubcfi/6/2",
+      "sinopse": "Apresentação visual e estruturada de marcação HTML5 semântica e estilização moderna com CSS3, design responsivo, formulários e diagramação de páginas web."
+    },
+    {
+      "id": 3,
+      "disciplina_id": 3,
+      "titulo": "Engenharia de Software",
+      "subtitulo": "Processos, Modelagem e Práticas",
+      "autores": "Ian Sommerville / Pearson",
+      "editora": "Editora Pearson",
+      "ano_edicao": "1ª Ed. / 2019",
+      "isbn_fisico": "9788543024974",
+      "isbn_digital": "9788543024974",
+      "paginas": 768,
+      "plataforma": "Biblioteca Virtual Pearson",
+      "link_acesso": "https://plataforma.bvirtual.com.br/Leitor/Publicacao/168127/pdf/0",
+      "sinopse": "Referência internacional fundamental para levantamento de requisitos de software, metodologias ágeis, modelagem de processos de negócio com BPMN e diagramas UML estruturais e comportamentais."
+    },
+    {
+      "id": 4,
+      "disciplina_id": 4,
+      "titulo": "Pré-cálculo: Uma Preparação para o Cálculo",
+      "subtitulo": "Funções, Gráficos e Aplicações",
+      "autores": "Sheldon Axler",
+      "editora": "LTC (Grupo GEN)",
+      "ano_edicao": "2ª Ed. / 2016",
+      "isbn_fisico": "9788521632153",
+      "isbn_digital": "9788521632153",
+      "paginas": 372,
+      "plataforma": "Minha Biblioteca",
+      "link_acesso": "https://integrada.minhabiblioteca.com.br/reader/books/9788521632153",
+      "sinopse": "Base matemática sólida para estudantes de exatas e computação: estudo rigoroso de funções (polinomiais, racionais, exponenciais, logarítmicas e trigonométricas), matrizes, determinantes e leitura precisa de gráficos."
+    },
+    {
+      "id": 5,
+      "disciplina_id": 5,
+      "titulo": "Prática Pedagógica, Aprendizagem e Avaliação em Educação a Distância",
+      "subtitulo": "Fundamentos da EaD",
+      "autores": "Iolanda Bueno de Camargo Cortelazzo",
+      "editora": "Editora Intersaberes",
+      "ano_edicao": "1ª Ed. / 2013",
+      "isbn_fisico": "9788582126202",
+      "isbn_digital": "9788582126202",
+      "paginas": 232,
+      "plataforma": "Liberi Digital",
+      "link_acesso": "https://www.liberidigital.com.br/leitor/livro?isbn=9788582126202",
+      "sinopse": "Analisa a história, as teorias pedagógicas, a autonomia do estudante e as ferramentas de mediação digital em ambientes virtuais de aprendizagem no ensino superior."
+    },
+    {
+      "id": 6,
+      "disciplina_id": 6,
+      "titulo": "Comunicação & Expressão",
+      "subtitulo": "Leitura, Produção de Texto e Relatórios Técnicos",
+      "autores": "Cleide Bacil de León, Daniela Duarte Ribeiro, Débora Mutter da Silva, et al.",
+      "editora": "Editora Intersaberes",
+      "ano_edicao": "1ª Ed. / 2013",
+      "isbn_fisico": "9788582125793",
+      "isbn_digital": "9788582125366",
+      "paginas": 204,
+      "plataforma": "Liberi Digital",
+      "link_acesso": "https://www.liberidigital.com.br",
+      "sinopse": "Conteúdo fundamental para comunicação técnica eficaz: redação corporativa, elaboração de relatórios técnicos, interpretação de tabelas, gráficos de indicadores e fluxogramas de processos."
+    },
+    {
+      "id": 7,
+      "disciplina_id": 7,
+      "titulo": "Comércio Exterior e Negociações Internacionais",
+      "subtitulo": "Operações, Câmbio e Legislação Aduaneira",
+      "autores": "Luciana Mazzutti Leal / Intersaberes",
+      "editora": "Editora Intersaberes",
+      "ano_edicao": "1ª Ed. / 2018",
+      "isbn_fisico": "9788559727401",
+      "isbn_digital": "9788559727401",
+      "paginas": 218,
+      "plataforma": "Liberi Digital",
+      "link_acesso": "https://www.liberidigital.com.br",
+      "sinopse": "Manual prático de comércio internacional cobrindo órgãos anuentes, tributação na importação (II, IPI, PIS, COFINS, ICMS), Incoterms 2020, despacho aduaneiro e documentos fiscais."
+    },
+    {
+      "id": 8,
+      "disciplina_id": 8,
+      "titulo": "Gestão de Transportes e Frotas",
+      "subtitulo": "Roteirização, Custos e Programação",
+      "autores": "Editora Intersaberes",
+      "editora": "Editora Intersaberes",
+      "ano_edicao": "1ª Ed. / 2019",
+      "isbn_fisico": "9788559728200",
+      "isbn_digital": "9788559728200",
+      "paginas": 240,
+      "plataforma": "Liberi Digital",
+      "link_acesso": "https://www.liberidigital.com.br",
+      "sinopse": "Estratégias logísticas para otimização de frotas, cubagem, cálculo de custos fixos e variáveis, ponto de equilíbrio operacional e algoritmos de roteirização."
+    },
+    {
+      "id": 9,
+      "disciplina_id": 9,
+      "titulo": "Empreendedorismo e Modelagem de Negócios",
+      "subtitulo": "Da Ideação ao Plano de Ação",
+      "autores": "Editora Intersaberes / Sebrae",
+      "editora": "Editora Intersaberes",
+      "ano_edicao": "1ª Ed. / 2020",
+      "isbn_fisico": "9788559729108",
+      "isbn_digital": "9788559729108",
+      "paginas": 210,
+      "plataforma": "Liberi Digital",
+      "link_acesso": "https://www.liberidigital.com.br",
+      "sinopse": "Guia de criação de novos negócios, levantamento de oportunidades de mercado, análise de perfil empreendedor, elaboração de Matriz PNI e Business Model Canvas."
+    }
+  ]
+}

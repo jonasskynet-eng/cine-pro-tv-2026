@@ -9,6 +9,31 @@
     <link rel="manifest" href="manifest.json">
     <title>CENTRAL DE TV DIGITAL PRO - Cinema Studio 2026</title>
     <script>
+        function selecionarCategoriaDireta(cat, btnEl) {
+            const selCat = document.getElementById('selectCatFiltro');
+            if (selCat) {
+                selCat.value = cat;
+                catFiltro = cat;
+            }
+            // Atualizar classes visuais
+            document.querySelectorAll('.cat-pill').forEach(b => {
+                b.style.background = '#1e293b';
+                b.style.color = '#cbd5e1';
+                b.style.borderColor = '#334155';
+            });
+            if (btnEl) {
+                btnEl.style.background = cat === 'fast' ? 'linear-gradient(135deg, #059669, #10b981)' : '#3b82f6';
+                btnEl.style.color = '#ffffff';
+                btnEl.style.borderColor = cat === 'fast' ? '#34d399' : '#60a5fa';
+            }
+            // Disparar renderização imediata
+            if (typeof renderizarListaCanais === 'function' && typeof obterCanaisFiltrados === 'function') {
+                renderizarListaCanais(obterCanaisFiltrados());
+                const body = document.getElementById('channelListBody');
+                if (body) body.scrollTop = 0;
+            }
+        }
+
         // Se aberto direto pelo arquivo no Desktop, redireciona para o servidor acelerado local
         if (window.location.protocol === 'file:') {
             window.location.replace('http://localhost:8080/index.html');
@@ -47,7 +72,7 @@
                 </svg>
             </div>
             <div class="brand-substatus">
-                <span id="totalCanaisBadge" style="display:none;">899</span>
+                <span id="totalCanaisBadge" style="display:none;">905</span>
                 <span id="healthStatusPill" class="health-pill">🟢 Online</span>
             </div>
         </div>
@@ -55,7 +80,7 @@
         <div class="search-wrapper">
             <span class="search-icon">🔍</span>
             <input type="text" id="searchInput" class="search-input" placeholder="Buscar canal ou #número...">
-            <span class="search-count" id="searchCountBadge">899</span>
+            <span class="search-count" id="searchCountBadge">905</span>
         </div>
 
         <div class="header-controls">
@@ -180,7 +205,7 @@
 
             <!-- BARRA COMPACTA QUANDO OS CANAIS ESTÃO MINIMIZADOS -->
             <div id="collapsedChannelsBar" class="collapsed-channels-bar" onclick="alternarGavetaCanais(event)" title="Clique para abrir a lista completa de canais">
-                <span>📋 <strong>Ver Todos os Canais</strong> (<span id="collapsedTotalCount">426</span> disponíveis)</span>
+                <span>📋 <strong>Ver Todos os Canais</strong> (<span id="collapsedTotalCount">428</span> disponíveis)</span>
                 <span class="collapsed-bar-arrow">Abrir Lista ▼</span>
             </div>
         </div>
@@ -190,51 +215,58 @@
             <div class="sidebar-top-actions">
                 <div style="display:flex; align-items:center; gap:8px; font-size:13px; font-weight:800; color:#e2e8f0; padding-left:4px;">
                     <span>📺 Canais</span>
-                    <span class="sidebar-total-pill" id="sidebarTotalPill">426</span>
+                    <span class="sidebar-total-pill" id="sidebarTotalPill">428</span>
                 </div>
-                <button type="button" id="btnStatusProCine" class="btn-minimize-sidebar" style="flex:0 0 auto; border-color:#f59e0b; color:#fbbf24; font-weight:700;" onclick="abrirModalProCine('Desbloquear Todos os 899 Canais')">
-                    <span>🔑 Liberar PRO</span>
-                </button>
                 <button type="button" id="btnMinimizeSidebar" class="btn-minimize-sidebar" style="flex:0 0 auto;" onclick="alternarGavetaCanais(event)">
                     <span>✕ Fechar Lista</span>
                 </button>
-            </div>
-
-            <div id="bannerProCine" style="margin:6px 10px 4px; padding:8px 10px; border-radius:8px; background:rgba(245,158,11,0.12); border:1px solid rgba(245,158,11,0.45); font-size:11.5px; color:#fde68a; display:flex; align-items:center; justify-content:space-between; gap:8px;">
-                <span id="txtBannerProCine">⚡ <strong>Grátis:</strong> Brasil + Portugal abertos · Outros países 🔒 PRO</span>
-                <button type="button" id="btnBannerProCine" onclick="abrirModalProCine('Canais Fechados & Internacionais')" style="background:#f59e0b; color:#0f172a; border:none; border-radius:6px; padding:4px 8px; font-weight:700; font-size:11px; cursor:pointer; white-space:nowrap;">Liberar</button>
             </div>
 
             <div class="mobile-search-box">
                 <input type="text" id="mobileSearchInput" class="mobile-search-input" placeholder="🔍 Buscar canal por nome ou número (#001)...">
             </div>
 
+            
+            <!-- BARRA DE ATALHOS RÁPIDOS POR CATEGORIA (PILLS ESTILO NETFLIX) -->
+            <div class="category-pills-container" style="display:flex; gap:6px; overflow-x:auto; padding:6px 0 10px 0; scrollbar-width:none; -webkit-overflow-scrolling:touch;">
+                <button type="button" class="cat-pill active" onclick="selecionarCategoriaDireta('all', this)" style="flex:0 0 auto; background:#1e293b; color:#f8fafc; border:1px solid #334155; padding:6px 12px; border-radius:18px; font-size:11px; font-weight:700; cursor:pointer;">⭐ Todos</button>
+                <button type="button" class="cat-pill" onclick="selecionarCategoriaDireta('fast', this)" style="flex:0 0 auto; background:linear-gradient(135deg, #059669, #10b981); color:#ffffff; border:1px solid #34d399; padding:6px 14px; border-radius:18px; font-size:11px; font-weight:800; cursor:pointer; box-shadow:0 0 10px rgba(16,185,129,0.4);">⚡ FAST 24h & Maratonas</button>
+                <button type="button" class="cat-pill" onclick="selecionarCategoriaDireta('aberta', this)" style="flex:0 0 auto; background:#1e293b; color:#cbd5e1; border:1px solid #334155; padding:6px 12px; border-radius:18px; font-size:11px; font-weight:600; cursor:pointer;">📺 TV Aberta</button>
+                <button type="button" class="cat-pill" onclick="selecionarCategoriaDireta('filmes', this)" style="flex:0 0 auto; background:#1e293b; color:#cbd5e1; border:1px solid #334155; padding:6px 12px; border-radius:18px; font-size:11px; font-weight:600; cursor:pointer;">🎬 Filmes</button>
+                <button type="button" class="cat-pill" onclick="selecionarCategoriaDireta('infantil', this)" style="flex:0 0 auto; background:#1e293b; color:#cbd5e1; border:1px solid #334155; padding:6px 12px; border-radius:18px; font-size:11px; font-weight:600; cursor:pointer;">🧸 Kids</button>
+                <button type="button" class="cat-pill" onclick="selecionarCategoriaDireta('series', this)" style="flex:0 0 auto; background:#1e293b; color:#cbd5e1; border:1px solid #334155; padding:6px 12px; border-radius:18px; font-size:11px; font-weight:600; cursor:pointer;">🍿 Séries & Animes</button>
+                <button type="button" class="cat-pill" onclick="selecionarCategoriaDireta('entretenimento', this)" style="flex:0 0 auto; background:#1e293b; color:#cbd5e1; border:1px solid #334155; padding:6px 12px; border-radius:18px; font-size:11px; font-weight:600; cursor:pointer;">🍲 MasterChef</button>
+                <button type="button" class="cat-pill" onclick="selecionarCategoriaDireta('esportes', this)" style="flex:0 0 auto; background:#1e293b; color:#cbd5e1; border:1px solid #334155; padding:6px 12px; border-radius:18px; font-size:11px; font-weight:600; cursor:pointer;">⚽ Esportes</button>
+                <button type="button" class="cat-pill" onclick="selecionarCategoriaDireta('noticias', this)" style="flex:0 0 auto; background:#1e293b; color:#cbd5e1; border:1px solid #334155; padding:6px 12px; border-radius:18px; font-size:11px; font-weight:600; cursor:pointer;">📰 Notícias</button>
+            </div>
+
             <div class="sidebar-select-row">
                 <select id="selectPaisFiltro" class="sidebar-select" title="Escolher país ou região">
-                    <option value="BR">🇧🇷 Brasil (426) — Grátis</option>
-                    <option value="PT">🇵🇹 Portugal (67) — Grátis</option>
-                    <option value="LATAM">🔒🌎 Am. Latina (41) — PRO</option>
-                    <option value="GLOBAL">🔒🌐 Global (365) — PRO</option>
-                    <option value="ALL">⚡ Todos (899)</option>
+                    <option value="BR">🇧🇷 Brasil (428)</option>
+                    <option value="PT">🇵🇹 Portugal (69)</option>
+                    <option value="LATAM">🌎 Am. Latina (41)</option>
+                    <option value="GLOBAL">🌐 Global (367)</option>
+                    <option value="ALL">⚡ Todos (939)</option>
                 </select>
                 <select id="selectCatFiltro" class="sidebar-select" title="Escolher categoria">
-                    <option value="all">📂 Todas (426)</option>
+                    <option value="all">📂 Todas (428)</option>
                     <option value="recentes">🕒 Recentes (0)</option>
                     <option value="meus">➕ Meus Canais (0)</option>
-                    <option value="aberta">📺 TV Aberta (94)</option>
+                    <option value="fast" style="color:#10b981; font-weight:bold;">⚡ FAST & Maratonas 24h (34)</option>
+                    <option value="aberta">📺 TV Aberta (93)</option>
                     <option value="infantil">🧸 Desenhos & Kids (62)</option>
-                    <option value="filmes">🎬 Filmes (146)</option>
-                    <option value="series">🍿 Séries (106)</option>
+                    <option value="filmes">🎬 Filmes (149)</option>
+                    <option value="series">🍿 Séries (108)</option>
                     <option value="esportes">⚽ Esportes (31)</option>
                     <option value="noticias">📰 Notícias (58)</option>
                     <option value="discovery">🔬 Discovery (26)</option>
-                    <option value="religiosos">⛪ Religiosos (31)</option>
+                    <option value="religiosos">⛪ Religiosos (32)</option>
                     <option value="musica">📻 Rádios & Música (104)</option>
                     <option value="vip">⭐ VIP Fibra (43)</option>
                     <option value="shows">🎸 Shows (104)</option>
                     <option value="historia">📜 Documentários (37)</option>
                     <option value="comedia">😂 Comédia (53)</option>
-                    <option value="combate">🥊 Combate (7)</option>
+                    <option value="combate">🥊 Combate (8)</option>
                     <option value="entretenimento">🎭 Reality (20)</option>
                 </select>
             </div>
@@ -242,36 +274,6 @@
             <!-- LISTA ULTRA-LEVE DE CANAIS COM RENDERIZAÇÃO PROGRESSIVA -->
             <div class="channel-list" id="channelListBody">
                 <!-- Inserido progressivamente via JS para zero travamento -->
-            </div>
-        </div>
-    </div>
-
-    <!-- MODAL DE LIBERAÇÃO DE ACESSO PRO (CINEPRO TV) -->
-    <div id="proCineModal" class="modal-shade">
-        <div class="modal-panel" style="max-width:470px;">
-            <div class="modal-title-bar">
-                <h3>🔑 Liberar Acesso PRO — CinePro TV</h3>
-                <button class="modal-dismiss" onclick="fecharModalProCine()">✕</button>
-            </div>
-            <p id="motivoProCine" style="font-size:13px; color:#fbbf24; margin:0 0 10px; font-weight:600;"></p>
-            <div style="background:rgba(15,23,42,0.65); border:1px solid rgba(255,255,255,0.1); border-radius:10px; padding:10px 12px; font-size:12.5px; line-height:1.55; margin-bottom:12px; color:#e2e8f0;">
-                <div>✅ <strong>Versão Básica (Grátis):</strong> 493 canais de 🇧🇷 Brasil e 🇵🇹 Portugal liberados!</div>
-                <div style="color:#34d399; margin-top:4px;">👑 <strong>Versão PRO (Completa):</strong></div>
-                <div>• Libera todos os <strong>+406 canais Internacionais e Fechados</strong> (América Latina &amp; Global)</div>
-                <div>• Acesso completo a todos os <strong>899 canais + Mosaico Multi-Telas</strong></div>
-            </div>
-            <div style="display:flex; flex-direction:column; gap:8px; margin-bottom:12px;">
-                <input type="text" id="proCineNomeCliente" class="mobile-search-input" placeholder="Seu Nome para pedir liberação" style="width:100%;">
-                <button type="button" onclick="pedirLiberacaoProCineWhatsApp()" style="width:100%; padding:10px 14px; border-radius:8px; border:none; background:#10b981; color:#052e16; font-weight:800; cursor:pointer; font-size:13px;">
-                    💬 Pedir Liberação PRO ao Jonas no WhatsApp
-                </button>
-            </div>
-            <div style="border-top:1px solid rgba(255,255,255,0.1); padding-top:12px;">
-                <label style="display:block; font-size:12px; color:#94a3b8; margin-bottom:6px;">Já recebeu sua chave PRO do Jonas? Digite abaixo:</label>
-                <div style="display:flex; gap:8px;">
-                    <input type="text" id="inputChaveProCine" class="mobile-search-input" placeholder="Ex.: CPRO-XXXX-XXXX" style="flex:1; text-transform:uppercase;">
-                    <button type="button" onclick="ativarChaveProCine()" style="padding:8px 14px; border-radius:8px; border:1px solid #34d399; background:rgba(16,185,129,0.15); color:#34d399; font-weight:700; cursor:pointer;">🔓 Ativar</button>
-                </div>
             </div>
         </div>
     </div>
@@ -992,8 +994,8 @@
 
         let DEFAULT_CLOUDFLARE_PROXY_URL = 'https://cinepro-tv-proxy.jonasskynet.workers.dev';
         let LOCAL_PROXY_ATIVO = false;
-        let NUVEM_PROXY_ATIVO = false;
-        let NUVEM_PROXY_ENDPOINT = '/.netlify/functions/proxy?url=';
+        let NUVEM_PROXY_ATIVO = true;
+        let NUVEM_PROXY_ENDPOINT = 'https://cinepro-tv-proxy.jonasskynet.workers.dev/?url=';
         let pulosConsecutivos = 0;
         let usandoReservaAtual = false;
         let canalAnteriorIndex = -1;
@@ -1197,106 +1199,10 @@
             return urlBase;
         }
 
-        const CHAVE_PRO_CINE = 'cinepro_licenca_pro_v1';
-        let motivoAtualProCine = 'Canais Fechados e Internacionais';
-
-        function validarChaveProCine(chRaw) {
-            const ch = String(chRaw || '').trim().toUpperCase();
-            const m = ch.match(/^CPRO-([A-Z0-9]{4})-(\d{4})$/);
-            if (!m) return false;
-            let soma = 0;
-            for (let i = 0; i < m[1].length; i++) soma = (soma + m[1].charCodeAt(i) * (i + 13)) % 9973;
-            return String(soma).padStart(4, '0') === m[2];
-        }
-
-        function acessoProCineAtivo() {
-            try {
-                return validarChaveProCine(localStorage.getItem(CHAVE_PRO_CINE) || '');
-            } catch (_) { return false; }
-        }
-
-        function ehCanalBloqueadoPro(c) {
-            if (!c) return false;
-            if (acessoProCineAtivo()) return false;
-            if (c.meu_canal || Number(c.id) >= 900000) return false;
-            const p = String(c.pais_codigo || '').toUpperCase();
-            return p !== 'BR' && p !== 'PT';
-        }
-
-        function atualizarUiProCine() {
-            const pro = acessoProCineAtivo();
-            const btn = document.getElementById('btnStatusProCine');
-            const banner = document.getElementById('bannerProCine');
-            const txt = document.getElementById('txtBannerProCine');
-            const btnB = document.getElementById('btnBannerProCine');
-            if (btn) {
-                btn.innerHTML = pro ? '<span>👑 PRO Ativo</span>' : '<span>🔑 Liberar PRO</span>';
-                btn.style.borderColor = pro ? '#34d399' : '#f59e0b';
-                btn.style.color = pro ? '#34d399' : '#fbbf24';
-            }
-            if (banner && txt && btnB) {
-                if (pro) {
-                    banner.style.background = 'rgba(16,185,129,0.16)';
-                    banner.style.borderColor = 'rgba(52,211,153,0.55)';
-                    banner.style.color = '#a7f3d0';
-                    txt.innerHTML = '🎉 <strong>Acesso PRO Liberado por Jonas Mendonça!</strong> Todos os 899 canais abertos.';
-                    btnB.style.display = 'none';
-                } else {
-                    banner.style.background = 'rgba(245,158,11,0.12)';
-                    banner.style.borderColor = 'rgba(245,158,11,0.45)';
-                    banner.style.color = '#fde68a';
-                    txt.innerHTML = '⚡ <strong>Grátis:</strong> Brasil + Portugal abertos · Outros países 🔒 PRO';
-                    btnB.style.display = 'inline-block';
-                }
-            }
-        }
-
-        function abrirModalProCine(motivo) {
-            motivoAtualProCine = motivo || 'Canais Fechados e Internacionais';
-            const el = document.getElementById('motivoProCine');
-            if (el) el.textContent = '🔒 Canal exclusivo PRO: ' + motivoAtualProCine;
-            const mod = document.getElementById('proCineModal');
-            if (mod) mod.classList.add('open');
-        }
-        window.abrirModalProCine = abrirModalProCine;
-
-        function fecharModalProCine() {
-            const mod = document.getElementById('proCineModal');
-            if (mod) mod.classList.remove('open');
-        }
-        window.fecharModalProCine = fecharModalProCine;
-
-        function pedirLiberacaoProCineWhatsApp() {
-            const nome = (document.getElementById('proCineNomeCliente')?.value || '').trim() || 'Cliente CinePro TV';
-            const msg = `Olá Jonas! Sou ${nome} e quero pedir a liberação da Versão PRO do CinePro TV!\n• Canal/recurso: ${motivoAtualProCine}\nQuero liberar os +406 canais fechados e internacionais.`;
-            window.open('https://wa.me/5511966707293?text=' + encodeURIComponent(msg), '_blank', 'noopener');
-        }
-        window.pedirLiberacaoProCineWhatsApp = pedirLiberacaoProCineWhatsApp;
-
-        function ativarChaveProCine(chaveManual) {
-            const ch = String(chaveManual || document.getElementById('inputChaveProCine')?.value || '').trim().toUpperCase();
-            if (!validarChaveProCine(ch)) {
-                mostrarHUD('❌ Chave PRO inválida! Peça ao Jonas no WhatsApp (11) 96670-7293.');
-                return false;
-            }
-            try { localStorage.setItem(CHAVE_PRO_CINE, ch); } catch (_) {}
-            atualizarUiProCine();
-            if (typeof aplicarFiltros === 'function') aplicarFiltros(false);
-            fecharModalProCine();
-            mostrarHUD('🎉 Acesso PRO Liberado pelo Jonas! Todos os 899 canais destravados!');
-            return true;
-        }
-        window.ativarChaveProCine = ativarChaveProCine;
-
         function sintonizar(idx, usarReserva = false) {
             if (typeof fecharModoMosaico === 'function') fecharModoMosaico(true);
             if (idx < 0) idx = TODOS_CANAIS.length - 1;
             if (idx >= TODOS_CANAIS.length) idx = 0;
-            const canalAlvo = TODOS_CANAIS[idx];
-            if (ehCanalBloqueadoPro(canalAlvo)) {
-                abrirModalProCine(`${canalAlvo.nome} (${canalAlvo.pais || canalAlvo.pais_codigo})`);
-                return;
-            }
             if (idx !== canalAtualIndex && !usarReserva) {
                 canalAnteriorIndex = canalAtualIndex;
             }
@@ -1688,17 +1594,14 @@
                 const safeName = c.nome.replace(/'/g, "\'");
                 const logoHtml = c.logo ? `<img src="${c.logo}" alt="${c.nome}" loading="lazy" decoding="async" onerror="this.outerHTML=obterBadgeSvgCliente('${safeName}')">` : obterBadgeSvgCliente(c.nome);
                 const ehInstavel = canaisInstaveisSessao.has(c.id);
-                const ehBloqPro = ehCanalBloqueadoPro(c);
                 const partesSub = [c.categoria];
                 if (paisFiltro === 'ALL' && c.pais_codigo) partesSub.push(c.pais_codigo);
-                if (ehBloqPro) partesSub.push('<span style="color:#fbbf24; font-weight:700;">🔒 PRO</span>');
                 if (ehInstavel) partesSub.push('<span style="color:#fbbf24;">⚠️ Instável</span>');
                 const subHtml = partesSub.join(' • ');
-                if (ehBloqPro) card.style.opacity = '0.82';
 
                 card.innerHTML = `
                     <div class="channel-card-left">
-                        <span class="ch-num-badge">${ehBloqPro ? '🔒' : c.numero_str}</span>
+                        <span class="ch-num-badge">${c.numero_str}</span>
                         <div class="ch-card-logo">${logoHtml}</div>
                         <div class="ch-card-info">
                             <div class="ch-card-name">${c.nome}</div>
@@ -2381,11 +2284,6 @@
             const cell = document.querySelector(`.mosaic-cell[data-slot="${slotIdx}"]`);
             if (!cell || !TODOS_CANAIS[canalIdx]) return;
             const c = TODOS_CANAIS[canalIdx];
-            if (ehCanalBloqueadoPro(c)) {
-                fecharModoMosaico(true);
-                abrirModalProCine(`${c.nome} (${c.pais || c.pais_codigo})`);
-                return;
-            }
             const v = cell.querySelector('video');
             if (!v) return;
             if (mosaicHlsList[slotIdx]) {
@@ -2513,11 +2411,6 @@
 
         // INICIALIZAÇÃO AUTOMÁTICA ULTRA-LEVE (carrega só canais.json no boot e atrasa EPG para abrir vídeo na hora)
         async function inicializarCatalogoLeve() {
-            const chaveUrlCine = (new URLSearchParams(window.location.search).get('chave') || '').trim().toUpperCase();
-            if (chaveUrlCine && validarChaveProCine(chaveUrlCine)) {
-                try { localStorage.setItem(CHAVE_PRO_CINE, chaveUrlCine); } catch (_) {}
-            }
-            atualizarUiProCine();
             atualizarPainelSaude();
             aplicarEnquadramento(enquadramentoIndex, false);
             const listEl = document.getElementById('channelListBody');
@@ -2526,7 +2419,7 @@
             }
 
             try {
-                const respCanais = await fetch('./canais.json');
+                const respCanais = await fetch('./canais.json?v=' + Date.now());
                 if (!respCanais.ok) throw new Error('HTTP ' + respCanais.status);
                 const listaCanais = await respCanais.json();
                 if (Array.isArray(listaCanais)) {
@@ -2576,5 +2469,96 @@
         }
         inicializarCatalogoLeve();
     </script>
+
+    <!-- BANNER FLUTUANTE DE DEGUSTAÇÃO & MENSAGEM VIP JONAS -->
+    <div id="bannerDegustacao" style="display:none; position:fixed; bottom:24px; left:24px; z-index:999; max-width:380px; background:rgba(12, 19, 34, 0.96); border:1px solid rgba(16, 185, 129, 0.5); box-shadow:0 12px 36px rgba(0,0,0,0.7), 0 0 20px rgba(16, 185, 129, 0.2); border-radius:14px; padding:14px 16px; backdrop-filter:blur(10px); color:#fff;">
+        <div style="display:flex; align-items:flex-start; gap:12px;">
+            <div style="width:42px; height:42px; border-radius:10px; background:linear-gradient(135deg, #10b981, #06b6d4); display:flex; align-items:center; justify-content:center; font-size:22px; flex-shrink:0;">
+                🎬
+            </div>
+            <div style="flex:1;">
+                <div style="display:flex; align-items:center; justify-content:space-between;">
+                    <h4 style="font-size:13px; font-weight:800; color:#6ee7b7; margin:0;">CinePro TV — Degustação Livre</h4>
+                    <button onclick="fecharBannerDegustacao()" style="background:transparent; border:none; color:#94a3b8; font-size:16px; cursor:pointer; padding:0 4px;">✕</button>
+                </div>
+                <p style="font-size:11.5px; color:#cbd5e1; margin:6px 0 10px 0; line-height:1.4;">
+                    Você está na transmissão aberta (780+ canais). Deseja liberar <b>Canais Fox, Filmes & Séries em 4K</b> no servidor VIP dedicado?
+                </p>
+                <div style="display:flex; gap:8px;">
+                    <button onclick="abrirModalVip()" style="background:linear-gradient(135deg, #10b981, #059669); color:#fff; border:none; border-radius:7px; padding:6px 12px; font-size:11px; font-weight:800; cursor:pointer;">
+                        💎 Conhecer Plano VIP
+                    </button>
+                    <button onclick="fecharBannerDegustacao()" style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12); color:#cbd5e1; border-radius:7px; padding:6px 10px; font-size:11px; font-weight:600; cursor:pointer;">
+                        Continuar Grátis
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL INFORMATIVO PLANO VIP -->
+    <div id="modalVip" class="modal-shade" onclick="if(event.target === this) fecharModalVip()">
+        <div class="modal-panel" style="max-width:540px;">
+            <div class="modal-title-bar">
+                <h3 style="display:flex; align-items:center; gap:8px;">
+                    <span>💎</span> CinePro TV — Servidor Dedicado VIP
+                </h3>
+                <button class="modal-dismiss" onclick="fecharModalVip()">✕</button>
+            </div>
+            <div style="font-size:13px; color:#cbd5e1; line-height:1.6;">
+                <p style="margin-bottom:12px;">
+                    Experimente a estabilidade máxima de transmissão com nosso servidor privado de alta capacidade:
+                </p>
+                <ul style="list-style:none; padding:0; display:flex; flex-direction:column; gap:8px; margin-bottom:16px;">
+                    <li style="display:flex; align-items:center; gap:8px;">
+                        <span style="color:#10b981;">✔</span> <b>Canais Fox, FX e Esportes Premium</b> (Fox Sports, ESPN, Premiere 24h)
+                    </li>
+                    <li style="display:flex; align-items:center; gap:8px;">
+                        <span style="color:#10b981;">✔</span> <b>Catálogo Completo de Cinema</b> (Telecine, HBO, Paramount, Megapix em 4K/FHD)
+                    </li>
+                    <li style="display:flex; align-items:center; gap:8px;">
+                        <span style="color:#10b981;">✔</span> <b>Maratonas de Séries 24h</b> sem anúncios e sem cortes
+                    </li>
+                    <li style="display:flex; align-items:center; gap:8px;">
+                        <span style="color:#10b981;">✔</span> <b>Compatível com Smart TV, TV Box, Celular e PC</b> (Tivimate, IPTV Smarters, VLC)
+                    </li>
+                </ul>
+                <div style="background:rgba(16, 185, 129, 0.1); border:1px solid rgba(16, 185, 129, 0.3); border-radius:10px; padding:12px; text-align:center; margin-bottom:16px;">
+                    <span style="font-size:12px; color:#6ee7b7; font-weight:700;">🚀 Solicite seu Teste Gratuito de 4 Horas com o Jonas!</span>
+                </div>
+                <div style="display:flex; justify-content:center;">
+                    <button onclick="fecharModalVip()" style="background:#10b981; color:#060913; border:none; padding:10px 24px; border-radius:8px; font-weight:800; font-size:13px; cursor:pointer;">
+                        Entendido, Voltar para a TV
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function inicializarMensagensDegustacao() {
+            setTimeout(function() {
+                var banner = document.getElementById('bannerDegustacao');
+                if (banner) banner.style.display = 'block';
+            }, 6000);
+        }
+        function fecharBannerDegustacao() {
+            var banner = document.getElementById('bannerDegustacao');
+            if (banner) banner.style.display = 'none';
+            setTimeout(function() {
+                if (banner) banner.style.display = 'block';
+            }, 12 * 60 * 1000);
+        }
+        function abrirModalVip() {
+            var modal = document.getElementById('modalVip');
+            if (modal) modal.classList.add('open');
+        }
+        function fecharModalVip() {
+            var modal = document.getElementById('modalVip');
+            if (modal) modal.classList.remove('open');
+        }
+        window.addEventListener('load', inicializarMensagensDegustacao);
+    </script>
+
 </body>
 </html>

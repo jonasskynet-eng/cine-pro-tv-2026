@@ -1,0 +1,32 @@
+[
+  {
+    "nome": "TV Cultura (Exemplo/Teste)",
+    "url": "https://stream.cultura.com.br/hls/aovivo.m3u8",
+    "grupo": "Cultura",
+    "logo": "https://raw.githubusercontent.com/fanmingming/live/main/tv/TVCultura.png",
+    "ativo": false,
+    "status_codigo": 0,
+    "latencia_ms": 131.35,
+    "erro": "Falha de Conexão: [Errno 11001] getaddrinfo failed"
+  },
+  {
+    "nome": "Canal Gov",
+    "url": "https://stream.ebc.com.br/hls/canalgov/canalgov.m3u8",
+    "grupo": "Governo",
+    "logo": "https://raw.githubusercontent.com/fanmingming/live/main/tv/CanalGov.png",
+    "ativo": false,
+    "status_codigo": 0,
+    "latencia_ms": 160.99,
+    "erro": "Falha de Conexão: [Errno 11001] getaddrinfo failed"
+  },
+  {
+    "nome": "TV Brasil",
+    "url": "https://tvbrasil-stream.ebc.com.br/hls/tvbrasil/tvbrasil.m3u8",
+    "grupo": "Abertos",
+    "logo": "https://raw.githubusercontent.com/fanmingming/live/main/tv/TVBrasil.png",
+    "ativo": false,
+    "status_codigo": 400,
+    "latencia_ms": 284.84,
+    "erro": "HTTP 400"
+  }
+]
