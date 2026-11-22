@@ -9,31 +9,6 @@
     <link rel="manifest" href="manifest.json">
     <title>CENTRAL DE TV DIGITAL PRO - Cinema Studio 2026</title>
     <script>
-        function selecionarCategoriaDireta(cat, btnEl) {
-            const selCat = document.getElementById('selectCatFiltro');
-            if (selCat) {
-                selCat.value = cat;
-                catFiltro = cat;
-            }
-            // Atualizar classes visuais
-            document.querySelectorAll('.cat-pill').forEach(b => {
-                b.style.background = '#1e293b';
-                b.style.color = '#cbd5e1';
-                b.style.borderColor = '#334155';
-            });
-            if (btnEl) {
-                btnEl.style.background = cat === 'fast' ? 'linear-gradient(135deg, #059669, #10b981)' : '#3b82f6';
-                btnEl.style.color = '#ffffff';
-                btnEl.style.borderColor = cat === 'fast' ? '#34d399' : '#60a5fa';
-            }
-            // Disparar renderização imediata
-            if (typeof renderizarListaCanais === 'function' && typeof obterCanaisFiltrados === 'function') {
-                renderizarListaCanais(obterCanaisFiltrados());
-                const body = document.getElementById('channelListBody');
-                if (body) body.scrollTop = 0;
-            }
-        }
-
         // Se aberto direto pelo arquivo no Desktop, redireciona para o servidor acelerado local
         if (window.location.protocol === 'file:') {
             window.location.replace('http://localhost:8080/index.html');
@@ -72,7 +47,7 @@
                 </svg>
             </div>
             <div class="brand-substatus">
-                <span id="totalCanaisBadge" style="display:none;">905</span>
+                <span id="totalCanaisBadge" style="display:none;">896</span>
                 <span id="healthStatusPill" class="health-pill">🟢 Online</span>
             </div>
         </div>
@@ -80,7 +55,7 @@
         <div class="search-wrapper">
             <span class="search-icon">🔍</span>
             <input type="text" id="searchInput" class="search-input" placeholder="Buscar canal ou #número...">
-            <span class="search-count" id="searchCountBadge">905</span>
+            <span class="search-count" id="searchCountBadge">896</span>
         </div>
 
         <div class="header-controls">
@@ -205,7 +180,7 @@
 
             <!-- BARRA COMPACTA QUANDO OS CANAIS ESTÃO MINIMIZADOS -->
             <div id="collapsedChannelsBar" class="collapsed-channels-bar" onclick="alternarGavetaCanais(event)" title="Clique para abrir a lista completa de canais">
-                <span>📋 <strong>Ver Todos os Canais</strong> (<span id="collapsedTotalCount">428</span> disponíveis)</span>
+                <span>📋 <strong>Ver Todos os Canais</strong> (<span id="collapsedTotalCount">423</span> disponíveis)</span>
                 <span class="collapsed-bar-arrow">Abrir Lista ▼</span>
             </div>
         </div>
@@ -215,7 +190,7 @@
             <div class="sidebar-top-actions">
                 <div style="display:flex; align-items:center; gap:8px; font-size:13px; font-weight:800; color:#e2e8f0; padding-left:4px;">
                     <span>📺 Canais</span>
-                    <span class="sidebar-total-pill" id="sidebarTotalPill">428</span>
+                    <span class="sidebar-total-pill" id="sidebarTotalPill">423</span>
                 </div>
                 <button type="button" id="btnMinimizeSidebar" class="btn-minimize-sidebar" style="flex:0 0 auto;" onclick="alternarGavetaCanais(event)">
                     <span>✕ Fechar Lista</span>
@@ -226,47 +201,32 @@
                 <input type="text" id="mobileSearchInput" class="mobile-search-input" placeholder="🔍 Buscar canal por nome ou número (#001)...">
             </div>
 
-            
-            <!-- BARRA DE ATALHOS RÁPIDOS POR CATEGORIA (PILLS ESTILO NETFLIX) -->
-            <div class="category-pills-container" style="display:flex; gap:6px; overflow-x:auto; padding:6px 0 10px 0; scrollbar-width:none; -webkit-overflow-scrolling:touch;">
-                <button type="button" class="cat-pill active" onclick="selecionarCategoriaDireta('all', this)" style="flex:0 0 auto; background:#1e293b; color:#f8fafc; border:1px solid #334155; padding:6px 12px; border-radius:18px; font-size:11px; font-weight:700; cursor:pointer;">⭐ Todos</button>
-                <button type="button" class="cat-pill" onclick="selecionarCategoriaDireta('fast', this)" style="flex:0 0 auto; background:linear-gradient(135deg, #059669, #10b981); color:#ffffff; border:1px solid #34d399; padding:6px 14px; border-radius:18px; font-size:11px; font-weight:800; cursor:pointer; box-shadow:0 0 10px rgba(16,185,129,0.4);">⚡ FAST 24h & Maratonas</button>
-                <button type="button" class="cat-pill" onclick="selecionarCategoriaDireta('aberta', this)" style="flex:0 0 auto; background:#1e293b; color:#cbd5e1; border:1px solid #334155; padding:6px 12px; border-radius:18px; font-size:11px; font-weight:600; cursor:pointer;">📺 TV Aberta</button>
-                <button type="button" class="cat-pill" onclick="selecionarCategoriaDireta('filmes', this)" style="flex:0 0 auto; background:#1e293b; color:#cbd5e1; border:1px solid #334155; padding:6px 12px; border-radius:18px; font-size:11px; font-weight:600; cursor:pointer;">🎬 Filmes</button>
-                <button type="button" class="cat-pill" onclick="selecionarCategoriaDireta('infantil', this)" style="flex:0 0 auto; background:#1e293b; color:#cbd5e1; border:1px solid #334155; padding:6px 12px; border-radius:18px; font-size:11px; font-weight:600; cursor:pointer;">🧸 Kids</button>
-                <button type="button" class="cat-pill" onclick="selecionarCategoriaDireta('series', this)" style="flex:0 0 auto; background:#1e293b; color:#cbd5e1; border:1px solid #334155; padding:6px 12px; border-radius:18px; font-size:11px; font-weight:600; cursor:pointer;">🍿 Séries & Animes</button>
-                <button type="button" class="cat-pill" onclick="selecionarCategoriaDireta('entretenimento', this)" style="flex:0 0 auto; background:#1e293b; color:#cbd5e1; border:1px solid #334155; padding:6px 12px; border-radius:18px; font-size:11px; font-weight:600; cursor:pointer;">🍲 MasterChef</button>
-                <button type="button" class="cat-pill" onclick="selecionarCategoriaDireta('esportes', this)" style="flex:0 0 auto; background:#1e293b; color:#cbd5e1; border:1px solid #334155; padding:6px 12px; border-radius:18px; font-size:11px; font-weight:600; cursor:pointer;">⚽ Esportes</button>
-                <button type="button" class="cat-pill" onclick="selecionarCategoriaDireta('noticias', this)" style="flex:0 0 auto; background:#1e293b; color:#cbd5e1; border:1px solid #334155; padding:6px 12px; border-radius:18px; font-size:11px; font-weight:600; cursor:pointer;">📰 Notícias</button>
-            </div>
-
             <div class="sidebar-select-row">
                 <select id="selectPaisFiltro" class="sidebar-select" title="Escolher país ou região">
-                    <option value="BR">🇧🇷 Brasil (428)</option>
-                    <option value="PT">🇵🇹 Portugal (69)</option>
+                    <option value="BR">🇧🇷 Brasil (423)</option>
+                    <option value="PT">🇵🇹 Portugal (67)</option>
                     <option value="LATAM">🌎 Am. Latina (41)</option>
-                    <option value="GLOBAL">🌐 Global (367)</option>
-                    <option value="ALL">⚡ Todos (939)</option>
+                    <option value="GLOBAL">🌐 Global (365)</option>
+                    <option value="ALL">⚡ Todos (896)</option>
                 </select>
                 <select id="selectCatFiltro" class="sidebar-select" title="Escolher categoria">
-                    <option value="all">📂 Todas (428)</option>
+                    <option value="all">📂 Todas (423)</option>
                     <option value="recentes">🕒 Recentes (0)</option>
                     <option value="meus">➕ Meus Canais (0)</option>
-                    <option value="fast" style="color:#10b981; font-weight:bold;">⚡ FAST & Maratonas 24h (34)</option>
-                    <option value="aberta">📺 TV Aberta (93)</option>
+                    <option value="aberta">📺 TV Aberta (94)</option>
                     <option value="infantil">🧸 Desenhos & Kids (62)</option>
-                    <option value="filmes">🎬 Filmes (149)</option>
-                    <option value="series">🍿 Séries (108)</option>
+                    <option value="filmes">🎬 Filmes (146)</option>
+                    <option value="series">🍿 Séries (106)</option>
                     <option value="esportes">⚽ Esportes (31)</option>
-                    <option value="noticias">📰 Notícias (58)</option>
+                    <option value="noticias">📰 Notícias (57)</option>
                     <option value="discovery">🔬 Discovery (26)</option>
-                    <option value="religiosos">⛪ Religiosos (32)</option>
+                    <option value="religiosos">⛪ Religiosos (31)</option>
                     <option value="musica">📻 Rádios & Música (104)</option>
                     <option value="vip">⭐ VIP Fibra (43)</option>
                     <option value="shows">🎸 Shows (104)</option>
                     <option value="historia">📜 Documentários (37)</option>
                     <option value="comedia">😂 Comédia (53)</option>
-                    <option value="combate">🥊 Combate (8)</option>
+                    <option value="combate">🥊 Combate (7)</option>
                     <option value="entretenimento">🎭 Reality (20)</option>
                 </select>
             </div>
@@ -994,8 +954,8 @@
 
         let DEFAULT_CLOUDFLARE_PROXY_URL = 'https://cinepro-tv-proxy.jonasskynet.workers.dev';
         let LOCAL_PROXY_ATIVO = false;
-        let NUVEM_PROXY_ATIVO = true;
-        let NUVEM_PROXY_ENDPOINT = 'https://cinepro-tv-proxy.jonasskynet.workers.dev/?url=';
+        let NUVEM_PROXY_ATIVO = false;
+        let NUVEM_PROXY_ENDPOINT = '/.netlify/functions/proxy?url=';
         let pulosConsecutivos = 0;
         let usandoReservaAtual = false;
         let canalAnteriorIndex = -1;
@@ -2419,7 +2379,7 @@
             }
 
             try {
-                const respCanais = await fetch('./canais.json?v=' + Date.now());
+                const respCanais = await fetch('./canais.json');
                 if (!respCanais.ok) throw new Error('HTTP ' + respCanais.status);
                 const listaCanais = await respCanais.json();
                 if (Array.isArray(listaCanais)) {
@@ -2469,96 +2429,5 @@
         }
         inicializarCatalogoLeve();
     </script>
-
-    <!-- BANNER FLUTUANTE DE DEGUSTAÇÃO & MENSAGEM VIP JONAS -->
-    <div id="bannerDegustacao" style="display:none; position:fixed; bottom:24px; left:24px; z-index:999; max-width:380px; background:rgba(12, 19, 34, 0.96); border:1px solid rgba(16, 185, 129, 0.5); box-shadow:0 12px 36px rgba(0,0,0,0.7), 0 0 20px rgba(16, 185, 129, 0.2); border-radius:14px; padding:14px 16px; backdrop-filter:blur(10px); color:#fff;">
-        <div style="display:flex; align-items:flex-start; gap:12px;">
-            <div style="width:42px; height:42px; border-radius:10px; background:linear-gradient(135deg, #10b981, #06b6d4); display:flex; align-items:center; justify-content:center; font-size:22px; flex-shrink:0;">
-                🎬
-            </div>
-            <div style="flex:1;">
-                <div style="display:flex; align-items:center; justify-content:space-between;">
-                    <h4 style="font-size:13px; font-weight:800; color:#6ee7b7; margin:0;">CinePro TV — Degustação Livre</h4>
-                    <button onclick="fecharBannerDegustacao()" style="background:transparent; border:none; color:#94a3b8; font-size:16px; cursor:pointer; padding:0 4px;">✕</button>
-                </div>
-                <p style="font-size:11.5px; color:#cbd5e1; margin:6px 0 10px 0; line-height:1.4;">
-                    Você está na transmissão aberta (780+ canais). Deseja liberar <b>Canais Fox, Filmes & Séries em 4K</b> no servidor VIP dedicado?
-                </p>
-                <div style="display:flex; gap:8px;">
-                    <button onclick="abrirModalVip()" style="background:linear-gradient(135deg, #10b981, #059669); color:#fff; border:none; border-radius:7px; padding:6px 12px; font-size:11px; font-weight:800; cursor:pointer;">
-                        💎 Conhecer Plano VIP
-                    </button>
-                    <button onclick="fecharBannerDegustacao()" style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12); color:#cbd5e1; border-radius:7px; padding:6px 10px; font-size:11px; font-weight:600; cursor:pointer;">
-                        Continuar Grátis
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- MODAL INFORMATIVO PLANO VIP -->
-    <div id="modalVip" class="modal-shade" onclick="if(event.target === this) fecharModalVip()">
-        <div class="modal-panel" style="max-width:540px;">
-            <div class="modal-title-bar">
-                <h3 style="display:flex; align-items:center; gap:8px;">
-                    <span>💎</span> CinePro TV — Servidor Dedicado VIP
-                </h3>
-                <button class="modal-dismiss" onclick="fecharModalVip()">✕</button>
-            </div>
-            <div style="font-size:13px; color:#cbd5e1; line-height:1.6;">
-                <p style="margin-bottom:12px;">
-                    Experimente a estabilidade máxima de transmissão com nosso servidor privado de alta capacidade:
-                </p>
-                <ul style="list-style:none; padding:0; display:flex; flex-direction:column; gap:8px; margin-bottom:16px;">
-                    <li style="display:flex; align-items:center; gap:8px;">
-                        <span style="color:#10b981;">✔</span> <b>Canais Fox, FX e Esportes Premium</b> (Fox Sports, ESPN, Premiere 24h)
-                    </li>
-                    <li style="display:flex; align-items:center; gap:8px;">
-                        <span style="color:#10b981;">✔</span> <b>Catálogo Completo de Cinema</b> (Telecine, HBO, Paramount, Megapix em 4K/FHD)
-                    </li>
-                    <li style="display:flex; align-items:center; gap:8px;">
-                        <span style="color:#10b981;">✔</span> <b>Maratonas de Séries 24h</b> sem anúncios e sem cortes
-                    </li>
-                    <li style="display:flex; align-items:center; gap:8px;">
-                        <span style="color:#10b981;">✔</span> <b>Compatível com Smart TV, TV Box, Celular e PC</b> (Tivimate, IPTV Smarters, VLC)
-                    </li>
-                </ul>
-                <div style="background:rgba(16, 185, 129, 0.1); border:1px solid rgba(16, 185, 129, 0.3); border-radius:10px; padding:12px; text-align:center; margin-bottom:16px;">
-                    <span style="font-size:12px; color:#6ee7b7; font-weight:700;">🚀 Solicite seu Teste Gratuito de 4 Horas com o Jonas!</span>
-                </div>
-                <div style="display:flex; justify-content:center;">
-                    <button onclick="fecharModalVip()" style="background:#10b981; color:#060913; border:none; padding:10px 24px; border-radius:8px; font-weight:800; font-size:13px; cursor:pointer;">
-                        Entendido, Voltar para a TV
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        function inicializarMensagensDegustacao() {
-            setTimeout(function() {
-                var banner = document.getElementById('bannerDegustacao');
-                if (banner) banner.style.display = 'block';
-            }, 6000);
-        }
-        function fecharBannerDegustacao() {
-            var banner = document.getElementById('bannerDegustacao');
-            if (banner) banner.style.display = 'none';
-            setTimeout(function() {
-                if (banner) banner.style.display = 'block';
-            }, 12 * 60 * 1000);
-        }
-        function abrirModalVip() {
-            var modal = document.getElementById('modalVip');
-            if (modal) modal.classList.add('open');
-        }
-        function fecharModalVip() {
-            var modal = document.getElementById('modalVip');
-            if (modal) modal.classList.remove('open');
-        }
-        window.addEventListener('load', inicializarMensagensDegustacao);
-    </script>
-
 </body>
 </html>

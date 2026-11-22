@@ -198,6 +198,15 @@
     "categoria": "⛪ Religiosos"
   },
   {
+    "nome": "TV Terceiro Anjo (360p)",
+    "url": "https://streamer1.streamhost.org/salive/GMI3anjoh/playlist.m3u8",
+    "logo": "https://i.imgur.com/PExKWNv.png",
+    "grupo": "Religious",
+    "pais": "🇧🇷 Brasil",
+    "cors_star": 1,
+    "categoria": "⛪ Religiosos"
+  },
+  {
     "nome": "TV Universal (480p)",
     "url": "https://644398c.ha.azioncdn.net/primary/tvuniversal_480p.sdp/playlist.m3u8",
     "logo": "https://i.imgur.com/TIsk5zN.png",
@@ -234,7 +243,7 @@
     "categoria": "🍿 Séries & Maratona"
   },
   {
-    "nome": "iCarly (United States)",
+    "nome": "iCarly",
     "url": "https://jmp2.uk/plu-620ff46e0a576e0007dc2f89.m3u8",
     "logo": "https://images.pluto.tv/channels/620ff46e0a576e0007dc2f89/colorLogoPNG.png",
     "grupo": "Series",
@@ -279,7 +288,7 @@
     "categoria": "🍿 Séries & Maratona"
   },
   {
-    "nome": "MacGyver (United States)",
+    "nome": "MacGyver",
     "url": "https://jmp2.uk/plu-63eb9dc84e83e70008abea92.m3u8",
     "logo": "https://images.pluto.tv/channels/63eb9dc84e83e70008abea92/colorLogoPNG.png",
     "grupo": "Classic",
@@ -324,7 +333,7 @@
     "categoria": "🍿 Séries & Maratona"
   },
   {
-    "nome": "MTV Dating (United States)",
+    "nome": "MTV Dating",
     "url": "https://jmp2.uk/plu-6851bb3426beced4f2f67ee6.m3u8",
     "logo": "https://images.pluto.tv/channels/6851bb3426beced4f2f67ee6/colorLogoPNG_1750686926779.png",
     "grupo": "Series",
@@ -333,7 +342,7 @@
     "categoria": "🍿 Séries & Maratona"
   },
   {
-    "nome": "NCIS (United States)",
+    "nome": "NCIS",
     "url": "https://jmp2.uk/plu-63eb9fdda995710008991c54.m3u8",
     "logo": "https://images.pluto.tv/channels/63eb9fdda995710008991c54/colorLogoPNG.png",
     "grupo": "Series",
@@ -342,7 +351,7 @@
     "categoria": "🍿 Séries & Maratona"
   },
   {
-    "nome": "Numbers (United States)",
+    "nome": "Numbers",
     "url": "https://jmp2.uk/plu-67f960c5441853fe50e7afc1.m3u8",
     "logo": "https://images.pluto.tv/channels/67f960c5441853fe50e7afc1/colorLogoPNG_1747430170532.png",
     "grupo": "Series",
@@ -801,15 +810,6 @@
     "categoria": "📰 Notícias"
   },
   {
-    "nome": "TV ALMG | MG Brasil",
-    "url": "https://streaming.almg.gov.br/live/tvalmg.m3u8",
-    "logo": "",
-    "grupo": "News",
-    "pais": "🇧🇷 Brasil",
-    "cors_star": 1,
-    "categoria": "📰 Notícias"
-  },
-  {
     "nome": "TV Brusque (720p)",
     "url": "https://5ad482a77183d.streamlock.net/rodrigotvbrusque.com.br/5d880199c902eb4a1e8df00d/playlist.m3u8",
     "logo": "https://i.imgur.com/J2EAZPS.png",
@@ -846,10 +846,10 @@
     "categoria": "📰 Notícias"
   },
   {
-    "nome": "Adesso TV (720p)",
-    "url": "https://cdn.jmvstream.com/w/LVW-9715/LVW9715_12B26T62tm/playlist.m3u8",
-    "logo": "https://i.imgur.com/KgetM8j.png",
-    "grupo": "General",
+    "nome": "1001 Noites (480p)",
+    "url": "https://cpbr.appflux.com.br:2000/hls/1001noites/1001noites.m3u8",
+    "logo": "https://i.imgur.com/dWA9y2J.png",
+    "grupo": "Shop",
     "pais": "🇧🇷 Brasil",
     "cors_star": 1,
     "categoria": "📺 TV Aberta Brasil"
@@ -1008,15 +1008,6 @@
     "categoria": "📺 TV Aberta Brasil"
   },
   {
-    "nome": "Cultura Fast (720p)",
-    "url": "https://fpa-gateway.tvcultura.com.br:8181/memfs/606caef0-a290-413d-9f1f-8fcdb3a73831.m3u8",
-    "logo": "https://eitv6.cdn.broadpeak.io/account351-i1438/channel/53/quadrada_-3-_pequeno-1723832301.png",
-    "grupo": "General",
-    "pais": "🇧🇷 Brasil",
-    "cors_star": 0,
-    "categoria": "📺 TV Aberta Brasil"
-  },
-  {
     "nome": "Elemental Channel",
     "url": "https://stmv1.samcast.com.br/ricardo2194/ricardo2194/playlist.m3u8",
     "logo": "",
@@ -1098,7 +1089,7 @@
     "categoria": "📺 TV Aberta Brasil"
   },
   {
-    "nome": "MTV Catfish (United States) BR (720p)",
+    "nome": "MTV Catfish BR (720p)",
     "url": "https://jmp2.uk/plu-626c2a3502d84a0007cec817.m3u8",
     "logo": "https://images.pluto.tv/channels/626c2a3502d84a0007cec817/colorLogoPNG.png",
     "grupo": "Entertainment",
@@ -1134,7 +1125,7 @@
     "categoria": "📺 TV Aberta Brasil"
   },
   {
-    "nome": "MTV Reality (United States) (720p)",
+    "nome": "MTV Reality (720p)",
     "url": "https://jmp2.uk/plu-6851bdfc9ac48fde5e07f5ae.m3u8",
     "logo": "https://images.pluto.tv/channels/6493f4f566e485000853d640/colorLogoPNG.png",
     "grupo": "Entertainment",
@@ -1332,15 +1323,6 @@
     "categoria": "📺 TV Aberta Brasil"
   },
   {
-    "nome": "RBATV (720p)",
-    "url": "https://cdn.live.br1.jmvstream.com/w/LVW-15748/LVW15748_Yed7yzLuRC/playlist.m3u8",
-    "logo": "https://i.imgur.com/ZWFxlU1.png",
-    "grupo": "General",
-    "pais": "🇧🇷 Brasil",
-    "cors_star": 1,
-    "categoria": "📺 TV Aberta Brasil"
-  },
-  {
     "nome": "Rede Brasil",
     "url": "https://video09.logicahost.com.br/redebrasiloficial/redebrasiloficial/playlist.m3u8",
     "logo": "https://upload.wikimedia.org/wikipedia/commons/d/d1/Marca_rede_brasil_rgb-color.png",
@@ -1395,15 +1377,6 @@
     "categoria": "📺 TV Aberta Brasil"
   },
   {
-    "nome": "Rede TV! Mais (720p)",
-    "url": "https://cdn.live.br1.jmvstream.com/webtv/AVJ-15235/playlist/playlist.m3u8",
-    "logo": "https://i.ibb.co/F0Tm2WP/2103f4c07b851d64b4c96955765a9a95.png",
-    "grupo": "General",
-    "pais": "🇧🇷 Brasil",
-    "cors_star": 1,
-    "categoria": "📺 TV Aberta Brasil"
-  },
-  {
     "nome": "RedeTV! Parana (1080p)",
     "url": "https://tv01.zas.media:1936/redetvparana/redetvparana/playlist.m3u8",
     "logo": "https://i.imgur.com/D8R0Af4.png",
@@ -1419,24 +1392,6 @@
     "grupo": "General",
     "pais": "🇵🇹 Portugal / Lusófonos",
     "cors_star": 0,
-    "categoria": "📺 TV Aberta Brasil"
-  },
-  {
-    "nome": "SBT Interior (720p)",
-    "url": "https://cdn.jmvstream.com/w/LVW-10801/LVW10801_Xvg4R0u57n/playlist.m3u8",
-    "logo": "https://i.imgur.com/IkZfa4j.png",
-    "grupo": "General",
-    "pais": "🇧🇷 Brasil",
-    "cors_star": 1,
-    "categoria": "📺 TV Aberta Brasil"
-  },
-  {
-    "nome": "SBT Nacional (1080p)",
-    "url": "https://cdn.live.br1.jmvstream.com/w/LVW-10801/LVW10801_Xvg4R0u57n/chunklist.m3u8",
-    "logo": "https://i.imgur.com/tc1ALuu.png",
-    "grupo": "Undefined",
-    "pais": "🇧🇷 Brasil",
-    "cors_star": 1,
     "categoria": "📺 TV Aberta Brasil"
   },
   {
@@ -1611,9 +1566,9 @@
     "categoria": "📺 TV Aberta Brasil"
   },
   {
-    "nome": "TV Arapuan (720p)",
-    "url": "https://5b7f3c45ab7c2.streamlock.net/arapuan/ngrp:arapuan_all/playlist.m3u8",
-    "logo": "https://i.imgur.com/3395A2h.png",
+    "nome": "TV Brasil Oeste (720p)",
+    "url": "https://5ad482a77183d.streamlock.net/operacaotbomt.com/operacaotbomt.com/playlist.m3u8",
+    "logo": "https://i.imgur.com/noqGfuy.png",
     "grupo": "General",
     "pais": "🇧🇷 Brasil",
     "cors_star": 1,
@@ -1728,15 +1683,6 @@
     "categoria": "📺 TV Aberta Brasil"
   },
   {
-    "nome": "TV Litoral RN (720p)",
-    "url": "https://5ad482a77183d.streamlock.net/tvnordesteegmail.com/tvnordesteegmail.com/playlist.m3u8",
-    "logo": "https://upload.wikimedia.org/wikipedia/commons/3/3e/TV_LITORAL_RN.jpg",
-    "grupo": "General",
-    "pais": "🇧🇷 Brasil",
-    "cors_star": 1,
-    "categoria": "📺 TV Aberta Brasil"
-  },
-  {
     "nome": "TV Mais Marica (1080p)",
     "url": "https://5cf4a2c2512a2.streamlock.net/tvmaismarica/tvmaismarica/playlist.m3u8",
     "logo": "https://i.imgur.com/lgCRX7q.png",
@@ -1786,15 +1732,6 @@
     "url": "https://stmv1.voxtvhd.com.br/9030/9030/playlist.m3u8",
     "logo": "https://i.imgur.com/f34CQIG.png",
     "grupo": "General",
-    "pais": "🇧🇷 Brasil",
-    "cors_star": 1,
-    "categoria": "📺 TV Aberta Brasil"
-  },
-  {
-    "nome": "TV Sul Bahia (320p)",
-    "url": "https://live.cdn.upx.com/00046/myStream.sdp/playlist.m3u8",
-    "logo": "https://i.imgur.com/qM6nMWm.png",
-    "grupo": "Undefined",
     "pais": "🇧🇷 Brasil",
     "cors_star": 1,
     "categoria": "📺 TV Aberta Brasil"
