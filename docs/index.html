@@ -47,7 +47,7 @@
                 </svg>
             </div>
             <div class="brand-substatus">
-                <span id="totalCanaisBadge" style="display:none;">896</span>
+                <span id="totalCanaisBadge" style="display:none;">899</span>
                 <span id="healthStatusPill" class="health-pill">🟢 Online</span>
             </div>
         </div>
@@ -55,7 +55,7 @@
         <div class="search-wrapper">
             <span class="search-icon">🔍</span>
             <input type="text" id="searchInput" class="search-input" placeholder="Buscar canal ou #número...">
-            <span class="search-count" id="searchCountBadge">896</span>
+            <span class="search-count" id="searchCountBadge">899</span>
         </div>
 
         <div class="header-controls">
@@ -180,7 +180,7 @@
 
             <!-- BARRA COMPACTA QUANDO OS CANAIS ESTÃO MINIMIZADOS -->
             <div id="collapsedChannelsBar" class="collapsed-channels-bar" onclick="alternarGavetaCanais(event)" title="Clique para abrir a lista completa de canais">
-                <span>📋 <strong>Ver Todos os Canais</strong> (<span id="collapsedTotalCount">423</span> disponíveis)</span>
+                <span>📋 <strong>Ver Todos os Canais</strong> (<span id="collapsedTotalCount">428</span> disponíveis)</span>
                 <span class="collapsed-bar-arrow">Abrir Lista ▼</span>
             </div>
         </div>
@@ -190,7 +190,7 @@
             <div class="sidebar-top-actions">
                 <div style="display:flex; align-items:center; gap:8px; font-size:13px; font-weight:800; color:#e2e8f0; padding-left:4px;">
                     <span>📺 Canais</span>
-                    <span class="sidebar-total-pill" id="sidebarTotalPill">423</span>
+                    <span class="sidebar-total-pill" id="sidebarTotalPill">428</span>
                 </div>
                 <button type="button" id="btnMinimizeSidebar" class="btn-minimize-sidebar" style="flex:0 0 auto;" onclick="alternarGavetaCanais(event)">
                     <span>✕ Fechar Lista</span>
@@ -203,24 +203,24 @@
 
             <div class="sidebar-select-row">
                 <select id="selectPaisFiltro" class="sidebar-select" title="Escolher país ou região">
-                    <option value="BR">🇧🇷 Brasil (423)</option>
+                    <option value="BR">🇧🇷 Brasil (428)</option>
                     <option value="PT">🇵🇹 Portugal (67)</option>
                     <option value="LATAM">🌎 Am. Latina (41)</option>
-                    <option value="GLOBAL">🌐 Global (365)</option>
-                    <option value="ALL">⚡ Todos (896)</option>
+                    <option value="GLOBAL">🌐 Global (363)</option>
+                    <option value="ALL">⚡ Todos (899)</option>
                 </select>
                 <select id="selectCatFiltro" class="sidebar-select" title="Escolher categoria">
-                    <option value="all">📂 Todas (423)</option>
+                    <option value="all">📂 Todas (428)</option>
                     <option value="recentes">🕒 Recentes (0)</option>
                     <option value="meus">➕ Meus Canais (0)</option>
-                    <option value="aberta">📺 TV Aberta (94)</option>
+                    <option value="aberta">📺 TV Aberta (95)</option>
                     <option value="infantil">🧸 Desenhos & Kids (62)</option>
-                    <option value="filmes">🎬 Filmes (146)</option>
+                    <option value="filmes">🎬 Filmes (145)</option>
                     <option value="series">🍿 Séries (106)</option>
                     <option value="esportes">⚽ Esportes (31)</option>
-                    <option value="noticias">📰 Notícias (57)</option>
+                    <option value="noticias">📰 Notícias (58)</option>
                     <option value="discovery">🔬 Discovery (26)</option>
-                    <option value="religiosos">⛪ Religiosos (31)</option>
+                    <option value="religiosos">⛪ Religiosos (30)</option>
                     <option value="musica">📻 Rádios & Música (104)</option>
                     <option value="vip">⭐ VIP Fibra (43)</option>
                     <option value="shows">🎸 Shows (104)</option>
@@ -2428,235 +2428,6 @@
             }, 900);
         }
         inicializarCatalogoLeve();
-    </script>
-
-    <!-- SISTEMA OFICIAL DE TESTE DE 2 HORAS & SATISFAÇÃO AOS 15 MINUTOS -->
-    <style>
-      #timerTesteFlutuante {
-        position: fixed;
-        top: 10px;
-        left: 50%;
-        transform: translateX(-50%);
-        background: rgba(12, 19, 34, 0.94);
-        border: 1.5px solid #10b981;
-        color: #ffffff;
-        padding: 5px 14px;
-        border-radius: 30px;
-        font-size: 12px;
-        font-weight: 800;
-        z-index: 100;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6), 0 0 16px rgba(16, 185, 129, 0.25);
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      }
-      #timerTesteFlutuante .timer-live-dot {
-        width: 8px;
-        height: 8px;
-        border-radius: 50%;
-        background: #10b981;
-        box-shadow: 0 0 8px #10b981;
-        animation: pulse-ring 1.6s infinite;
-      }
-      #timerTesteFlutuante .timer-clock {
-        font-family: monospace;
-        font-size: 13px;
-        color: #6ee7b7;
-        letter-spacing: 0.5px;
-      }
-
-      /* MODAL DE SATISFAÇÃO 15 MINUTOS */
-      .modal-teste-overlay {
-        position: fixed;
-        inset: 0;
-        background: rgba(2, 6, 23, 0.88);
-        backdrop-filter: blur(8px);
-        z-index: 9999;
-        display: none;
-        align-items: center;
-        justify-content: center;
-        padding: 16px;
-      }
-      .modal-teste-card {
-        background: #0f172a;
-        border: 1.5px solid rgba(16, 185, 129, 0.4);
-        border-radius: 18px;
-        max-width: 480px;
-        width: 100%;
-        padding: 26px;
-        box-shadow: 0 25px 60px rgba(0,0,0,0.8), 0 0 25px rgba(16, 185, 129, 0.2);
-        text-align: center;
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      }
-      .modal-teste-badge {
-        display: inline-block;
-        padding: 4px 12px;
-        border-radius: 20px;
-        background: rgba(16, 185, 129, 0.15);
-        border: 1px solid #10b981;
-        color: #6ee7b7;
-        font-size: 11.5px;
-        font-weight: 800;
-        margin-bottom: 12px;
-      }
-      .modal-teste-title {
-        font-size: 20px;
-        font-weight: 800;
-        color: #ffffff;
-        line-height: 1.25;
-      }
-      .modal-teste-desc {
-        font-size: 13.5px;
-        color: #94a3b8;
-        margin-top: 10px;
-        line-height: 1.5;
-      }
-      .modal-teste-btns {
-        margin-top: 20px;
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-      }
-      .btn-modal-sim {
-        background: #10b981;
-        color: #051b13;
-        padding: 13px 20px;
-        border-radius: 10px;
-        font-size: 14px;
-        font-weight: 800;
-        text-decoration: none;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-        cursor: pointer;
-        border: none;
-        transition: transform 0.15s ease, opacity 0.15s ease;
-      }
-      .btn-modal-sim:hover {
-        transform: scale(1.02);
-        opacity: 0.95;
-      }
-      .btn-modal-continuar {
-        background: transparent;
-        border: 1px solid rgba(255, 255, 255, 0.15);
-        color: #cbd5e1;
-        padding: 11px 18px;
-        border-radius: 10px;
-        font-size: 13px;
-        font-weight: 700;
-        cursor: pointer;
-        transition: all 0.15s ease;
-      }
-      .btn-modal-continuar:hover {
-        background: rgba(255, 255, 255, 0.08);
-        border-color: #ffffff;
-      }
-    </style>
-
-    <div id="timerTesteFlutuante">
-      <span class="timer-live-dot"></span>
-      <span>Teste Grátis:</span>
-      <span id="relogioRegressivo" class="timer-clock">02:00:00</span>
-    </div>
-
-    <!-- MODAL 15 MINUTOS: SATISFAÇÃO -->
-    <div id="modalSatisfacao15" class="modal-teste-overlay">
-      <div class="modal-teste-card">
-        <div class="modal-teste-badge">⏱️ 15 Minutos de Teste</div>
-        <h3 class="modal-teste-title">E aí, como está a transmissão?</h3>
-        <p class="modal-teste-desc">
-          A imagem dos canais abriu perfeita na sua tela? Está rodando liso sem travar?<br>
-          Se você gostou e quer garantir o seu acesso completo por 30 dias com todos os 780 canais liberados:
-        </p>
-        <div class="modal-teste-btns">
-          <a href="https://wa.me/5511966707293?text=Ol%C3%A1%20Jonas%2C%20estou%20no%20teste%20de%2015%20minutos%20do%20CinePro%20TV%2C%20adorei%20e%20quero%20assinar%20por%20R%24%2030%20no%20PIX!" target="_blank" rel="noopener" class="btn-modal-sim">
-            🔥 Gostei! Quero Assinar por R$ 30 no PIX
-          </a>
-          <button type="button" class="btn-modal-continuar" onclick="fecharModalSatisfacao()">
-            Continuar Testando (Ainda tenho tempo restante)
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- MODAL FINAL: TESTE DE 2 HORAS ESGOTADO -->
-    <div id="modalFimTeste2h" class="modal-teste-overlay" style="z-index:10000;">
-      <div class="modal-teste-card" style="border-color:#f59e0b;">
-        <div class="modal-teste-badge" style="border-color:#f59e0b; color:#fcd34d; background:rgba(245, 158, 11, 0.15);">⏳ Teste de 2 Horas Encerrado</div>
-        <h3 class="modal-teste-title" style="color:#fcd34d;">Seu tempo de teste grátis acabou!</h3>
-        <p class="modal-teste-desc">
-          Você experimentou a qualidade máxima da nossa plataforma CinePro TV 2026.<br><br>
-          Para continuar assistindo aos mais de <strong>780 canais Full HD, filmes, séries e futebol</strong> o mês inteiro sem interrupções:
-        </p>
-        <div style="margin:16px 0; padding:12px; border-radius:10px; background:rgba(16, 185, 129, 0.12); border:1px solid #10b981; color:#f8fafc; font-size:16px; font-weight:800;">
-          Apenas R$ 30,00 / mês (Sem Fidelidade)
-        </div>
-        <div class="modal-teste-btns">
-          <a href="https://wa.me/5511966707293?text=Ol%C3%A1%20Jonas%2C%20meu%20teste%20de%202%20horas%20do%20CinePro%20TV%20acabou%20e%20quero%20assinar%20o%20mensal%20por%20R%24%2030%20no%20PIX!" target="_blank" rel="noopener" class="btn-modal-sim" style="font-size:15px; padding:15px;">
-            💬 Liberar Acesso Mensal no WhatsApp (R$ 30 PIX)
-          </a>
-        </div>
-      </div>
-    </div>
-
-    <script>
-      (function() {
-        const DURACAO_TESTE_SEG = 2 * 60 * 60; // 2 horas (7200 segundos)
-        const CHAVE_INICIO = 'cinepro_teste_inicio_timestamp';
-        const CHAVE_SATISFACAO = 'cinepro_teste_perguntou_15min';
-
-        let inicio = localStorage.getItem(CHAVE_INICIO);
-        if (!inicio) {
-          inicio = Date.now().toString();
-          localStorage.setItem(CHAVE_INICIO, inicio);
-        }
-        const timestampInicio = parseInt(inicio, 10);
-
-        function formatarTempo(segundos) {
-          if (segundos <= 0) return '00:00:00';
-          const h = Math.floor(segundos / 3600);
-          const m = Math.floor((segundos % 3600) / 60);
-          const s = Math.floor(segundos % 60);
-          return [h, m, s].map(v => String(v).padStart(2, '0')).join(':');
-        }
-
-        window.fecharModalSatisfacao = function() {
-          const m = document.getElementById('modalSatisfacao15');
-          if (m) m.style.display = 'none';
-        };
-
-        function verificarTempo() {
-          const decorridoSeg = Math.floor((Date.now() - timestampInicio) / 1000);
-          const restanteSeg = DURACAO_TESTE_SEG - decorridoSeg;
-
-          const elRelogio = document.getElementById('relogioRegressivo');
-          if (elRelogio) {
-            elRelogio.textContent = formatarTempo(restanteSeg);
-          }
-
-          // Checagem de satisfação aos 15 minutos (900 segundos)
-          if (decorridoSeg >= 900 && !localStorage.getItem(CHAVE_SATISFACAO)) {
-            localStorage.setItem(CHAVE_SATISFACAO, 'true');
-            const mSat = document.getElementById('modalSatisfacao15');
-            if (mSat && restanteSeg > 0) {
-              mSat.style.display = 'flex';
-            }
-          }
-
-          // Bloqueio de 2 horas (tempo esgotado)
-          if (restanteSeg <= 0) {
-            const mFim = document.getElementById('modalFimTeste2h');
-            if (mFim) mFim.style.display = 'flex';
-            const vid = document.querySelector('video');
-            if (vid) vid.pause();
-          }
-        }
-
-        setInterval(verificarTempo, 1000);
-        verificarTempo();
-      })();
     </script>
 </body>
 </html>
