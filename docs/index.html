@@ -279,6 +279,9 @@ header{background:linear-gradient(180deg,rgba(0,0,0,0.96) 0%,rgba(20,20,20,0.92)
                     <button type="button" class="icon-btn-text" id="btnPiP" onclick="alternarPiP()" title="Modo Janela Flutuante (Picture-in-Picture)" style="border-color:rgba(16,185,129,0.35); color:#6ee7b7;">
                         <span>🪟</span> <span>PiP</span>
                     </button>
+                                        <button type="button" class="icon-btn-text" id="btnAudioFix" onclick="corrigirAudioCanalAtual()" title="Destravar som, trocar faixa de áudio ou corrigir codec" style="border-color:rgba(229,9,20,0.45); color:#ff8086;">
+                        <span>🔊</span> <span id="audioFixLabel">Áudio</span>
+                    </button>
                     <button type="button" class="icon-btn-text" id="btnReconnect" onclick="reconectarSinalAtual()" title="Reconectar sinal e limpar buffer" style="border-color:rgba(59,130,246,0.35); color:#93c5fd;">
                         <span>🔄</span>
                     </button>
@@ -1416,9 +1419,11 @@ header{background:linear-gradient(180deg,rgba(0,0,0,0.96) 0%,rgba(20,20,20,0.92)
             }
 
             if (Hls.isSupported()) {
+                let tentouSwapAudio = false;
                 hls = new Hls({
                     enableWorker: true,
                     lowLatencyMode: true,
+                    defaultAudioCodec: 'mp4a.40.2',
                     enableWebVTT: true,
                     enableIMSC1: true,
                     enableCEA708Captions: true,
@@ -1446,6 +1451,25 @@ header{background:linear-gradient(180deg,rgba(0,0,0,0.96) 0%,rgba(20,20,20,0.92)
                     }
                 });
 
+                hls.on(Hls.Events.AUDIO_TRACKS_UPDATED, function (ev, info) {
+                    const tracks = (info && info.audioTracks) || hls.audioTracks || [];
+                    const lbl = document.getElementById('audioFixLabel');
+                    if (tracks.length > 0) {
+                        const ehCompativel = t => !/ac-3|ec-3|ac3|eac3/i.test(t.audioCodec || '');
+                        let chosen = tracks.findIndex(t => ehCompativel(t) && /pt|por|br/i.test((t.lang || '') + ' ' + (t.name || '')));
+                        if (chosen < 0) chosen = tracks.findIndex(t => ehCompativel(t));
+                        if (chosen >= 0 && hls.audioTrack !== chosen) {
+                            hls.audioTrack = chosen;
+                        }
+                        if (lbl) {
+                            const atualIdx = hls.audioTrack >= 0 ? hls.audioTrack : 0;
+                            lbl.textContent = tracks.length > 1 ? `Áudio (${atualIdx + 1}/${tracks.length})` : 'Áudio';
+                        }
+                    } else if (lbl) {
+                        lbl.textContent = 'Áudio';
+                    }
+                });
+
                 hls.on(Hls.Events.MANIFEST_PARSED, function () {
                     if (modoEconomiaAudio && hls.levels && hls.levels.length > 1) {
                         hls.currentLevel = 0;
@@ -1457,6 +1481,11 @@ header{background:linear-gradient(180deg,rgba(0,0,0,0.96) 0%,rgba(20,20,20,0.92)
                     clearTimeout(window.autoZapTimer);
                     clearTimeout(window.stallCheckTimer);
 
+                    if (typeof usuarioMutouManual === 'undefined' || !usuarioMutouManual) {
+                        video.muted = false;
+                        if (video.volume < 0.1) video.volume = 1;
+                        if (unmutePill) unmutePill.style.display = 'none';
+                    }
                     const playPromise = video.play();
                     if (playPromise !== undefined) {
                         playPromise.then(() => {
@@ -1478,6 +1507,18 @@ header{background:linear-gradient(180deg,rgba(0,0,0,0.96) 0%,rgba(20,20,20,0.92)
                 });
 
                 hls.on(Hls.Events.ERROR, function (event, data) {
+                    if (!data.fatal && (data.details === 'bufferAddCodecError' || data.details === 'audioTrackLoadError' || data.details === 'fragParsingError')) {
+                        if (hls.audioTracks && hls.audioTracks.length > 1) {
+                            const prox = ((hls.audioTrack >= 0 ? hls.audioTrack : 0) + 1) % hls.audioTracks.length;
+                            hls.audioTrack = prox;
+                        }
+                        if (!tentouSwapAudio) {
+                            tentouSwapAudio = true;
+                            try { hls.swapAudioCodec(); } catch (_) {}
+                            try { hls.recoverMediaError(); } catch (_) {}
+                        }
+                        return;
+                    }
                     if (data.fatal) {
                         switch (data.type) {
                             case Hls.ErrorTypes.NETWORK_ERROR:
@@ -1494,7 +1535,11 @@ header{background:linear-gradient(180deg,rgba(0,0,0,0.96) 0%,rgba(20,20,20,0.92)
                                 if (tentativasErro >= 2) {
                                     tratarFalhaSintonizacao(c, '⚠️ Formato de vídeo instável. Pulando...');
                                 } else {
-                                    mostrarHUD('🔧 Recuperando decodificador de vídeo...');
+                                    mostrarHUD('🔧 Recuperando áudio e vídeo...');
+                                    if (!tentouSwapAudio) {
+                                        tentouSwapAudio = true;
+                                        try { hls.swapAudioCodec(); } catch (_) {}
+                                    }
                                     hls.recoverMediaError();
                                 }
                                 break;
@@ -2984,6 +3029,51 @@ header{background:linear-gradient(180deg,rgba(0,0,0,0.96) 0%,rgba(20,20,20,0.92)
                 }
             }
         });
+
+    
+        // === CORREÇÃO E CONTROLE INTELIGENTE DE ÁUDIO HLS ===
+        let usuarioMutouManual = false;
+
+        function corrigirAudioCanalAtual() {
+            usuarioMutouManual = false;
+            if (typeof video !== 'undefined' && video) {
+                video.muted = false;
+                if (video.volume < 0.2) video.volume = 1;
+            }
+            if (typeof unmutePill !== 'undefined' && unmutePill) {
+                unmutePill.style.display = 'none';
+            }
+
+            if (typeof hls !== 'undefined' && hls && hls.audioTracks && hls.audioTracks.length > 1) {
+                const atual = hls.audioTrack >= 0 ? hls.audioTrack : 0;
+                const prox = (atual + 1) % hls.audioTracks.length;
+                hls.audioTrack = prox;
+                const faixa = hls.audioTracks[prox] || {};
+                const nomeFaixa = faixa.name || faixa.lang || `Faixa ${prox + 1}`;
+                const lbl = document.getElementById('audioFixLabel');
+                if (lbl) lbl.textContent = `Áudio (${prox + 1}/${hls.audioTracks.length})`;
+                if (typeof mostrarToast === 'function') {
+                    mostrarToast(`🔊 Faixa de áudio: ${nomeFaixa} (${prox + 1}/${hls.audioTracks.length})`);
+                }
+                return;
+            }
+
+            if (typeof hls !== 'undefined' && hls) {
+                try { hls.swapAudioCodec(); } catch (_) {}
+                try { hls.recoverMediaError(); } catch (_) {}
+                if (typeof video !== 'undefined' && video) {
+                    video.play().catch(() => {});
+                }
+                if (typeof mostrarToast === 'function') {
+                    mostrarToast('🔧 Áudio destravado (codec reajustado)! Se continuar mudo, o sinal original está sem áudio.');
+                }
+            } else if (typeof video !== 'undefined' && video) {
+                video.play().catch(() => {});
+                if (typeof mostrarToast === 'function') {
+                    mostrarToast('🔊 Som desbloqueado no player!');
+                }
+            }
+        }
 
     </script>
 
