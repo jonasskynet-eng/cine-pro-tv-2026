@@ -2149,5 +2149,21 @@
     "pais": "🇧🇷 Brasil",
     "cors_star": 1,
     "categoria": "🧸 Infantil & Desenhos"
+  },
+  {
+    "nome": "FUEL TV AU (1080p)",
+    "url": "https://amg01074-fueltv-fueltvau-samsungau-g09kq.amagi.tv/playlist/amg01074-fueltv-fueltvau-samsungau/playlist.m3u8",
+    "logo": "https://i.imgur.com/I8mviBy.png",
+    "grupo": "Esportes",
+    "pais": "🇵🇹 Portugal / Lusófonos",
+    "cors_star": 1
+  },
+  {
+    "nome": "Muzangala TV (1080p)",
+    "url": "https://5cf4a2c2512a2.streamlock.net/tvmuzangala/tvmuzangala/playlist.m3u8",
+    "logo": "https://i.imgur.com/fBeaJoS.png",
+    "grupo": "Shows",
+    "pais": "🇧🇷 Brasil",
+    "cors_star": 1
   }
 ]
