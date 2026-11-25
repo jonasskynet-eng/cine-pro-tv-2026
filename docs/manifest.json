@@ -1,22 +1,18 @@
 {
-  "name": "CinePro TV Digital 2026",
+  "name": "CinePro TV 2026",
   "short_name": "CinePro TV",
-  "description": "Central de TV Digital em Fibra Óptica",
+  "description": "Central de TV Digital, Filmes, Séries e Rádios Ao Vivo",
   "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#060913",
-  "theme_color": "#10b981",
+  "background_color": "#141414",
+  "theme_color": "#E50914",
   "orientation": "any",
   "icons": [
     {
-      "src": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/brazil/sbt-br.png",
-      "sizes": "192x192",
-      "type": "image/png"
-    },
-    {
-      "src": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/brazil/sbt-br.png",
-      "sizes": "512x512",
-      "type": "image/png"
+      "src": "./cinepro-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
     }
   ]
 }

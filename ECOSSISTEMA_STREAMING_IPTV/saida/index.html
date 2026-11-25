@@ -3,7 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="theme-color" content="#060913">
+        <meta name="theme-color" content="#141414">
+    <link rel="icon" type="image/svg+xml" href="./cinepro-icon.svg">
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+    <link rel="preconnect" href="https://cinepro-tv-proxy.jonasskynet.workers.dev" crossorigin>
+    <link rel="dns-prefetch" href="https://raw.githubusercontent.com">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="manifest" href="manifest.json">
@@ -127,6 +131,11 @@ header{background:linear-gradient(180deg,rgba(0,0,0,0.96) 0%,rgba(20,20,20,0.92)
 .nf-poster-track{width:100%;height:2.5px;background:rgba(255,255,255,0.12);border-radius:2px;overflow:hidden;}
 .nf-poster-fill{height:100%;background:#e50914;}
 @media (max-width:700px){.nf-topbar{padding:10px 14px;}.nf-hero{padding:20px 14px;}.nf-rows{padding:14px 12px 36px;}.nf-poster-card{width:176px;min-width:176px;height:114px;}.nf-arrow{display:none;}}
+
+/* === OTIMIZAÇÕES DE RENDERIZAÇÃO TURBO === */
+.channel-card{content-visibility:auto;contain-intrinsic-size:78px;}
+#channelListBody.grid-cards-mode .channel-card{contain-intrinsic-size:168px;}
+.nf-poster-card{content-visibility:auto;contain-intrinsic-size:210px 126px;}
 </style>
 </head>
 <body class="channels-minimized">
@@ -628,12 +637,38 @@ header{background:linear-gradient(180deg,rgba(0,0,0,0.96) 0%,rgba(20,20,20,0.92)
             };
         }
 
+        let MAPA_IDX_POR_ID = new Map();
+        const EPG_LOOKUP_CACHE = new Map();
+
+        function reconstruirIndicesCatalogo() {
+            MAPA_IDX_POR_ID.clear();
+            for (let i = 0; i < TODOS_CANAIS.length; i++) {
+                if (TODOS_CANAIS[i] && TODOS_CANAIS[i].id !== undefined) {
+                    MAPA_IDX_POR_ID.set(TODOS_CANAIS[i].id, i);
+                }
+            }
+        }
+
+        function obterIndiceCanal(id) {
+            const idx = MAPA_IDX_POR_ID.get(id);
+            return idx !== undefined ? idx : -1;
+        }
+
+        function debounceTurbo(fn, esperaMs = 110) {
+            let timer = null;
+            return function(...args) {
+                clearTimeout(timer);
+                timer = setTimeout(() => fn.apply(this, args), esperaMs);
+            };
+        }
+
         function recarregarMeusCanaisNoCatalogo() {
             TODOS_CANAIS.length = CANAIS_BASE_QTD;
             const salvos = lerMeusCanaisStorage();
             salvos.forEach((item, idx) => {
                 TODOS_CANAIS.unshift(construirObjetoMeuCanal(item, idx + 1));
             });
+            reconstruirIndicesCatalogo();
             const badgeTotal = document.getElementById('totalCanaisBadge');
             if (badgeTotal) badgeTotal.textContent = TODOS_CANAIS.length;
         }
@@ -948,24 +983,35 @@ header{background:linear-gradient(180deg,rgba(0,0,0,0.96) 0%,rgba(20,20,20,0.92)
         }
 
         function buscarGradeRealEpg(canalObj) {
-            if (!EPG_REAL_KEYS_SORTED.length) return null;
-            const k = normalizarNomeEpgCliente(canalObj.nome || '');
-            if (!k || k.length < 3) return null;
-
-            let lista = EPG_REAL_MAP[k] || null;
-            if (!lista) {
-                const pk = ` ${k} `;
-                for (let i = 0; i < EPG_REAL_KEYS_SORTED.length; i++) {
-                    const ek = EPG_REAL_KEYS_SORTED[i];
-                    if (ek.length < 4) continue;
-                    if (ek === 'tv brasil' && !k.startsWith('tv brasil')) continue;
-                    if (pk.includes(` ${ek} `)) {
-                        lista = EPG_REAL_MAP[ek];
-                        break;
+            if (!EPG_REAL_KEYS_SORTED.length || !canalObj) return null;
+            const cacheKey = canalObj.id !== undefined ? canalObj.id : (canalObj.nome || '');
+            let lista = EPG_LOOKUP_CACHE.get(cacheKey);
+            if (lista === false) return null;
+            if (lista === undefined) {
+                const k = normalizarNomeEpgCliente(canalObj.nome || '');
+                if (!k || k.length < 3) {
+                    EPG_LOOKUP_CACHE.set(cacheKey, false);
+                    return null;
+                }
+                lista = EPG_REAL_MAP[k] || null;
+                if (!lista) {
+                    const pk = ` ${k} `;
+                    for (let i = 0; i < EPG_REAL_KEYS_SORTED.length; i++) {
+                        const ek = EPG_REAL_KEYS_SORTED[i];
+                        if (ek.length < 4) continue;
+                        if (ek === 'tv brasil' && !k.startsWith('tv brasil')) continue;
+                        if (pk.includes(` ${ek} `)) {
+                            lista = EPG_REAL_MAP[ek];
+                            break;
+                        }
                     }
                 }
+                if (!Array.isArray(lista) || !lista.length) {
+                    EPG_LOOKUP_CACHE.set(cacheKey, false);
+                    return null;
+                }
+                EPG_LOOKUP_CACHE.set(cacheKey, lista);
             }
-            if (!Array.isArray(lista) || !lista.length) return null;
 
             const agoraSec = Math.floor(Date.now() / 1000);
             let idxAtual = lista.findIndex(p => p[0] <= agoraSec && agoraSec < p[1]);
@@ -1376,7 +1422,9 @@ header{background:linear-gradient(180deg,rgba(0,0,0,0.96) 0%,rgba(20,20,20,0.92)
             }
 
             if (hls) {
-                hls.destroy();
+                try { hls.stopLoad(); } catch (_) {}
+                try { hls.detachMedia(); } catch (_) {}
+                try { hls.destroy(); } catch (_) {}
                 hls = null;
             }
             video.onerror = null;
@@ -1744,7 +1792,7 @@ header{background:linear-gradient(180deg,rgba(0,0,0,0.96) 0%,rgba(20,20,20,0.92)
             const fragment = document.createDocumentFragment();
 
             proximoLote.forEach(c => {
-                const realIndex = TODOS_CANAIS.findIndex(x => x.id === c.id);
+                const realIndex = obterIndiceCanal(c.id);
                 const isSelected = realIndex === canalAtualIndex;
                 const isFav = favoritos.includes(c.id);
 
@@ -1918,7 +1966,7 @@ header{background:linear-gradient(180deg,rgba(0,0,0,0.96) 0%,rgba(20,20,20,0.92)
                 const candidatoPos = (pos + direcao * passo + listaBase.length * 4) % listaBase.length;
                 const candidato = listaBase[candidatoPos];
                 if (ehCanalDisponivelAgora(candidato)) {
-                    const realIdx = TODOS_CANAIS.findIndex(x => x.id === candidato.id);
+                    const realIdx = obterIndiceCanal(candidato.id);
                     if (realIdx !== -1) {
                         if (realIdx >= canaisRenderizadosQtd) {
                             canaisRenderizadosQtd = Math.min(TODOS_CANAIS.length, realIdx + 20);
@@ -2121,16 +2169,18 @@ header{background:linear-gradient(180deg,rgba(0,0,0,0.96) 0%,rgba(20,20,20,0.92)
         }
 
         const mobileSearchInputEl = document.getElementById('mobileSearchInput');
+        const aplicarFiltrosDebounced = debounceTurbo(() => aplicarFiltros(true), 110);
+
         if (mobileSearchInputEl) {
             mobileSearchInputEl.addEventListener('input', () => {
                 if (searchInput) searchInput.value = mobileSearchInputEl.value;
-                aplicarFiltros(true);
+                aplicarFiltrosDebounced();
             });
         }
 
         searchInput.addEventListener('input', () => {
             if (mobileSearchInputEl) mobileSearchInputEl.value = searchInput.value;
-            aplicarFiltros(true);
+            aplicarFiltrosDebounced();
             if (searchInput.value.trim().length > 0 && document.body.classList.contains('channels-minimized')) {
                 alternarGavetaCanais(null, true);
             }
@@ -2642,6 +2692,7 @@ header{background:linear-gradient(180deg,rgba(0,0,0,0.96) 0%,rgba(20,20,20,0.92)
                         if (dadosEpg && dadosEpg.canais) {
                             EPG_REAL_MAP = dadosEpg.canais;
                             EPG_REAL_KEYS_SORTED = Object.keys(EPG_REAL_MAP).sort((a, b) => b.length - a.length);
+                            EPG_LOOKUP_CACHE.clear();
                             atualizarCartaoEpgAtual();
                         }
                     })
@@ -2816,7 +2867,7 @@ header{background:linear-gradient(180deg,rgba(0,0,0,0.96) 0%,rgba(20,20,20,0.92)
                 candidatos = lista.filter(x => x.id !== atualObj.id);
             }
             const escolhido = candidatos[Math.floor(Math.random() * candidatos.length)];
-            const idxReal = TODOS_CANAIS.findIndex(x => x.id === escolhido.id);
+            const idxReal = obterIndiceCanal(escolhido.id);
             if (idxReal >= 0) {
                 sintonizar(idxReal);
                 if (typeof mostrarToast === 'function') {
@@ -2835,7 +2886,7 @@ header{background:linear-gradient(180deg,rgba(0,0,0,0.96) 0%,rgba(20,20,20,0.92)
             }
             const itens = ids
                 .map(id => {
-                    const idx = TODOS_CANAIS.findIndex(c => c.id === id);
+                    const idx = obterIndiceCanal(id);
                     return idx >= 0 ? { idx, c: TODOS_CANAIS[idx] } : null;
                 })
                 .filter(Boolean);
@@ -2910,12 +2961,12 @@ header{background:linear-gradient(180deg,rgba(0,0,0,0.96) 0%,rgba(20,20,20,0.92)
             const disp = TODOS_CANAIS.filter(c => typeof ehCanalDisponivelAgora !== 'function' || ehCanalDisponivelAgora(c));
             const pool = disp.length ? disp : TODOS_CANAIS;
             const pick = pool[Math.floor(Math.random() * pool.length)];
-            const idx = TODOS_CANAIS.findIndex(x => x.id === pick.id);
+            const idx = obterIndiceCanal(pick.id);
             renderizarHeroNetflix(idx >= 0 ? idx : 0);
         }
 
         function criarCardNetflixHtml(c) {
-            const idx = TODOS_CANAIS.findIndex(x => x.id === c.id);
+            const idx = obterIndiceCanal(c.id);
             const epg = typeof obterEpgDinamico === 'function' ? obterEpgDinamico(c) : { titulo: c.categoria, progresso: 35 };
             const seloQual = (/1080p|fhd|\bhd\b/i.test(c.nome || '') || (c.tags && c.tags.includes('1080p'))) ? 'HD' : (c.cors ? '⚡' : '');
             return `
@@ -3082,6 +3133,14 @@ header{background:linear-gradient(180deg,rgba(0,0,0,0.96) 0%,rgba(20,20,20,0.92)
                     mostrarToast('🔊 Som desbloqueado no player!');
                 }
             }
+        }
+
+    
+        // === REGISTRO DO SERVICE WORKER (CACHE PWA RÁPIDO) ===
+        if ('serviceWorker' in navigator && window.location.protocol.startsWith('http')) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js').catch(() => {});
+            });
         }
 
     </script>
