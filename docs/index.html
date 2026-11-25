@@ -211,6 +211,19 @@
             </div>
 
             <div class="sidebar-select-row">
+
+            <!-- BARRA DE CATEGORIAS RÁPIDAS CINEPRO TV -->
+            <div id="quickCatPills" style="display:flex; gap:6px; padding:6px 10px; background:#0c1322; border-bottom:1px solid #1e293b; overflow-x:auto; scrollbar-width:none; -webkit-overflow-scrolling:touch; align-items:center;">
+                <button type="button" class="q-pill active" onclick="selecionarCategoriaDireta('all', this)" style="flex:0 0 auto; background:#10b981; color:#060913; border:1px solid #34d399; padding:5px 12px; border-radius:14px; font-size:11px; font-weight:800; cursor:pointer;">⭐ Todos</button>
+                <button type="button" class="q-pill" onclick="selecionarCategoriaDireta('vip', this)" style="flex:0 0 auto; background:linear-gradient(135deg, #f59e0b, #d97706); color:#ffffff; border:1px solid #fbbf24; padding:5px 12px; border-radius:14px; font-size:11px; font-weight:800; cursor:pointer; box-shadow:0 0 8px rgba(245,158,11,0.35);">🦊 Fox & VIP</button>
+                <button type="button" class="q-pill" onclick="selecionarCategoriaDireta('filmes', this)" style="flex:0 0 auto; background:#1e293b; color:#cbd5e1; border:1px solid #334155; padding:5px 10px; border-radius:14px; font-size:11px; font-weight:700; cursor:pointer;">🎬 Filmes</button>
+                <button type="button" class="q-pill" onclick="selecionarCategoriaDireta('series', this)" style="flex:0 0 auto; background:#1e293b; color:#cbd5e1; border:1px solid #334155; padding:5px 10px; border-radius:14px; font-size:11px; font-weight:700; cursor:pointer;">🍿 Séries 24h</button>
+                <button type="button" class="q-pill" onclick="selecionarCategoriaDireta('esportes', this)" style="flex:0 0 auto; background:#1e293b; color:#cbd5e1; border:1px solid #334155; padding:5px 10px; border-radius:14px; font-size:11px; font-weight:700; cursor:pointer;">⚽ Esportes</button>
+                <button type="button" class="q-pill" onclick="selecionarCategoriaDireta('aberta', this)" style="flex:0 0 auto; background:#1e293b; color:#cbd5e1; border:1px solid #334155; padding:5px 10px; border-radius:14px; font-size:11px; font-weight:700; cursor:pointer;">📺 TV Aberta</button>
+                <button type="button" class="q-pill" onclick="selecionarCategoriaDireta('musica', this)" style="flex:0 0 auto; background:#1e293b; color:#cbd5e1; border:1px solid #334155; padding:5px 10px; border-radius:14px; font-size:11px; font-weight:700; cursor:pointer;">📻 Rádios</button>
+                <button type="button" class="q-pill" onclick="alternarFiltroFavoritosDireto(this)" style="flex:0 0 auto; background:#1e293b; color:#fbbf24; border:1px solid #d97706; padding:5px 10px; border-radius:14px; font-size:11px; font-weight:700; cursor:pointer;">⭐ Favoritos</button>
+            </div>
+
                 <select id="selectPaisFiltro" class="sidebar-select" title="Escolher país ou região">
                     <option value="BR">🇧🇷 Brasil (427)</option>
                     <option value="PT">🇵🇹 Portugal (67)</option>
@@ -2543,6 +2556,34 @@
         }
         window.addEventListener('load', () => setTimeout(verificarCanalParametroUrl, 800));
 
-    </script>
+    
+        function selecionarCategoriaDireta(cat, btnEl) {
+            const selCat = document.getElementById('selectCatFiltro');
+            if (selCat) {
+                selCat.value = cat;
+                catFiltro = cat;
+            }
+            document.querySelectorAll('.q-pill').forEach(b => {
+                b.style.background = '#1e293b';
+                b.style.color = '#cbd5e1';
+                b.style.borderColor = '#334155';
+            });
+            if (btnEl) {
+                if (cat === 'vip') {
+                    btnEl.style.background = 'linear-gradient(135deg, #f59e0b, #d97706)';
+                    btnEl.style.color = '#ffffff';
+                    btnEl.style.borderColor = '#fbbf24';
+                } else {
+                    btnEl.style.background = '#10b981';
+                    btnEl.style.color = '#060913';
+                    btnEl.style.borderColor = '#34d399';
+                }
+            }
+            if (typeof aplicarFiltros === 'function') {
+                aplicarFiltros(true);
+            }
+        }
+
+</script>
 </body>
 </html>
