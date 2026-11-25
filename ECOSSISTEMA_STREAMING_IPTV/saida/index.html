@@ -47,6 +47,86 @@
 #channelListBody.grid-cards-mode .fav-star-btn{position:absolute;top:6px;right:6px;}
 #channelListBody.grid-cards-mode .equalizer{position:absolute;top:10px;right:34px;margin-right:0;}
 #channelListBody.grid-cards-mode .load-more-box{grid-column:1 / -1;}
+
+/* === TEMA PADRÃO NETFLIX CINEMA (#141414 + #E50914) === */
+:root{--bg-base:#141414;--bg-surface:#181818;--bg-card:#202020;--bg-card-hover:#2b2b2b;--primary:#e50914;--emerald:#e50914;--emerald-glow:rgba(229,9,20,0.42);--border:#2a2a2a;--border-hover:#404040;--accent-gradient:linear-gradient(135deg,#e50914 0%,#b20710 100%);}
+body{background:#141414;scrollbar-color:rgba(229,9,20,0.65) #141414;}
+header{background:linear-gradient(180deg,rgba(0,0,0,0.96) 0%,rgba(20,20,20,0.92) 100%);border-bottom:1px solid rgba(255,255,255,0.08);}
+.brand-meta h1 span.pro-tag{background:rgba(229,9,20,0.18);border-color:#e50914;color:#ff6b72;}
+.status-dot{background:#e50914;box-shadow:0 0 8px #e50914;}
+.search-input:focus{border-color:#e50914;background:#262626;box-shadow:0 0 0 3px rgba(229,9,20,0.2);}
+.btn-ui.active,.more-popover button.active,.btn-drawer-toggle,.zapper-arrow-btn{background:rgba(229,9,20,0.18);border-color:rgba(229,9,20,0.55);color:#fff;}
+.btn-drawer-toggle:hover,.zapper-arrow-btn:hover,.btn-floating-expand:hover{background:#e50914;border-color:#f6121d;color:#fff;}
+.btn-floating-expand{background:rgba(20,20,20,0.9);border-color:rgba(229,9,20,0.7);box-shadow:0 6px 20px rgba(0,0,0,0.75),0 0 16px rgba(229,9,20,0.28);}
+.pulse-play-circle{background:linear-gradient(135deg,#e50914 0%,#b20710 100%);box-shadow:0 0 0 0 rgba(229,9,20,0.7);}
+.sidebar-channels,.sidebar-top-actions,.sidebar-select-row,.mobile-search-box,#quickCatPills,.recentes-strip{background:#181818 !important;border-color:#2a2a2a !important;}
+.sidebar-select{background:#222 !important;border-color:#333 !important;}
+.sidebar-select:focus{border-color:#e50914 !important;}
+.channel-list{background:#141414;}
+.channel-list::-webkit-scrollbar-track{background:#141414;}
+.channel-list::-webkit-scrollbar-thumb{background:#e50914;box-shadow:0 0 8px rgba(229,9,20,0.45);}
+.channel-list::-webkit-scrollbar-thumb:hover{background:#f6121d;}
+.channel-card{background:#1c1c1c;border-color:rgba(255,255,255,0.06);}
+.channel-card:hover{background:#262626;border-color:rgba(255,255,255,0.18);}
+.channel-card.active{background:rgba(229,9,20,0.16) !important;border-color:rgba(229,9,20,0.6) !important;border-left:3.5px solid #e50914 !important;}
+.channel-card.active .ch-card-name{color:#ffffff !important;}
+.channel-card.active .ch-num-badge,.cur-ch-num{color:#e50914 !important;}
+.eq-bar{background:#e50914 !important;}
+.ch-epg-mini-fill,#dockEpgProgressFill,.epg-progress-fill{background:linear-gradient(90deg,#e50914 0%,#ff4b55 100%) !important;}
+.ch-card-epg b,.recentes-label,.sidebar-total-pill{color:#ff6b72 !important;}
+.sidebar-total-pill{background:rgba(229,9,20,0.16) !important;border-color:rgba(229,9,20,0.45) !important;}
+.btn-netflix-catalog{background:#e50914 !important;border-color:#f6121d !important;color:#ffffff !important;font-weight:800 !important;box-shadow:0 4px 16px rgba(229,9,20,0.42);}
+.btn-netflix-catalog:hover{background:#f6121d !important;transform:translateY(-1px);}
+
+/* === OVERLAY CATÁLOGO ESTILO NETFLIX === */
+.nf-overlay{display:none;position:fixed;inset:0;z-index:950;background:#141414;color:#fff;flex-direction:column;overflow-y:auto;overflow-x:hidden;scroll-behavior:smooth;}
+.nf-overlay.open{display:flex;}
+.nf-topbar{position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 24px;background:linear-gradient(180deg,rgba(0,0,0,0.96) 0%,rgba(20,20,20,0.88) 100%);backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,0.08);flex-wrap:wrap;}
+.nf-brand{display:flex;align-items:center;gap:10px;font-size:20px;font-weight:900;letter-spacing:1px;}
+.nf-brand span{color:#e50914;}
+.nf-top-actions{display:flex;align-items:center;gap:8px;flex:1;justify-content:flex-end;min-width:240px;}
+.nf-search{width:100%;max-width:340px;background:#222;border:1px solid #3a3a3a;border-radius:8px;padding:8px 14px;color:#fff;font-size:13px;outline:none;}
+.nf-search:focus{border-color:#e50914;background:#2a2a2a;}
+.nf-btn-close{background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:#fff;padding:8px 14px;border-radius:8px;font-size:12px;font-weight:800;cursor:pointer;white-space:nowrap;}
+.nf-btn-close:hover{background:#e50914;border-color:#e50914;}
+.nf-hero{position:relative;padding:34px 28px 28px;background:radial-gradient(circle at 75% 30%,rgba(229,9,20,0.28) 0%,rgba(20,20,20,0.92) 55%,#141414 100%);border-bottom:1px solid rgba(255,255,255,0.07);display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;}
+.nf-hero-info{flex:1;min-width:260px;max-width:680px;}
+.nf-hero-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(229,9,20,0.22);border:1px solid #e50914;color:#ff8086;font-size:11px;font-weight:800;padding:4px 10px;border-radius:999px;letter-spacing:0.6px;margin-bottom:10px;}
+.nf-hero-title{font-size:clamp(24px,3.6vw,38px);font-weight:900;line-height:1.1;margin-bottom:8px;color:#fff;}
+.nf-hero-epg{font-size:14px;color:#d4d4d8;margin-bottom:12px;}
+.nf-hero-track{width:100%;max-width:340px;height:4px;background:rgba(255,255,255,0.16);border-radius:4px;overflow:hidden;margin-bottom:18px;}
+.nf-hero-fill{height:100%;background:#e50914;border-radius:4px;}
+.nf-hero-btns{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.nf-btn-play{background:#ffffff;color:#141414;border:none;padding:11px 24px;border-radius:6px;font-size:14px;font-weight:900;cursor:pointer;display:inline-flex;align-items:center;gap:8px;transition:all 0.15s;}
+.nf-btn-play:hover{background:#e5e5e5;transform:scale(1.03);}
+.nf-btn-sec{background:rgba(109,109,110,0.55);color:#fff;border:1px solid rgba(255,255,255,0.2);padding:11px 18px;border-radius:6px;font-size:13px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:7px;}
+.nf-btn-sec:hover{background:rgba(109,109,110,0.8);}
+.nf-hero-logo-box{width:160px;height:110px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.12);border-radius:14px;display:flex;align-items:center;justify-content:center;padding:14px;box-shadow:0 16px 40px rgba(0,0,0,0.65);}
+.nf-hero-logo-box img{max-width:100%;max-height:100%;object-fit:contain;}
+.nf-rows{padding:18px 24px 48px;display:flex;flex-direction:column;gap:24px;}
+.nf-row-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.nf-row-title{font-size:17px;font-weight:800;color:#f5f5f5;display:flex;align-items:center;gap:8px;}
+.nf-row-count{font-size:11px;color:#a3a3a3;font-weight:700;}
+.nf-row-wrap{position:relative;}
+.nf-row-scroll{display:flex;gap:12px;overflow-x:auto;padding:8px 4px 12px;scrollbar-width:none;-webkit-overflow-scrolling:touch;scroll-behavior:smooth;}
+.nf-row-scroll::-webkit-scrollbar{display:none;}
+.nf-arrow{position:absolute;top:50%;transform:translateY(-50%);z-index:5;width:36px;height:86px;background:rgba(0,0,0,0.72);border:1px solid rgba(255,255,255,0.16);color:#fff;font-size:24px;font-weight:900;cursor:pointer;border-radius:8px;display:flex;align-items:center;justify-content:center;opacity:0.85;transition:all 0.15s;}
+.nf-arrow:hover{background:rgba(229,9,20,0.9);opacity:1;}
+.nf-arrow.prev{left:0;}
+.nf-arrow.next{right:0;}
+.nf-poster-card{width:210px;min-width:210px;height:126px;background:linear-gradient(155deg,#252525 0%,#171717 100%);border:1px solid rgba(255,255,255,0.09);border-radius:10px;padding:10px;display:flex;flex-direction:column;justify-content:space-between;cursor:pointer;position:relative;overflow:hidden;transition:transform 0.2s ease,border-color 0.2s ease,box-shadow 0.2s ease;}
+.nf-poster-card:hover{transform:scale(1.06);border-color:#e50914;box-shadow:0 12px 28px rgba(0,0,0,0.85),0 0 18px rgba(229,9,20,0.28);z-index:4;}
+.nf-poster-top{display:flex;align-items:center;justify-content:space-between;gap:6px;}
+.nf-live-tag{background:#e50914;color:#fff;font-size:9px;font-weight:900;padding:2px 6px;border-radius:4px;letter-spacing:0.4px;}
+.nf-num-tag{font-size:10px;font-weight:800;color:#a3a3a3;font-family:monospace;}
+.nf-poster-mid{flex:1;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:2px 0;}
+.nf-poster-mid img{max-width:110px;max-height:46px;object-fit:contain;}
+.nf-poster-bot{display:flex;flex-direction:column;gap:3px;}
+.nf-poster-name{font-size:12px;font-weight:800;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.nf-poster-epg{font-size:10px;color:#a3a3a3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.nf-poster-track{width:100%;height:2.5px;background:rgba(255,255,255,0.12);border-radius:2px;overflow:hidden;}
+.nf-poster-fill{height:100%;background:#e50914;}
+@media (max-width:700px){.nf-topbar{padding:10px 14px;}.nf-hero{padding:20px 14px;}.nf-rows{padding:14px 12px 36px;}.nf-poster-card{width:176px;min-width:176px;height:114px;}.nf-arrow{display:none;}}
 </style>
 </head>
 <body class="channels-minimized">
@@ -58,22 +138,22 @@
                 <svg viewBox="0 0 460 88" width="220" height="42">
                     <defs>
                         <linearGradient id="tvGlow" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" stop-color="#10b981"/>
-                            <stop offset="50%" stop-color="#06b6d4"/>
-                            <stop offset="100%" stop-color="#3b82f6"/>
+                            <stop offset="0%" stop-color="#E50914"/>
+                            <stop offset="50%" stop-color="#F6121D"/>
+                            <stop offset="100%" stop-color="#991B1B"/>
                         </linearGradient>
                         <linearGradient id="panelGlow" x1="0%" y1="0%" x2="0%" y2="100%">
-                            <stop offset="0%" stop-color="#1e293b"/>
-                            <stop offset="100%" stop-color="#090e1a"/>
+                            <stop offset="0%" stop-color="#1f1f1f"/>
+                            <stop offset="100%" stop-color="#0d0d0d"/>
                         </linearGradient>
                     </defs>
                     <g transform="translate(6, 6)">
                         <rect x="0" y="0" width="76" height="76" rx="20" fill="url(#panelGlow)" stroke="url(#tvGlow)" stroke-width="2.5"/>
-                        <path d="M16 24 C 24 20, 52 20, 60 24 C 64 36, 64 48, 60 60 C 52 64, 24 64, 16 60 C 12 48, 12 36, 16 24 Z" fill="rgba(16,185,129,0.15)" stroke="url(#tvGlow)" stroke-width="2"/>
+                        <path d="M16 24 C 24 20, 52 20, 60 24 C 64 36, 64 48, 60 60 C 52 64, 24 64, 16 60 C 12 48, 12 36, 16 24 Z" fill="rgba(229,9,20,0.18)" stroke="url(#tvGlow)" stroke-width="2"/>
                         <polygon points="34,32 50,42 34,52" fill="url(#tvGlow)"/>
-                        <circle cx="58" cy="18" r="3.5" fill="#10b981"/>
+                        <circle cx="58" cy="18" r="3.5" fill="#E50914"/>
                     </g>
-                    <text x="96" y="42" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="28" font-weight="900" fill="#ffffff" letter-spacing="1">CINE<tspan fill="#10b981">PRO</tspan> <tspan fill="#06b6d4">TV</tspan></text>
+                    <text x="96" y="42" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="28" font-weight="900" fill="#ffffff" letter-spacing="1">CINE<tspan fill="#E50914">PRO</tspan> <tspan fill="#f8fafc">TV</tspan></text>
                     <rect x="96" y="49" width="210" height="2" rx="1" fill="url(#tvGlow)"/>
                     <text x="96" y="66" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="800" fill="#94a3b8" letter-spacing="2">CENTRAL DIGITAL • 2026</text>
                 </svg>
@@ -91,6 +171,7 @@
         </div>
 
         <div class="header-controls">
+            <button type="button" id="btnNetflixCatalog" class="btn-ui btn-netflix-catalog" onclick="abrirCatalogoNetflix()" title="Explorar canais por fileiras estilo Netflix">🎬 Catálogo</button>
             <button id="btnFavFilter" class="btn-ui" title="Mostrar Favoritos">⭐ Favoritos</button>
             <button id="btnQrRemote" class="btn-ui" style="background: rgba(16, 185, 129, 0.14); border-color: rgba(16, 185, 129, 0.4); color: #6ee7b7;" title="Controlar pelo Celular">📱 Controle</button>
             <button id="btnCinemaMode" class="btn-ui" title="Atalho: Tecla C">🎬 Cinema</button>
@@ -192,7 +273,10 @@
                     <button type="button" class="icon-btn-text" id="epgDockCard" onclick="abrirModalEpg(event)" title="Ver guia de programação do canal">
                         <span>📅</span> <span>Guia</span>
                     </button>
-                                        <button type="button" class="icon-btn-text" id="btnPiP" onclick="alternarPiP()" title="Modo Janela Flutuante (Picture-in-Picture)" style="border-color:rgba(16,185,129,0.35); color:#6ee7b7;">
+                                        <button type="button" class="icon-btn-text btn-netflix-catalog" id="btnNetflixDock" onclick="abrirCatalogoNetflix()" title="Abrir Catálogo Estilo Netflix">
+                        <span>🎬</span> <span>Catálogo</span>
+                    </button>
+                    <button type="button" class="icon-btn-text" id="btnPiP" onclick="alternarPiP()" title="Modo Janela Flutuante (Picture-in-Picture)" style="border-color:rgba(16,185,129,0.35); color:#6ee7b7;">
                         <span>🪟</span> <span>PiP</span>
                     </button>
                     <button type="button" class="icon-btn-text" id="btnReconnect" onclick="reconectarSinalAtual()" title="Reconectar sinal e limpar buffer" style="border-color:rgba(59,130,246,0.35); color:#93c5fd;">
@@ -2734,6 +2818,188 @@
             setTimeout(renderizarFaixaRecentes, 700);
         });
 
+    
+        // === CATÁLOGO INTERATIVO PADRÃO NETFLIX ===
+        let nfHeroIndexAtual = 0;
+
+        function obterCorCardNetflix(canalObj) {
+            return canalObj && canalObj.logo
+                ? `<img src="${canalObj.logo}" alt="${canalObj.nome}" loading="lazy" decoding="async" onerror="this.outerHTML=obterBadgeSvgCliente('${(canalObj.nome || '').replace(/'/g, "\\'")}')">`
+                : obterBadgeSvgCliente(canalObj ? canalObj.nome : 'TV');
+        }
+
+        function renderizarHeroNetflix(idxCanal) {
+            const hero = document.getElementById('nfHeroBanner');
+            if (!hero || typeof TODOS_CANAIS === 'undefined' || !TODOS_CANAIS.length) return;
+            const idx = (idxCanal >= 0 && idxCanal < TODOS_CANAIS.length) ? idxCanal : 0;
+            nfHeroIndexAtual = idx;
+            const c = TODOS_CANAIS[idx];
+            const epg = typeof obterEpgDinamico === 'function' ? obterEpgDinamico(c) : { titulo: 'Programação Ao Vivo', faixa: 'Agora', progresso: 45 };
+            const logoHtml = obterCorCardNetflix(c);
+            hero.innerHTML = `
+                <div class="nf-hero-info">
+                    <div class="nf-hero-badge">🔴 AO VIVO AGORA • #${c.numero_str} • ${c.categoria}</div>
+                    <h2 class="nf-hero-title">${c.nome}</h2>
+                    <div class="nf-hero-epg">${epg.ehReal ? '📡' : '▶'} <b>${epg.titulo}</b> • ${epg.faixa}</div>
+                    <div class="nf-hero-track"><div class="nf-hero-fill" style="width:${Math.max(8, Math.min(100, epg.progresso || 40))}%"></div></div>
+                    <div class="nf-hero-btns">
+                        <button type="button" class="nf-btn-play" onclick="selecionarDoCatalogoNetflix(${idx})">▶ Assistir Agora</button>
+                        <button type="button" class="nf-btn-sec" onclick="trocarHeroNetflix()">🎲 Outro Destaque</button>
+                    </div>
+                </div>
+                <div class="nf-hero-logo-box">${logoHtml}</div>
+            `;
+        }
+
+        function trocarHeroNetflix() {
+            if (typeof TODOS_CANAIS === 'undefined' || !TODOS_CANAIS.length) return;
+            const disp = TODOS_CANAIS.filter(c => typeof ehCanalDisponivelAgora !== 'function' || ehCanalDisponivelAgora(c));
+            const pool = disp.length ? disp : TODOS_CANAIS;
+            const pick = pool[Math.floor(Math.random() * pool.length)];
+            const idx = TODOS_CANAIS.findIndex(x => x.id === pick.id);
+            renderizarHeroNetflix(idx >= 0 ? idx : 0);
+        }
+
+        function criarCardNetflixHtml(c) {
+            const idx = TODOS_CANAIS.findIndex(x => x.id === c.id);
+            const epg = typeof obterEpgDinamico === 'function' ? obterEpgDinamico(c) : { titulo: c.categoria, progresso: 35 };
+            const seloQual = (/1080p|fhd|\bhd\b/i.test(c.nome || '') || (c.tags && c.tags.includes('1080p'))) ? 'HD' : (c.cors ? '⚡' : '');
+            return `
+                <div class="nf-poster-card" onclick="selecionarDoCatalogoNetflix(${idx})">
+                    <div class="nf-poster-top">
+                        <span class="nf-live-tag">AO VIVO</span>
+                        <span class="nf-num-tag">#${c.numero_str} ${seloQual}</span>
+                    </div>
+                    <div class="nf-poster-mid">${obterCorCardNetflix(c)}</div>
+                    <div class="nf-poster-bot">
+                        <div class="nf-poster-name" title="${c.nome}">${c.nome}</div>
+                        <div class="nf-poster-epg" title="${epg.titulo}">${epg.titulo}</div>
+                        <div class="nf-poster-track"><div class="nf-poster-fill" style="width:${Math.max(6, Math.min(100, epg.progresso || 30))}%"></div></div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderizarFileirasNetflix(termoFiltro = '') {
+            const cont = document.getElementById('nfRowsContainer');
+            if (!cont || typeof TODOS_CANAIS === 'undefined') return;
+            const termo = (termoFiltro || '').trim().toLowerCase();
+            const disp = TODOS_CANAIS.filter(c => typeof ehCanalDisponivelAgora !== 'function' || ehCanalDisponivelAgora(c));
+
+            if (termo) {
+                const achados = disp.filter(c =>
+                    (c.nome || '').toLowerCase().includes(termo) ||
+                    (c.categoria || '').toLowerCase().includes(termo) ||
+                    (c.numero_str || '').includes(termo)
+                ).slice(0, 60);
+                if (!achados.length) {
+                    cont.innerHTML = '<div style="padding:36px;text-align:center;color:#a3a3a3;font-size:15px;">Nenhum canal encontrado para essa busca.</div>';
+                    return;
+                }
+                cont.innerHTML = `
+                    <div>
+                        <div class="nf-row-header"><div class="nf-row-title">🔍 Resultados para "${termoFiltro}" <span class="nf-row-count">(${achados.length})</span></div></div>
+                        <div class="nf-row-scroll" style="flex-wrap:wrap;overflow-x:visible;">${achados.map(criarCardNetflixHtml).join('')}</div>
+                    </div>
+                `;
+                return;
+            }
+
+            const recIds = typeof lerRecentesStorage === 'function' ? lerRecentesStorage() : [];
+            const recCanais = recIds.map(id => disp.find(c => c.id === id)).filter(Boolean);
+
+            const definicoes = [
+                { id: 'nf_rec', titulo: '🕒 Continuar Assistindo', lista: recCanais },
+                { id: 'nf_vip', titulo: '🦊 Destaques Fox & VIP', lista: disp.filter(c => c.tags && c.tags.includes('vip')) },
+                { id: 'nf_aberta', titulo: '🔥 Em Alta na TV Aberta', lista: disp.filter(c => c.tags && c.tags.includes('aberta')) },
+                { id: 'nf_filmes', titulo: '🎬 Cinema & Filmes 24h', lista: disp.filter(c => c.tags && c.tags.includes('filmes')) },
+                { id: 'nf_series', titulo: '🍿 Séries & Maratonas', lista: disp.filter(c => c.tags && c.tags.includes('series')) },
+                { id: 'nf_esportes', titulo: '⚽ Esportes & Ação', lista: disp.filter(c => c.tags && c.tags.includes('esportes')) },
+                { id: 'nf_comedia', titulo: '😂 Comédia & Humor', lista: disp.filter(c => c.tags && c.tags.includes('comedia')) },
+                { id: 'nf_shows', titulo: '🎸 Shows & Música', lista: disp.filter(c => c.tags && c.tags.includes('shows')) },
+                { id: 'nf_var', titulo: '🎭 Variedades & Realities', lista: disp.filter(c => c.tags && c.tags.includes('entretenimento')) },
+                { id: 'nf_kids', titulo: '🧸 Infantil & Desenhos', lista: disp.filter(c => c.tags && c.tags.includes('infantil')) },
+                { id: 'nf_radios', titulo: '📻 Rádios Ao Vivo', lista: disp.filter(c => c.tags && c.tags.includes('musica')) },
+            ];
+
+            cont.innerHTML = definicoes
+                .filter(f => f.lista.length > 0)
+                .map(f => {
+                    const itens = f.lista.slice(0, 28);
+                    return `
+                        <div>
+                            <div class="nf-row-header">
+                                <div class="nf-row-title">${f.titulo} <span class="nf-row-count">(${f.lista.length} canais)</span></div>
+                            </div>
+                            <div class="nf-row-wrap">
+                                <button type="button" class="nf-arrow prev" onclick="rolarFileiraNetflix('${f.id}', -1)" aria-label="Anterior">‹</button>
+                                <div id="${f.id}" class="nf-row-scroll">${itens.map(criarCardNetflixHtml).join('')}</div>
+                                <button type="button" class="nf-arrow next" onclick="rolarFileiraNetflix('${f.id}', 1)" aria-label="Próximo">›</button>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+        }
+
+        function rolarFileiraNetflix(rowId, dir) {
+            const el = document.getElementById(rowId);
+            if (el) el.scrollBy({ left: dir * 640, behavior: 'smooth' });
+        }
+
+        function filtrarCatalogoNetflix(termo) {
+            renderizarFileirasNetflix(termo);
+        }
+
+        function abrirCatalogoNetflix() {
+            const ov = document.getElementById('netflixCatalogOverlay');
+            if (!ov) return;
+            const searchEl = document.getElementById('nfSearchInput');
+            if (searchEl) searchEl.value = '';
+            const idxAtual = (typeof canalAtualIndex !== 'undefined' && canalAtualIndex >= 0) ? canalAtualIndex : 0;
+            renderizarHeroNetflix(idxAtual);
+            renderizarFileirasNetflix('');
+            ov.classList.add('open');
+            ov.setAttribute('aria-hidden', 'false');
+        }
+
+        function fecharCatalogoNetflix() {
+            const ov = document.getElementById('netflixCatalogOverlay');
+            if (!ov) return;
+            ov.classList.remove('open');
+            ov.setAttribute('aria-hidden', 'true');
+        }
+
+        function selecionarDoCatalogoNetflix(idx) {
+            if (idx >= 0 && typeof sintonizar === 'function') {
+                sintonizar(idx);
+            }
+            fecharCatalogoNetflix();
+        }
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                const ov = document.getElementById('netflixCatalogOverlay');
+                if (ov && ov.classList.contains('open')) {
+                    fecharCatalogoNetflix();
+                }
+            }
+        });
+
     </script>
+
+    <!-- OVERLAY CATÁLOGO PADRÃO NETFLIX -->
+    <div id="netflixCatalogOverlay" class="nf-overlay" aria-hidden="true">
+        <div class="nf-topbar">
+            <div class="nf-brand">CINE<span>PRO</span> <small style="font-size:11px;color:#a3a3a3;font-weight:700;">CATÁLOGO CINEMA</small></div>
+            <div class="nf-top-actions">
+                <input type="text" id="nfSearchInput" class="nf-search" placeholder="🔍 Buscar filme, série, esporte ou canal..." oninput="filtrarCatalogoNetflix(this.value)">
+                <button type="button" class="nf-btn-close" onclick="sintonizarCanalAleatorio(); fecharCatalogoNetflix();" title="Sortear um canal ao vivo">🎲 Aleatório</button>
+                <button type="button" class="nf-btn-close" onclick="fecharCatalogoNetflix()">✕ Voltar ao Player</button>
+            </div>
+        </div>
+        <div id="nfHeroBanner" class="nf-hero"></div>
+        <div id="nfRowsContainer" class="nf-rows"></div>
+    </div>
+
 </body>
 </html>
