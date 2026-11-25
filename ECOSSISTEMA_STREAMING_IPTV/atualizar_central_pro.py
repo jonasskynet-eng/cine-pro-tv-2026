@@ -1767,12 +1767,83 @@ def chave_ordenacao(ch):
         top_rank = 100 if ch["nome"] in nomes_prioridade_https else (200 if "170.83.16.50" in ch["url"] else 500)
     return (p_rank, b_rank, top_rank, conf_rank, ch["nome"].lower())
 
+def _norm_url_dedup(url: str) -> str:
+    u = (url or "").strip()
+    if "://" in u:
+        scheme, rest = u.split("://", 1)
+        if "/" in rest:
+            host, path = rest.split("/", 1)
+            return f"{scheme.lower()}://{host.lower()}/{path}"
+        return f"{scheme.lower()}://{rest.lower()}"
+    return u.lower()
+
+def _chave_dedup_canal(nome: str) -> str:
+    txt = unicodedata.normalize("NFKD", nome or "").encode("ascii", "ignore").decode("ascii").lower()
+    txt = re.split(r"\||~|\s+-\s+link\b", txt)[0]
+    txt = re.sub(r"\([^)]*\)|\[[^\]]*\]", " ", txt)
+    txt = re.sub(r"\b(hd|fhd|sd|uhd|4k|1080p|720p|480p|360p|ao vivo|live|oficial|nacional|fibra|leve|digital|fast|vip|degustacao|br|brasil|sp)\b", " ", txt)
+    txt = re.sub(r"\b(link\s*\d+|opt\s*-?\s*\d+)\b", " ", txt)
+    txt = re.sub(r"[^a-z0-9]+", " ", txt).strip()
+    sem_tv = re.sub(r"^(tv|canal)\s+|\s+(tv|canal)$", "", txt).strip()
+    if len(sem_tv) >= 3:
+        txt = sem_tv
+    return txt
+
+def deduplicar_canais_estruturados(lista):
+    vistos_url = {}
+    vistos_nome = {}
+    limpos = []
+    removidos = 0
+    for ch in lista:
+        u = _norm_url_dedup(ch.get("url", ""))
+        k = _chave_dedup_canal(ch.get("nome", ""))
+        alvo = None
+        if u and u in vistos_url:
+            alvo = vistos_url[u]
+        elif k and len(k) >= 3 and k in vistos_nome:
+            alvo = vistos_nome[k]
+
+        if alvo is not None:
+            removidos += 1
+            for tg in ch.get("tags", []):
+                if tg not in alvo.setdefault("tags", []):
+                    alvo["tags"].append(tg)
+            dup_url = (ch.get("url") or "").strip()
+            alvo_url = (alvo.get("url") or "").strip()
+            if dup_url and dup_url != alvo_url:
+                res_atual = (alvo.get("reserva_url") or "").strip()
+                if not res_atual or (not res_atual.startswith("https://") and dup_url.startswith("https://")):
+                    alvo["reserva_url"] = dup_url
+            continue
+
+        if u:
+            vistos_url[u] = ch
+        if k and len(k) >= 3:
+            vistos_nome[k] = ch
+        limpos.append(ch)
+    return limpos, removidos
+
 canais_estruturados.sort(key=chave_ordenacao)
+canais_estruturados, total_duplicados_removidos = deduplicar_canais_estruturados(canais_estruturados)
 for i, ch in enumerate(canais_estruturados, start=1):
     ch["numero"] = i
     ch["numero_str"] = f"{i:03d}"
 
+contagem_paises = {"BR": 0, "PT": 0, "LATAM": 0, "GLOBAL": 0}
+for k_tag in contagem_tags:
+    contagem_tags[k_tag] = 0
+total_com_reserva = 0
+for ch in canais_estruturados:
+    p_cod = ch.get("pais_codigo", "GLOBAL")
+    contagem_paises[p_cod] = contagem_paises.get(p_cod, 0) + 1
+    for tg in ch.get("tags", []):
+        if tg in contagem_tags:
+            contagem_tags[tg] += 1
+    if ch.get("reserva_url"):
+        total_com_reserva += 1
+
 total_canais = len(canais_estruturados)
+print(f"Duplicados eliminados (promovidos a Plano B): {total_duplicados_removidos}")
 print(f"Total de canais estruturados: {total_canais}")
 print(f"Canais com Link Reserva (Plano B): {total_com_reserva}")
 print(f"Contagem por País: {contagem_paises}")
