@@ -1150,13 +1150,18 @@ export default {
 
       const finalUrl = upstreamResp.url || targetUrl;
       const contentType = upstreamResp.headers.get("Content-Type") || "application/octet-stream";
+      const ehChave =
+        /\.key(\?|$)/i.test(targetUrl) ||
+        /\.key(\?|$)/i.test(finalUrl) ||
+        /keyfile/i.test(targetUrl);
       const ehM3u8 =
         contentType.toLowerCase().includes("mpegurl") ||
         finalUrl.toLowerCase().includes(".m3u8") ||
         targetUrl.toLowerCase().includes(".m3u8");
 
-      if (ehM3u8 && request.method !== "HEAD") {
-        const texto = await upstreamResp.text();
+      if (!ehChave && ehM3u8 && request.method !== "HEAD") {
+        const rawBuf = await upstreamResp.arrayBuffer();
+        const texto = new TextDecoder("utf-8", { fatal: false }).decode(rawBuf);
         if (texto.includes("#EXTM3U")) {
           const workerProxyBase = `${reqUrl.origin}/`;
           const linhas = texto.split(/\r?\n/).map((linha) => {
@@ -1177,8 +1182,15 @@ export default {
             "Content-Type": "application/vnd.apple.mpegurl; charset=utf-8",
           });
         }
-        return respostaCors(texto, upstreamResp.status, {
-          "Content-Type": contentType,
+        return respostaCors(rawBuf, upstreamResp.status, {
+          "Content-Type": "application/octet-stream",
+        });
+      }
+
+      if (ehChave) {
+        const keyBuf = await upstreamResp.arrayBuffer();
+        return respostaCors(keyBuf, upstreamResp.status, {
+          "Content-Type": "application/octet-stream",
         });
       }
 

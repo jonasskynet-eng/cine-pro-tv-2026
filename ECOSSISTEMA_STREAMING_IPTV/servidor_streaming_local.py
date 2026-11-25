@@ -178,9 +178,33 @@ class ServidorMultithreadStreaming(http.server.SimpleHTTPRequestHandler):
                         headers['Origin'] = 'https://pluto.tv'
                         headers['Referer'] = 'https://pluto.tv/'
                     
-                    # 1. Se for playlist M3U8, reescrevemos segmentos e tags #EXT-X-MAP / #EXT-X-KEY
-                    if 'mpegurl' in content_type.lower() or target_url.endswith('.m3u8') or '.m3u8?' in target_url or final_url.endswith('.m3u8') or '.m3u8?' in final_url:
-                        manifest = decodificar_manifesto(resp.read(), resp.headers.get('Content-Encoding', ''))
+                    # 1. Se for arquivo de chave criptográfica AES-128 (.key), devolver bytes puros antes de qualquer parser de M3U8
+                    eh_chave_aes = (
+                        target_url.lower().endswith('.key')
+                        or '.key?' in target_url.lower()
+                        or 'keyfile' in target_url.lower()
+                        or final_url.lower().endswith('.key')
+                        or '.key?' in final_url.lower()
+                    )
+                    if eh_chave_aes:
+                        key_data = resp.read()
+                        self.send_response(200)
+                        self.send_header('Content-Type', 'application/octet-stream')
+                        self.send_header('Content-Length', str(len(key_data)))
+                        self.end_headers()
+                        self.wfile.write(key_data)
+
+                    # 2. Se for playlist M3U8, reescrevemos segmentos e tags #EXT-X-MAP / #EXT-X-KEY
+                    elif 'mpegurl' in content_type.lower() or target_url.endswith('.m3u8') or '.m3u8?' in target_url or final_url.endswith('.m3u8') or '.m3u8?' in final_url:
+                        raw_bytes = resp.read()
+                        manifest = decodificar_manifesto(raw_bytes, resp.headers.get('Content-Encoding', ''))
+                        if '#EXTM3U' not in manifest:
+                            self.send_response(resp_status)
+                            self.send_header('Content-Type', 'application/octet-stream')
+                            self.send_header('Content-Length', str(len(raw_bytes)))
+                            self.end_headers()
+                            self.wfile.write(raw_bytes)
+                            return
 
                         # Se for Master Playlist simples (#EXT-X-STREAM-INF sem áudio demuxado nem Pluto TV), achatamos para a sub-playlist ativa
                         if '#EXT-X-STREAM-INF' in manifest and '#EXT-X-MEDIA:' not in manifest and 'pluto' not in final_url.lower():
@@ -232,15 +256,6 @@ class ServidorMultithreadStreaming(http.server.SimpleHTTPRequestHandler):
                         self.send_header('Content-Length', str(len(body_modificado)))
                         self.end_headers()
                         self.wfile.write(body_modificado)
-                    
-                    # 2. Se for arquivo de chave criptográfica AES-128 (.key)
-                    elif target_url.endswith('.key') or '.key?' in target_url or 'keyfile' in target_url or final_url.endswith('.key'):
-                        key_data = resp.read()
-                        self.send_response(200)
-                        self.send_header('Content-Type', 'application/octet-stream')
-                        self.send_header('Content-Length', str(len(key_data)))
-                        self.end_headers()
-                        self.wfile.write(key_data)
 
                     # 3. Stream contínuo (.ts / mp4 / chunks de vídeo) em blocos com Keep-Alive
                     else:
