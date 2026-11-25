@@ -243,6 +243,24 @@
     "categoria": "🍿 Séries & Maratona"
   },
   {
+    "nome": "Diff'rent Strokes Arnold",
+    "url": "https://jmp2.uk/plu-61f1d27a189ed10007b7393e.m3u8",
+    "logo": "https://i.imgur.com/jkmouY3.png",
+    "grupo": "Series",
+    "pais": "🇧🇷 Brasil",
+    "cors_star": 0,
+    "categoria": "🍿 Séries & Maratona"
+  },
+  {
+    "nome": "iCarly",
+    "url": "https://jmp2.uk/plu-620ff46e0a576e0007dc2f89.m3u8",
+    "logo": "https://images.pluto.tv/channels/620ff46e0a576e0007dc2f89/colorLogoPNG.png",
+    "grupo": "Series",
+    "pais": "🇧🇷 Brasil",
+    "cors_star": 0,
+    "categoria": "🍿 Séries & Maratona"
+  },
+  {
     "nome": "Jornada nas Estrelas: A Nova Geracao",
     "url": "https://jmp2.uk/plu-69162ad79505d0f3b1ebf07d.m3u8",
     "logo": "https://images.pluto.tv/channels/69162ad79505d0f3b1ebf07d/colorLogoPNG_1766066212478.png",
@@ -291,6 +309,15 @@
     "nome": "MasterChef",
     "url": "https://jmp2.uk/plu-6077045b6031bd00078de127.m3u8",
     "logo": "https://i.imgur.com/lOuySbz.png",
+    "grupo": "Series",
+    "pais": "🇧🇷 Brasil",
+    "cors_star": 0,
+    "categoria": "🍿 Séries & Maratona"
+  },
+  {
+    "nome": "MTV Are you the One?",
+    "url": "https://jmp2.uk/plu-5f6108d8cc331900075e98e4.m3u8",
+    "logo": "https://images.pluto.tv/channels/5f6108d8cc331900075e98e4/colorLogoPNG.png",
     "grupo": "Series",
     "pais": "🇧🇷 Brasil",
     "cors_star": 0,
@@ -373,6 +400,15 @@
     "url": "https://jmp2.uk/plu-655e5bc94261ca000810cb17.m3u8",
     "logo": "https://images.pluto.tv/channels/655e5bc94261ca000810cb17/colorLogoPNG.png",
     "grupo": "Comedy;Series",
+    "pais": "🇧🇷 Brasil",
+    "cors_star": 0,
+    "categoria": "🍿 Séries & Maratona"
+  },
+  {
+    "nome": "Pluto TV Series Criminais",
+    "url": "https://jmp2.uk/plu-6474ab5cdc7a760008745008.m3u8",
+    "logo": "https://images.pluto.tv/channels/6474ab5cdc7a760008745008/colorLogoPNG.png",
+    "grupo": "Series",
     "pais": "🇧🇷 Brasil",
     "cors_star": 0,
     "categoria": "🍿 Séries & Maratona"
@@ -648,12 +684,30 @@
     "categoria": "🎬 Filmes & Cinema"
   },
   {
+    "nome": "Aratu On (1080p)",
+    "url": "https://cdn.live.br1.jmvstream.com/w/LVW-9359/LVW9359_XSyReL0QVf/playlist.m3u8",
+    "logo": "https://i.imgur.com/Ht4jCab.png",
+    "grupo": "News",
+    "pais": "🇧🇷 Brasil",
+    "cors_star": 1,
+    "categoria": "📰 Notícias"
+  },
+  {
     "nome": "BM&C News (720p)",
     "url": "https://jmp2.uk/plu-666c9c60a7efd40008f552f0.m3u8",
     "logo": "https://i.imgur.com/pOUY2Uz.png",
     "grupo": "News",
     "pais": "🇧🇷 Brasil",
     "cors_star": 0,
+    "categoria": "📰 Notícias"
+  },
+  {
+    "nome": "Canal 38 (720p)",
+    "url": "https://cdn.jmvstream.com/w/LVW-8503/LVW8503_d0V5oduFlK/playlist.m3u8",
+    "logo": "https://i.imgur.com/co7TCWC.png",
+    "grupo": "News",
+    "pais": "🇧🇷 Brasil",
+    "cors_star": 1,
     "categoria": "📰 Notícias"
   },
   {
@@ -747,15 +801,6 @@
     "categoria": "📰 Notícias"
   },
   {
-    "nome": "STZ TV (1080p)",
-    "url": "https://cdn.live.br1.jmvstream.com/webtv/AVJ-12952/playlist/playlist.m3u8",
-    "logo": "https://i.imgur.com/SeF2I7q.png",
-    "grupo": "Culture;News",
-    "pais": "🇧🇷 Brasil",
-    "cors_star": 1,
-    "categoria": "📰 Notícias"
-  },
-  {
     "nome": "TCM 10 HD (1080p)",
     "url": "https://live.tcm10.com.br/tcm10hd/stream.m3u8",
     "logo": "https://i.imgur.com/aMuMVvB.png",
@@ -768,6 +813,15 @@
     "nome": "Times Brasil (720p)",
     "url": "https://ssai2-ads.api.leiniao.com/global-adinsertion-api/hls/live/v2/21fdb6dd7491406bba86497a24390a25/playlist.m3u8",
     "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bc/Times_Brasil_CNBC_logo_2025.svg/960px-Times_Brasil_CNBC_logo_2025.svg.png",
+    "grupo": "News",
+    "pais": "🇧🇷 Brasil",
+    "cors_star": 1,
+    "categoria": "📰 Notícias"
+  },
+  {
+    "nome": "TV A Folha (720p)",
+    "url": "https://video01.logicahost.com.br/tvafolha/tvafolha/playlist.m3u8",
+    "logo": "https://i.imgur.com/I7XGMhj.png",
     "grupo": "News",
     "pais": "🇧🇷 Brasil",
     "cors_star": 1,
@@ -810,15 +864,6 @@
     "categoria": "📰 Notícias"
   },
   {
-    "nome": "TV Zoom (720p)",
-    "url": "https://cdn.jmvstream.com/w/LVW-9730/LVW9730_LmUwslM8jt/playlist.m3u8",
-    "logo": "https://i.imgur.com/jCGrjf5.png",
-    "grupo": "Entertainment;News",
-    "pais": "🇧🇷 Brasil",
-    "cors_star": 1,
-    "categoria": "📰 Notícias"
-  },
-  {
     "nome": "VEJA+ TV (1080p)",
     "url": "https://gpa-vja.otteravision.com/gpa/vja/vja.m3u8",
     "logo": "https://i.imgur.com/n0pxHo4.png",
@@ -832,15 +877,6 @@
     "url": "https://cpbr.appflux.com.br:2000/hls/1001noites/1001noites.m3u8",
     "logo": "https://i.imgur.com/dWA9y2J.png",
     "grupo": "Shop",
-    "pais": "🇧🇷 Brasil",
-    "cors_star": 1,
-    "categoria": "📺 TV Aberta Brasil"
-  },
-  {
-    "nome": "Adesso TV (720p)",
-    "url": "https://cdn.jmvstream.com/w/LVW-9715/LVW9715_12B26T62tm/playlist.m3u8",
-    "logo": "https://i.imgur.com/KgetM8j.png",
-    "grupo": "General",
     "pais": "🇧🇷 Brasil",
     "cors_star": 1,
     "categoria": "📺 TV Aberta Brasil"
@@ -891,12 +927,12 @@
     "categoria": "📺 TV Aberta Brasil"
   },
   {
-    "nome": "Boas Novas (1080p)",
-    "url": "https://cdn.jmvstream.com/w/LVW-9375/LVW9375_6i0wPBCHYc/playlist.m3u8",
-    "logo": "https://i.imgur.com/ZqhizdP.png",
-    "grupo": "Undefined",
+    "nome": "Canal FDR (1080p)",
+    "url": "https://v-us-01.wisestream.io/memfs/e4ade538-7924-4359-81ef-b9d4dd229e91.m3u8",
+    "logo": "https://i.imgur.com/7SE4CkE.png",
+    "grupo": "Education;General",
     "pais": "🇧🇷 Brasil",
-    "cors_star": 1,
+    "cors_star": 0,
     "categoria": "📺 TV Aberta Brasil"
   },
   {
@@ -1008,15 +1044,6 @@
     "categoria": "📺 TV Aberta Brasil"
   },
   {
-    "nome": "ElyTV (360p)",
-    "url": "https://stmv1.srvsite.com/ely/ely/playlist.m3u8",
-    "logo": "https://i.imgur.com/1eHNe91.png",
-    "grupo": "Entertainment",
-    "pais": "🇧🇷 Brasil",
-    "cors_star": 1,
-    "categoria": "📺 TV Aberta Brasil"
-  },
-  {
     "nome": "EUTV (720p)",
     "url": "https://cdn.jmvstream.com/w/LVW-8719/LVW8719_AcLVAxWy5J/playlist.m3u8",
     "logo": "https://i.imgur.com/8PxpamC.png",
@@ -1116,10 +1143,28 @@
     "categoria": "📺 TV Aberta Brasil"
   },
   {
+    "nome": "MTV Rocks",
+    "url": "https://jmp2.uk/plu-66a01e07d2d50d0008100d6a.m3u8",
+    "logo": "https://images.pluto.tv/channels/66a01e07d2d50d0008100d6a/colorLogoPNG.png",
+    "grupo": "Entertainment",
+    "pais": "🇧🇷 Brasil",
+    "cors_star": 0,
+    "categoria": "📺 TV Aberta Brasil"
+  },
+  {
     "nome": "MTV Shore",
     "url": "https://jmp2.uk/plu-625463563b8ddc0007134aeb.m3u8",
     "logo": "https://images.pluto.tv/channels/625463563b8ddc0007134aeb/colorLogoPNG.png",
     "grupo": "Entertainment",
+    "pais": "🇧🇷 Brasil",
+    "cors_star": 0,
+    "categoria": "📺 TV Aberta Brasil"
+  },
+  {
+    "nome": "Naruto Brazil",
+    "url": "https://jmp2.uk/plu-5f6df5a173d7340007c559f7.m3u8",
+    "logo": "https://i.imgur.com/M8X3Kvc.png",
+    "grupo": "Animation",
     "pais": "🇧🇷 Brasil",
     "cors_star": 0,
     "categoria": "📺 TV Aberta Brasil"
@@ -1215,6 +1260,15 @@
     "categoria": "📺 TV Aberta Brasil"
   },
   {
+    "nome": "Pluto TV Misterios",
+    "url": "https://jmp2.uk/plu-5fac52f142044f00078e2a51.m3u8",
+    "logo": "https://images.pluto.tv/channels/5fac52f142044f00078e2a51/colorLogoPNG.png",
+    "grupo": "Education",
+    "pais": "🇧🇷 Brasil",
+    "cors_star": 0,
+    "categoria": "📺 TV Aberta Brasil"
+  },
+  {
     "nome": "Pluto TV Paisagens por Stingray (720p)",
     "url": "https://jmp2.uk/plu-604a8dedbca75b0007b1c753.m3u8",
     "logo": "https://images.pluto.tv/channels/604a8dedbca75b0007b1c753/colorLogoPNG.png",
@@ -1251,6 +1305,15 @@
     "categoria": "📺 TV Aberta Brasil"
   },
   {
+    "nome": "Pluto TV Vida Real",
+    "url": "https://jmp2.uk/plu-5f32d4d9ec194100070c7449.m3u8",
+    "logo": "https://images.pluto.tv/channels/5f32d4d9ec194100070c7449/colorLogoPNG_1732044921019.png",
+    "grupo": "Education",
+    "pais": "🇧🇷 Brasil",
+    "cors_star": 0,
+    "categoria": "📺 TV Aberta Brasil"
+  },
+  {
     "nome": "Porto Canal (720p)",
     "url": "https://pull-live-156-1.global.ssl.fastly.net/pc5865dc25400thmb-ea6bf03b14fa318f7133/smil:pc1-jhrgyuoqe5865db-68tkgb14fa318f7133f03.smil/playlist.m3u8",
     "logo": "",
@@ -1266,15 +1329,6 @@
     "grupo": "Education",
     "pais": "🇧🇷 Brasil",
     "cors_star": 0,
-    "categoria": "📺 TV Aberta Brasil"
-  },
-  {
-    "nome": "RBATV (720p)",
-    "url": "https://cdn.live.br1.jmvstream.com/w/LVW-15748/LVW15748_Yed7yzLuRC/playlist.m3u8",
-    "logo": "https://i.imgur.com/ZWFxlU1.png",
-    "grupo": "General",
-    "pais": "🇧🇷 Brasil",
-    "cors_star": 1,
     "categoria": "📺 TV Aberta Brasil"
   },
   {
@@ -1300,6 +1354,15 @@
     "url": "https://maystreaming.cloudecast.com/redemeio/index.m3u8",
     "logo": "https://i.imgur.com/KVdTi0M.png",
     "grupo": "Undefined",
+    "pais": "🇧🇷 Brasil",
+    "cors_star": 1,
+    "categoria": "📺 TV Aberta Brasil"
+  },
+  {
+    "nome": "Rede Minas (720p)",
+    "url": "https://8hzcavccys.zoeweb.tv/redeminas/ngrp:redeminas_all/playlist.m3u8",
+    "logo": "https://i.imgur.com/MtQWAHv.png",
+    "grupo": "Education",
     "pais": "🇧🇷 Brasil",
     "cors_star": 1,
     "categoria": "📺 TV Aberta Brasil"
@@ -1350,15 +1413,6 @@
     "categoria": "📺 TV Aberta Brasil"
   },
   {
-    "nome": "SBT Interior (720p)",
-    "url": "https://cdn.jmvstream.com/w/LVW-10801/LVW10801_Xvg4R0u57n/playlist.m3u8",
-    "logo": "https://i.imgur.com/IkZfa4j.png",
-    "grupo": "General",
-    "pais": "🇧🇷 Brasil",
-    "cors_star": 1,
-    "categoria": "📺 TV Aberta Brasil"
-  },
-  {
     "nome": "SBT Nova Mutum (818p)",
     "url": "https://video09.logicahost.com.br/sbtmutum/sbtmutum/playlist.m3u8",
     "logo": "https://upload.wikimedia.org/wikipedia/pt/d/d0/Logotipo_do_SBT_Nova_Mutum.png",
@@ -1392,6 +1446,15 @@
     "grupo": "General",
     "pais": "🇧🇷 Brasil",
     "cors_star": 1,
+    "categoria": "📺 TV Aberta Brasil"
+  },
+  {
+    "nome": "South Park: Colecao Cartman",
+    "url": "https://jmp2.uk/plu-65df71008b24c80008f04281.m3u8",
+    "logo": "https://images.pluto.tv/channels/65df71008b24c80008f04281/colorLogoPNG.png",
+    "grupo": "Animation;Comedy",
+    "pais": "🇧🇷 Brasil",
+    "cors_star": 0,
     "categoria": "📺 TV Aberta Brasil"
   },
   {
@@ -1524,6 +1587,15 @@
     "nome": "TV Arapuan (720p)",
     "url": "https://5b7f3c45ab7c2.streamlock.net/arapuan/ngrp:arapuan_all/playlist.m3u8",
     "logo": "https://i.imgur.com/3395A2h.png",
+    "grupo": "General",
+    "pais": "🇧🇷 Brasil",
+    "cors_star": 1,
+    "categoria": "📺 TV Aberta Brasil"
+  },
+  {
+    "nome": "TV Brasil Oeste (720p)",
+    "url": "https://5ad482a77183d.streamlock.net/operacaotbomt.com/operacaotbomt.com/playlist.m3u8",
+    "logo": "https://i.imgur.com/noqGfuy.png",
     "grupo": "General",
     "pais": "🇧🇷 Brasil",
     "cors_star": 1,
@@ -1863,6 +1935,15 @@
     "categoria": "🔬 Discovery & Ciência"
   },
   {
+    "nome": "Pluto TV Investigacao",
+    "url": "https://jmp2.uk/plu-5f32cf37c9ff2b00082adbc8.m3u8",
+    "logo": "https://i.imgur.com/JlQq0YJ.png",
+    "grupo": "Documentary",
+    "pais": "🇧🇷 Brasil",
+    "cors_star": 0,
+    "categoria": "🔬 Discovery & Ciência"
+  },
+  {
     "nome": "Pluto TV Natureza",
     "url": "https://jmp2.uk/plu-5f1213ba0ecebc00070e170f.m3u8",
     "logo": "https://images.pluto.tv/channels/5f1213ba0ecebc00070e170f/colorLogoPNG.png",
@@ -2047,15 +2128,6 @@
     "url": "https://www.khuwemultimedia.com/hls/reinoinfantiltv/reinoinfantiltv.m3u8",
     "logo": "",
     "grupo": "Kids",
-    "pais": "🇧🇷 Brasil",
-    "cors_star": 1,
-    "categoria": "🧸 Infantil & Desenhos"
-  },
-  {
-    "nome": "Retro Cartoon (720p)",
-    "url": "https://stmv1.video.brstream.com.br/retrotv/retrotv/chunklist_w1069200121.m3u8",
-    "logo": "https://i.imgur.com/hIlEfhl.png",
-    "grupo": "Classic",
     "pais": "🇧🇷 Brasil",
     "cors_star": 1,
     "categoria": "🧸 Infantil & Desenhos"
