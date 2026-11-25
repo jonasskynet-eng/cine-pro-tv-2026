@@ -1301,15 +1301,18 @@ header{background:linear-gradient(180deg,rgba(0,0,0,0.96) 0%,rgba(20,20,20,0.92)
                     ? urlBase
                     : ('http://localhost:8080/proxy?url=' + encodeURIComponent(urlBase));
             }
+            const precisaProxyNuvem = (
+                urlBase.startsWith('http://') ||
+                urlBase.includes('jmp2.uk') ||
+                urlBase.includes('embedplayer2.xyz') ||
+                urlBase.includes('pluto.tv') ||
+                !c.cors
+            );
             if (NUVEM_PROXY_ATIVO) {
-                const precisaProxyNuvem = (
-                    urlBase.startsWith('http://') ||
-                    urlBase.includes('jmp2.uk') ||
-                    urlBase.includes('embedplayer2.xyz') ||
-                    urlBase.includes('pluto.tv') ||
-                    !c.cors
-                );
                 return precisaProxyNuvem ? (NUVEM_PROXY_ENDPOINT + encodeURIComponent(urlBase)) : urlBase;
+            }
+            if (precisaProxyNuvem) {
+                return DEFAULT_CLOUDFLARE_PROXY_URL + '/?url=' + encodeURIComponent(urlBase);
             }
             return urlBase;
         }
@@ -1420,10 +1423,16 @@ header{background:linear-gradient(180deg,rgba(0,0,0,0.96) 0%,rgba(20,20,20,0.92)
 
             if (Hls.isSupported()) {
                 let tentouSwapAudio = false;
+                const ehPlutoMtv = (c.url || '').includes('jmp2.uk') || (c.url || '').includes('pluto.tv');
                 hls = new Hls({
                     enableWorker: true,
-                    lowLatencyMode: true,
+                    lowLatencyMode: !ehPlutoMtv,
                     defaultAudioCodec: 'mp4a.40.2',
+                    maxBufferHole: ehPlutoMtv ? 2.5 : 1.5,
+                    nudgeMaxRetry: 10,
+                    nudgeOffset: 0.4,
+                    fragLoadingTimeOut: 15000,
+                    manifestLoadingTimeOut: 15000,
                     enableWebVTT: true,
                     enableIMSC1: true,
                     enableCEA708Captions: true,
