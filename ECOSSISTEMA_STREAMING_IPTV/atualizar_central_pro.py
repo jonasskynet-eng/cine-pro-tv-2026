@@ -4461,7 +4461,12 @@ html_code = f"""<!DOCTYPE html>
         function lerMeusCanaisStorage() {{
             try {{
                 const arr = JSON.parse(localStorage.getItem(CHAVE_MEUS_CANAIS) || '[]');
-                return Array.isArray(arr) ? arr : [];
+                if (!Array.isArray(arr)) return [];
+                const limpos = arr.filter(item => item && item.url && !/^canal\s*m3u(\s+\d+)?$/i.test((item.nome || '').trim()));
+                if (limpos.length !== arr.length) {{
+                    localStorage.setItem(CHAVE_MEUS_CANAIS, JSON.stringify(limpos));
+                }}
+                return limpos;
             }} catch (_) {{ return []; }}
         }}
 
@@ -4482,10 +4487,11 @@ html_code = f"""<!DOCTYPE html>
                 religiosos: '⛪ Religiosos'
             }};
             const tagCat = item.cat || 'filmes';
+            const numBase = (typeof CANAIS_BASE_QTD === 'number' && CANAIS_BASE_QTD > 0 ? CANAIS_BASE_QTD : 900) + ordemIdx;
             return {{
                 id: item.id,
-                numero: 900 + ordemIdx,
-                numero_str: String(900 + ordemIdx).padStart(3, '0'),
+                numero: numBase,
+                numero_str: String(numBase).padStart(3, '0'),
                 nome: item.nome || 'Meu Canal',
                 url: item.url,
                 logo: item.logo || '',
