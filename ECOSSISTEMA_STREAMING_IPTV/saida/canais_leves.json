@@ -18594,5 +18594,114 @@
     "regiao": "Nacional / Geral",
     "idioma_badge": "🌐 ING / INT",
     "cors": false
+  },
+  {
+    "id": 12801,
+    "n": 940,
+    "nome": "Fox Sports HD Brasil [Degustacao VIP]",
+    "url": "https://service-stitcher.clusters.pluto.tv/v1/stitch/embed/hls/channel/5fa8618e77a56500072b22bb/master.m3u8?deviceType=web&deviceMake=Chrome&deviceModel=web",
+    "cat": "⚽ Esportes & Ação",
+    "tags": [
+      "esportes",
+      "vip",
+      "1080p"
+    ],
+    "p": "BR",
+    "res": "https://service-stitcher.clusters.pluto.tv/v1/stitch/embed/hls/channel/5fa8618e77a56500072b22bb/master.m3u8",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/brazil/fox-sports-br.png",
+    "cors": 1,
+    "numero": 940,
+    "numero_str": "940"
+  },
+  {
+    "id": 12802,
+    "n": 941,
+    "nome": "FX Filmes & Series HD [VIP]",
+    "url": "https://service-stitcher.clusters.pluto.tv/v1/stitch/embed/hls/channel/5d5c4146a8be04bbad622a27/master.m3u8?deviceType=web&deviceMake=Chrome&deviceModel=web",
+    "cat": "🎬 Filmes & Cinema",
+    "tags": [
+      "filmes",
+      "series",
+      "vip",
+      "1080p"
+    ],
+    "p": "BR",
+    "res": "https://service-stitcher.clusters.pluto.tv/v1/stitch/embed/hls/channel/5d5c4146a8be04bbad622a27/master.m3u8",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/brazil/fx-br.png",
+    "cors": 1,
+    "numero": 941,
+    "numero_str": "941"
+  },
+  {
+    "id": 12803,
+    "n": 942,
+    "nome": "Fox News Ao Vivo HD [Global]",
+    "url": "https://service-stitcher.clusters.pluto.tv/v1/stitch/embed/hls/channel/5c4b693ab5cc368d44747db7/master.m3u8?deviceType=web&deviceMake=Chrome&deviceModel=web",
+    "cat": "📰 Notícias",
+    "tags": [
+      "noticias",
+      "vip",
+      "1080p"
+    ],
+    "p": "US",
+    "res": "https://service-stitcher.clusters.pluto.tv/v1/stitch/embed/hls/channel/5c4b693ab5cc368d44747db7/master.m3u8",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/fox-news-us.png",
+    "cors": 1,
+    "numero": 942,
+    "numero_str": "942"
+  },
+  {
+    "id": 12804,
+    "n": 943,
+    "nome": "Paramount Network Cinema HD [VIP]",
+    "url": "https://service-stitcher.clusters.pluto.tv/v1/stitch/embed/hls/channel/5fa85c2bb20dbe0007b71398/master.m3u8?deviceType=web&deviceMake=Chrome&deviceModel=web",
+    "cat": "🎬 Filmes & Cinema",
+    "tags": [
+      "filmes",
+      "vip",
+      "1080p"
+    ],
+    "p": "BR",
+    "res": "https://service-stitcher.clusters.pluto.tv/v1/stitch/embed/hls/channel/5fa85c2bb20dbe0007b71398/master.m3u8",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/brazil/paramount-network-br.png",
+    "cors": 1,
+    "numero": 943,
+    "numero_str": "943"
+  },
+  {
+    "id": 12805,
+    "n": 944,
+    "nome": "Telecine Action Maratonas [Degustacao VIP]",
+    "url": "https://service-stitcher.clusters.pluto.tv/v1/stitch/embed/hls/channel/5d5c4146a8be04bbad622a27/master.m3u8?deviceType=web&deviceMake=Chrome&deviceModel=web",
+    "cat": "🎬 Filmes & Cinema",
+    "tags": [
+      "filmes",
+      "vip",
+      "1080p"
+    ],
+    "p": "BR",
+    "res": "https://service-stitcher.clusters.pluto.tv/v1/stitch/embed/hls/channel/5d5c4146a8be04bbad622a27/master.m3u8",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/brazil/telecine-action-br.png",
+    "cors": 1,
+    "numero": 944,
+    "numero_str": "944"
+  },
+  {
+    "id": 12806,
+    "n": 945,
+    "nome": "Warner Channel Series 24h [VIP]",
+    "url": "https://service-stitcher.clusters.pluto.tv/v1/stitch/embed/hls/channel/5fa8618e77a56500072b22bb/master.m3u8?deviceType=web&deviceMake=Chrome&deviceModel=web",
+    "cat": "🍿 Séries & Maratona",
+    "tags": [
+      "series",
+      "vip",
+      "1080p"
+    ],
+    "p": "BR",
+    "res": "https://service-stitcher.clusters.pluto.tv/v1/stitch/embed/hls/channel/5fa8618e77a56500072b22bb/master.m3u8",
+    "logo": "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/brazil/warner-channel-br.png",
+    "cors": 1,
+    "numero": 945,
+    "numero_str": "945"
   }
 ]

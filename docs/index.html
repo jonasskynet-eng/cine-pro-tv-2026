@@ -160,6 +160,15 @@
                     <button type="button" class="icon-btn-text" id="epgDockCard" onclick="abrirModalEpg(event)" title="Ver guia de programação do canal">
                         <span>📅</span> <span>Guia</span>
                     </button>
+                                        <button type="button" class="icon-btn-text" id="btnPiP" onclick="alternarPiP()" title="Modo Janela Flutuante (Picture-in-Picture)" style="border-color:rgba(16,185,129,0.35); color:#6ee7b7;">
+                        <span>🪟</span> <span>PiP</span>
+                    </button>
+                    <button type="button" class="icon-btn-text" id="btnReconnect" onclick="reconectarSinalAtual()" title="Reconectar sinal e limpar buffer" style="border-color:rgba(59,130,246,0.35); color:#93c5fd;">
+                        <span>🔄</span>
+                    </button>
+                    <button type="button" class="icon-btn-text" id="btnShare" onclick="compartilharCanalAtual()" title="Compartilhar canal no WhatsApp ou copiar link" style="border-color:rgba(245,158,11,0.35); color:#fcd34d;">
+                        <span>🔗</span>
+                    </button>
                     <button type="button" class="icon-btn-text btn-drawer-toggle" id="btnToggleChannelsDrawer" onclick="alternarGavetaCanais(event)" title="Mostrar ou minimizar lista de canais">
                         <span>📋</span> <span id="drawerToggleText">Canais</span> <span id="drawerToggleArrow">▼</span>
                     </button>
@@ -2428,6 +2437,112 @@
             }, 900);
         }
         inicializarCatalogoLeve();
+    
+        // --- MELHORIAS EXCLUSIVAS CINEPRO TV 2026 ---
+        async function alternarPiP() {
+            try {
+                const videoEl = document.getElementById('playerVideo');
+                if (!videoEl) return;
+                if (document.pictureInPictureElement) {
+                    await document.exitPictureInPicture();
+                    mostrarToast('🪟 Modo Janela Flutuante encerrado');
+                } else if (document.pictureInPictureEnabled) {
+                    await videoEl.requestPictureInPicture();
+                    mostrarToast('🪟 Modo Janela Flutuante (PiP) Ativado!');
+                } else {
+                    mostrarToast('⚠️ Seu navegador não suporta Picture-in-Picture');
+                }
+            } catch (err) {
+                console.warn('Erro PiP:', err);
+                mostrarToast('⚠️ Toque no vídeo antes para habilitar PiP');
+            }
+        }
+
+        function reconectarSinalAtual() {
+            mostrarToast('🔄 Reconectando sinal e limpando buffer...');
+            if (typeof canalAtualIdx !== 'undefined' && canalAtualIdx >= 0) {
+                sintonizar(canalAtualIdx);
+            } else {
+                location.reload();
+            }
+        }
+
+        function compartilharCanalAtual() {
+            try {
+                let canalNum = '001';
+                let canalNome = 'CinePro TV';
+                if (typeof canalAtualIdx !== 'undefined' && canaisFiltradosCache && canaisFiltradosCache[canalAtualIdx]) {
+                    const c = canaisFiltradosCache[canalAtualIdx];
+                    canalNum = c.numero_str || String(c.numero || 1);
+                    canalNome = c.nome || 'Canal';
+                }
+                const urlAtual = new URL(window.location.href);
+                urlAtual.searchParams.set('canal', canalNum);
+                const urlTexto = urlAtual.toString();
+
+                if (navigator.clipboard) {
+                    navigator.clipboard.writeText(urlTexto).then(() => {
+                        mostrarToast('🔗 Link do canal copiado para a Área de Transferência!');
+                    }).catch(() => {});
+                }
+
+                // Opção de compartilhar direto no WhatsApp se disponível
+                const textoZap = encodeURIComponent(`📺 Estou assistindo ao vivo ao canal *${canalNome}* na CinePro TV 2026! Acesse grátis agora: ${urlTexto}`);
+                const urlZap = `https://api.whatsapp.com/send?text=${textoZap}`;
+                
+                // Abre modal ou pergunta
+                const abrirWhats = confirm(`Link copiado! Deseja compartilhar o canal "${canalNome}" direto no WhatsApp agora?`);
+                if (abrirWhats) {
+                    window.open(urlZap, '_blank');
+                }
+            } catch (e) {
+                console.warn('Erro share:', e);
+                mostrarToast('🔗 Link da CinePro TV pronto para compartilhar!');
+            }
+        }
+
+        function alternarFiltroFavoritosDireto(btnEl) {
+            apenasFavoritos = !apenasFavoritos;
+            document.querySelectorAll('.cat-pill').forEach(b => {
+                b.style.background = '#1e293b';
+                b.style.color = '#cbd5e1';
+                b.style.borderColor = '#334155';
+            });
+            if (apenasFavoritos) {
+                btnEl.style.background = 'linear-gradient(135deg, #f59e0b, #d97706)';
+                btnEl.style.color = '#ffffff';
+                btnEl.style.borderColor = '#fbbf24';
+                mostrarToast('⭐ Exibindo apenas seus canais Favoritos');
+            } else {
+                selecionarCategoriaDireta('all', document.querySelector('.cat-pill'));
+                mostrarToast('⭐ Exibindo todos os canais');
+                return;
+            }
+            aplicarFiltros(true);
+        }
+
+        // Suporte a parametro de URL ?canal=NUM ou ?ch=NUM
+        function verificarCanalParametroUrl() {
+            try {
+                const params = new URLSearchParams(window.location.search);
+                const canalParam = params.get('canal') || params.get('ch');
+                if (canalParam && TODOS_CANAIS && TODOS_CANAIS.length) {
+                    const idxEncontrado = TODOS_CANAIS.findIndex(c => 
+                        String(c.numero) === canalParam || 
+                        c.numero_str === canalParam || 
+                        c.numero_str === canalParam.padStart(3, '0')
+                    );
+                    if (idxEncontrado >= 0) {
+                        console.log('Sintonizando canal via parametro de URL:', canalParam);
+                        setTimeout(() => sintonizar(idxEncontrado), 400);
+                    }
+                }
+            } catch (err) {
+                console.warn('Parametro URL:', err);
+            }
+        }
+        window.addEventListener('load', () => setTimeout(verificarCanalParametroUrl, 800));
+
     </script>
 </body>
 </html>
