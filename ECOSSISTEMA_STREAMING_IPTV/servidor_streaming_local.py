@@ -48,6 +48,72 @@ else:
 
 DIRETORIO_VIP = Path(os.environ.get("CINEPRO_VIP_DIR", str(_BASE_SCRIPT / "vip_privado")))
 DIRETORIO_VIP.mkdir(parents=True, exist_ok=True)
+ARQUIVO_CLIENTES_VIP = DIRETORIO_VIP / "clientes_vip.json"
+CINEPRO_ADMIN_PIN = os.environ.get("CINEPRO_ADMIN_PIN", "jonas2026").strip() or "jonas2026"
+LOCK_CLIENTES = threading.Lock()
+LOCK_SESSOES = threading.Lock()
+_SESSOES_ATIVAS = {}
+
+def _carregar_dados_clientes():
+    with LOCK_CLIENTES:
+        if ARQUIVO_CLIENTES_VIP.exists():
+            try:
+                dados = json.loads(ARQUIVO_CLIENTES_VIP.read_text(encoding="utf-8", errors="ignore"))
+                if isinstance(dados, dict) and isinstance(dados.get("clientes"), list):
+                    return dados
+            except Exception:
+                pass
+        inicial = {
+            "exigir_login_clientes": False,
+            "clientes": [
+                {
+                    "usuario": "vip",
+                    "senha": "vip",
+                    "nome": "Casa do Jonas (Vitalício)",
+                    "expira_em": 4102444800,
+                    "max_telas": 5,
+                    "ativo": True
+                }
+            ]
+        }
+        try:
+            ARQUIVO_CLIENTES_VIP.write_text(json.dumps(inicial, ensure_ascii=False, indent=2), encoding="utf-8")
+        except Exception:
+            pass
+        return inicial
+
+def _salvar_dados_clientes(dados):
+    with LOCK_CLIENTES:
+        ARQUIVO_CLIENTES_VIP.write_text(json.dumps(dados, ensure_ascii=False, indent=2), encoding="utf-8")
+
+def _autorizar_acesso_cliente(usuario, senha, ip_cliente, registrar_tela=False):
+    dados = _carregar_dados_clientes()
+    agora = time.time()
+    cli = next((c for c in dados.get("clientes", []) if str(c.get("usuario", "")).strip() == usuario), None)
+    if cli is not None:
+        if str(cli.get("senha", "")) != senha:
+            return False, "Senha incorreta", cli
+        if not cli.get("ativo", True):
+            return False, "Cliente bloqueado", cli
+        if agora >= float(cli.get("expira_em", 0)):
+            return False, "Assinatura vencida", cli
+        if registrar_tela:
+            with LOCK_SESSOES:
+                expiradas = [k for k, ts in _SESSOES_ATIVAS.items() if agora - ts > 45.0]
+                for k in expiradas:
+                    del _SESSOES_ATIVAS[k]
+                ips_ativos = {k[1] for k in _SESSOES_ATIVAS if k[0] == usuario}
+                max_telas = int(cli.get("max_telas", 1) or 1)
+                if ip_cliente not in ips_ativos and len(ips_ativos) >= max_telas:
+                    return False, "Limite de telas simultâneas atingido", cli
+                _SESSOES_ATIVAS[(usuario, ip_cliente)] = agora
+        return True, "OK", cli
+
+    if dados.get("exigir_login_clientes"):
+        return False, "Usuário não cadastrado", None
+    if CINEPRO_VIP_TOKEN and senha != CINEPRO_VIP_TOKEN:
+        return False, "Chave VIP inválida", None
+    return True, "Modo Aberto", None
 
 _CACHE_VIP = {
     "assinatura_arquivos": None,
@@ -293,7 +359,7 @@ class ServidorMultithreadStreaming(http.server.SimpleHTTPRequestHandler):
 
     def do_HEAD(self):
         rota = urllib.parse.urlparse(self.path).path
-        if rota in ('/', '/index.html', '/tv', '/tv/', '/tv.html', '/healthz', '/api/status_servidor', '/msx/start.json', '/start.json'):
+        if rota in ('/', '/index.html', '/tv', '/tv/', '/tv.html', '/admin', '/admin/', '/admin.html', '/healthz', '/api/status_servidor', '/msx/start.json', '/start.json'):
             self.send_response(200)
             ctype = 'application/json' if rota in ('/healthz', '/api/status_servidor', '/msx/start.json', '/start.json') else 'text/html; charset=utf-8'
             self.send_header('Content-Type', ctype)
@@ -304,6 +370,150 @@ class ServidorMultithreadStreaming(http.server.SimpleHTTPRequestHandler):
     def do_GET(self):
         parsed_req = urllib.parse.urlparse(self.path)
         rota_req = parsed_req.path
+
+        if rota_req == '/api/admin/clientes':
+            params_adm = urllib.parse.parse_qs(parsed_req.query)
+            pin_enviado = (params_adm.get('pin', [''])[0] or self.headers.get('X-Admin-Pin', '')).strip()
+            if pin_enviado != CINEPRO_ADMIN_PIN:
+                payload = json.dumps({"ok": False, "erro": "PIN incorreto."}).encode('utf-8')
+                self.send_response(401)
+                self.send_header('Content-Type', 'application/json; charset=utf-8')
+                self.send_header('Content-Length', str(len(payload)))
+                self.end_headers()
+                self.wfile.write(payload)
+                return
+
+            dados = _carregar_dados_clientes()
+            agora = time.time()
+            with LOCK_SESSOES:
+                expiradas = [k for k, ts in _SESSOES_ATIVAS.items() if agora - ts > 45.0]
+                for k in expiradas:
+                    del _SESSOES_ATIVAS[k]
+                sessoes_snap = list(_SESSOES_ATIVAS.keys())
+
+            lista_clientes = []
+            for c in dados.get("clientes", []):
+                u = str(c.get("usuario", ""))
+                exp = float(c.get("expira_em", 0))
+                restante_seg = max(0.0, exp - agora)
+                telas_on = len({k[1] for k in sessoes_snap if k[0] == u})
+                lista_clientes.append({
+                    "usuario": u,
+                    "senha": str(c.get("senha", "")),
+                    "nome": str(c.get("nome", u)),
+                    "expira_em": exp,
+                    "dias_restantes": round(restante_seg / 86400.0, 1),
+                    "horas_restantes": round(restante_seg / 3600.0, 1),
+                    "vencido": agora >= exp,
+                    "max_telas": int(c.get("max_telas", 1) or 1),
+                    "telas_online": telas_on,
+                    "ativo": bool(c.get("ativo", True))
+                })
+
+            payload = json.dumps({
+                "ok": True,
+                "exigir_login_clientes": bool(dados.get("exigir_login_clientes", False)),
+                "ip_local": obter_ip_local(),
+                "porta_host": self.headers.get('Host') or f"{obter_ip_local()}:{PORT}",
+                "clientes": lista_clientes
+            }, ensure_ascii=False).encode('utf-8')
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json; charset=utf-8')
+            self.send_header('Content-Length', str(len(payload)))
+            self.end_headers()
+            self.wfile.write(payload)
+            return
+
+        if rota_req == '/api/admin/acao':
+            params_adm = urllib.parse.parse_qs(parsed_req.query)
+            pin_enviado = (params_adm.get('pin', [''])[0] or self.headers.get('X-Admin-Pin', '')).strip()
+            if pin_enviado != CINEPRO_ADMIN_PIN:
+                payload = json.dumps({"ok": False, "erro": "PIN incorreto."}).encode('utf-8')
+                self.send_response(401)
+                self.send_header('Content-Type', 'application/json; charset=utf-8')
+                self.send_header('Content-Length', str(len(payload)))
+                self.end_headers()
+                self.wfile.write(payload)
+                return
+
+            acao = (params_adm.get('acao', [''])[0] or '').strip()
+            dados = _carregar_dados_clientes()
+            clientes = dados.get("clientes", [])
+            agora = time.time()
+
+            if acao == 'criar':
+                usuario = (params_adm.get('usuario', [''])[0] or '').strip()
+                senha = (params_adm.get('senha', [''])[0] or '').strip()
+                nome = (params_adm.get('nome', [usuario])[0] or usuario).strip()
+                try:
+                    horas = float(params_adm.get('horas', ['720'])[0] or '720')
+                except Exception:
+                    horas = 720.0
+                try:
+                    max_telas = max(1, int(params_adm.get('max_telas', ['1'])[0] or '1'))
+                except Exception:
+                    max_telas = 1
+
+                if not usuario or not senha:
+                    payload = json.dumps({"ok": False, "erro": "Informe usuário e senha."}).encode('utf-8')
+                    self.send_response(400)
+                    self.send_header('Content-Type', 'application/json; charset=utf-8')
+                    self.end_headers()
+                    self.wfile.write(payload)
+                    return
+
+                existente = next((c for c in clientes if c.get("usuario") == usuario), None)
+                novo_obj = {
+                    "usuario": usuario,
+                    "senha": senha,
+                    "nome": nome,
+                    "expira_em": int(agora + horas * 3600.0),
+                    "max_telas": max_telas,
+                    "ativo": True
+                }
+                if existente:
+                    existente.update(novo_obj)
+                else:
+                    clientes.append(novo_obj)
+                dados["clientes"] = clientes
+                _salvar_dados_clientes(dados)
+
+            elif acao == 'renovar':
+                usuario = (params_adm.get('usuario', [''])[0] or '').strip()
+                cli = next((c for c in clientes if c.get("usuario") == usuario), None)
+                if cli:
+                    base_tempo = max(agora, float(cli.get("expira_em", agora)))
+                    cli["expira_em"] = int(base_tempo + 720 * 3600)
+                    cli["ativo"] = True
+                    _salvar_dados_clientes(dados)
+
+            elif acao == 'alternar':
+                usuario = (params_adm.get('usuario', [''])[0] or '').strip()
+                cli = next((c for c in clientes if c.get("usuario") == usuario), None)
+                if cli and usuario != "vip":
+                    cli["ativo"] = not bool(cli.get("ativo", True))
+                    _salvar_dados_clientes(dados)
+
+            elif acao == 'excluir':
+                usuario = (params_adm.get('usuario', [''])[0] or '').strip()
+                if usuario != "vip":
+                    dados["clientes"] = [c for c in clientes if c.get("usuario") != usuario]
+                    _salvar_dados_clientes(dados)
+
+            elif acao == 'modo_cobranca':
+                dados["exigir_login_clientes"] = not bool(dados.get("exigir_login_clientes", False))
+                _salvar_dados_clientes(dados)
+
+            payload = json.dumps({
+                "ok": True,
+                "exigir_login_clientes": bool(dados.get("exigir_login_clientes", False))
+            }).encode('utf-8')
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json; charset=utf-8')
+            self.send_header('Content-Length', str(len(payload)))
+            self.end_headers()
+            self.wfile.write(payload)
+            return
 
         if rota_req in ('/msx/start.json', '/start.json'):
             host_header = self.headers.get('Host') or f"127.0.0.1:{PORT}"
@@ -326,7 +536,8 @@ class ServidorMultithreadStreaming(http.server.SimpleHTTPRequestHandler):
             password = (params_x.get('password', ['vip'])[0] or 'vip').strip()
             action = (params_x.get('action', [''])[0] or '').strip()
 
-            if not _validar_credencial_tv(params_x):
+            ok_cli, _, info_cli = _autorizar_acesso_cliente(username, password, self.client_address[0], registrar_tela=False)
+            if not ok_cli:
                 payload = json.dumps({"user_info": {"auth": 0, "status": "Disabled"}}).encode('utf-8')
                 self.send_response(200)
                 self.send_header('Content-Type', 'application/json; charset=utf-8')
@@ -373,11 +584,11 @@ class ServidorMultithreadStreaming(http.server.SimpleHTTPRequestHandler):
                         "message": "CinePro TV VIP",
                         "auth": 1,
                         "status": "Active",
-                        "exp_date": "1999999999",
+                        "exp_date": str(int(info_cli.get("expira_em", 1999999999))) if info_cli else "1999999999",
                         "is_trial": "0",
                         "active_cons": "1",
                         "created_at": "1700000000",
-                        "max_connections": "5",
+                        "max_connections": str(int(info_cli.get("max_telas", 5))) if info_cli else "5",
                         "allowed_output_formats": ["m3u8", "ts"]
                     },
                     "server_info": {
@@ -401,13 +612,16 @@ class ServidorMultithreadStreaming(http.server.SimpleHTTPRequestHandler):
 
         if rota_req in ('/get.php', '/vip.m3u'):
             params_m = urllib.parse.parse_qs(parsed_req.query)
-            if not _validar_credencial_tv(params_m):
+            user_raw = (params_m.get('username', ['vip'])[0] or 'vip').strip()
+            pass_raw = (params_m.get('password', [CINEPRO_VIP_TOKEN or 'vip'])[0] or 'vip').strip()
+            ok_m, motivo_m, _ = _autorizar_acesso_cliente(user_raw, pass_raw, self.client_address[0], registrar_tela=False)
+            if not ok_m:
                 self.send_response(401)
                 self.end_headers()
-                self.wfile.write(b'Credencial VIP invalida')
+                self.wfile.write(motivo_m.encode('utf-8', errors='ignore'))
                 return
-            user_m = urllib.parse.quote((params_m.get('username', ['vip'])[0] or 'vip').strip(), safe='')
-            pass_m = urllib.parse.quote((params_m.get('password', [CINEPRO_VIP_TOKEN or 'vip'])[0] or 'vip').strip(), safe='')
+            user_m = urllib.parse.quote(user_raw, safe='')
+            pass_m = urllib.parse.quote(pass_raw, safe='')
             host_m = self.headers.get('Host') or f"192.168.100.210:{PORT}"
             catalogo = carregar_catalogo_completo_unificado()
             linhas_m3u = ['#EXTM3U']
@@ -430,8 +644,10 @@ class ServidorMultithreadStreaming(http.server.SimpleHTTPRequestHandler):
         if rota_req.startswith('/live/'):
             partes_live = [p for p in rota_req.split('/') if p]
             if len(partes_live) >= 4:
+                user_live = urllib.parse.unquote(partes_live[1])
                 senha_live = urllib.parse.unquote(partes_live[2])
-                if CINEPRO_VIP_TOKEN and senha_live != CINEPRO_VIP_TOKEN:
+                ok_live, _, _ = _autorizar_acesso_cliente(user_live, senha_live, self.client_address[0], registrar_tela=True)
+                if not ok_live:
                     self.send_response(401)
                     self.end_headers()
                     return
@@ -716,6 +932,8 @@ class ServidorMultithreadStreaming(http.server.SimpleHTTPRequestHandler):
             eh_tv_ou_dns = any(a in ua for a in assinaturas_tv) or any(d in host_fb for d in dominios_doadores)
             if rota_fb in ('/tv', '/tv/'):
                 self.path = '/tv.html'
+            elif rota_fb in ('/admin', '/admin/'):
+                self.path = '/admin.html'
             elif rota_fb == '/' or self.path.startswith('/?'):
                 if eh_tv_ou_dns and 'completo=1' not in parsed_fb.query:
                     self.path = '/tv.html'

@@ -1,8 +1,9 @@
-const CACHE_NAME = 'cinepro-tv-v2026-perf3';
+const CACHE_NAME = 'cinepro-tv-v2026-perf4';
 const APP_SHELL = [
     './',
     './index.html',
     './tv.html',
+    './admin.html',
     './controle.html',
     './manifest.json',
     './cinepro-icon.svg'

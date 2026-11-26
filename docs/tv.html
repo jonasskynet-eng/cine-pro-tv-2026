@@ -116,6 +116,7 @@ html,body{width:100%;height:100%;background:#000;color:#fff;overflow:hidden;}
       numero_str: numStr,
       nome: r.nome || 'Canal',
       url: r.url || '',
+      reserva_url: r.res || r.reserva_url || '',
       categoria: r.cat || r.categoria || '',
       tags: r.tags || []
     };
@@ -149,18 +150,27 @@ html,body{width:100%;height:100%;background:#000;color:#fff;overflow:hidden;}
     videoEl.removeAttribute('src');
   }
 
-  function sintonizar(ch) {
+  function sintonizar(ch, usarReserva) {
     if (!ch || !ch.url) return;
+    var linkEscolhido = (usarReserva && ch.reserva_url) ? ch.reserva_url : ch.url;
     atualId = ch.id;
     mostrarOsdCanal(ch);
     renderizarLista();
 
     var streamUrl = servidorAtivo
-      ? ('/proxy?url=' + encodeURIComponent(ch.url))
-      : ch.url;
+      ? ('/proxy?url=' + encodeURIComponent(linkEscolhido))
+      : linkEscolhido;
 
     destruirHls();
-    var ehM3u8 = ch.url.toLowerCase().indexOf('.m3u8') !== -1 || streamUrl.indexOf('/proxy?url=') !== -1;
+    var ehM3u8 = linkEscolhido.toLowerCase().indexOf('.m3u8') !== -1 || streamUrl.indexOf('/proxy?url=') !== -1;
+
+    function tentarReserva() {
+      if (ch.reserva_url && !usarReserva) {
+        setTimeout(function () { sintonizar(ch, true); }, 600);
+      }
+    }
+
+    videoEl.onerror = tentarReserva;
 
     if (ehM3u8 && typeof Hls !== 'undefined' && Hls.isSupported()) {
       hlsInst = new Hls({
@@ -168,6 +178,9 @@ html,body{width:100%;height:100%;background:#000;color:#fff;overflow:hidden;}
         maxBufferLength: 16,
         maxMaxBufferLength: 30,
         backBufferLength: 10
+      });
+      hlsInst.on(Hls.Events.ERROR, function (ev, data) {
+        if (data && data.fatal) tentarReserva();
       });
       hlsInst.loadSource(streamUrl);
       hlsInst.attachMedia(videoEl);

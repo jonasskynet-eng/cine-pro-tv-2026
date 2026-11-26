@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: cinepro-tv-vip
+    runtime: docker
+    plan: free
+    healthCheckPath: /healthz
+    envVars:
+      - key: CINEPRO_MODO
+        value: VIP_DOCKER
+      - key: PORT
+        value: "8090"
+      - key: CINEPRO_ADMIN_PIN
+        value: jonas2026
+      - key: VIP_M3U_URL
+        sync: false

@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Painel de Clientes VIP - CinePro TV</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;}
+body{background:#141414;color:#f8fafc;padding:18px;max-width:980px;margin:0 auto;}
+.topo{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;background:#1f1f1f;border:1px solid #333;border-radius:12px;padding:16px 20px;margin-bottom:16px;}
+.marca{font-size:20px;font-weight:900;letter-spacing:0.3px;}
+.marca span{color:#e50914;}
+.info-rede{font-size:13px;color:#cbd5e1;margin-top:4px;}
+.info-rede b{color:#4ade80;}
+.pin-box{display:flex;align-items:center;gap:8px;}
+input,select{background:#0f0f0f;border:1px solid #444;color:#fff;padding:9px 12px;border-radius:8px;font-size:13px;outline:none;}
+input:focus{border-color:#e50914;}
+.btn{border:none;border-radius:8px;padding:9px 14px;font-size:13px;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;gap:6px;}
+.btn-vermelho{background:#e50914;color:#fff;}
+.btn-verde{background:#16a34a;color:#fff;}
+.btn-amarelo{background:#d97706;color:#fff;}
+.btn-azul{background:#2563eb;color:#fff;}
+.btn-cinza{background:#2d2d2d;color:#e2e8f0;border:1px solid #444;}
+.card{background:#1f1f1f;border:1px solid #333;border-radius:12px;padding:16px 20px;margin-bottom:16px;}
+.card h2{font-size:16px;margin-bottom:12px;color:#fff;}
+.atalhos{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:14px;}
+.grid-form{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-bottom:12px;}
+.campo label{display:block;font-size:11.5px;color:#94a3b8;margin-bottom:4px;font-weight:700;}
+.campo input{width:100%;}
+.tabela-wrap{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;font-size:13px;}
+th,td{text-align:left;padding:10px 8px;border-bottom:1px solid #2e2e2e;}
+th{color:#94a3b8;font-size:11.5px;text-transform:uppercase;}
+.badge{padding:3px 8px;border-radius:999px;font-size:11px;font-weight:800;display:inline-block;}
+.badge-ok{background:rgba(22,163,74,0.2);color:#4ade80;border:1px solid rgba(22,163,74,0.5);}
+.badge-off{background:rgba(229,9,20,0.2);color:#fca5a5;border:1px solid rgba(229,9,20,0.5);}
+.acoes-linha{display:flex;flex-wrap:wrap;gap:6px;}
+.acoes-linha .btn{padding:6px 10px;font-size:11.5px;}
+.barra-modo{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;}
+#msgStatus{margin-bottom:12px;font-size:13px;font-weight:700;color:#4ade80;min-height:18px;}
+</style>
+</head>
+<body>
+  <div class="topo">
+    <div>
+      <div class="marca">CINE<span>PRO</span> TV • Painel de Clientes</div>
+      <div class="info-rede">IP da sua casa hoje: <b id="ipCasaTexto">Carregando...</b> • <a href="/" style="color:#93c5fd;">Voltar ao Player</a></div>
+    </div>
+    <div class="pin-box">
+      <input type="password" id="pinInput" value="jonas2026" placeholder="PIN do Jonas">
+      <button type="button" class="btn btn-vermelho" onclick="carregarLista()">🔓 Entrar / Atualizar</button>
+    </div>
+  </div>
+
+  <div id="msgStatus"></div>
+
+  <div class="card barra-modo">
+    <div>
+      <div style="font-size:15px;font-weight:800;" id="modoTexto">🔓 Modo Casa Aberto (qualquer senha entra)</div>
+      <div style="font-size:12px;color:#94a3b8;margin-top:2px;">Quando quiser travar e só deixar entrar quem você cadastrou abaixo, clique no botão ao lado.</div>
+    </div>
+    <button type="button" id="btnModoCobranca" class="btn btn-amarelo" onclick="alternarModoCobranca()">🔒 Ativar Cobrança Individual</button>
+  </div>
+
+  <div class="card">
+    <h2>➕ Cadastrar Novo Cliente ou Teste</h2>
+    <div class="atalhos">
+      <button type="button" class="btn btn-azul" onclick="preencherRapido(3)">🧪 Gerar Teste 3 Horas (1 Tela)</button>
+      <button type="button" class="btn btn-verde" onclick="preencherRapido(720)">💰 Gerar Mensal 30 Dias (1 Tela)</button>
+    </div>
+    <div class="grid-form">
+      <div class="campo"><label>Nome do Cliente</label><input type="text" id="cliNome" placeholder="Ex.: Carlos Barbearia"></div>
+      <div class="campo"><label>Usuário (sem espaço)</label><input type="text" id="cliUser" placeholder="carlos01"></div>
+      <div class="campo"><label>Senha</label><input type="text" id="cliPass" placeholder="849201"></div>
+      <div class="campo"><label>Duração (horas — 720 = 30 dias)</label><input type="number" id="cliHoras" value="720"></div>
+      <div class="campo"><label>Telas ao mesmo tempo</label><input type="number" id="cliTelas" value="1" min="1" max="10"></div>
+    </div>
+    <button type="button" class="btn btn-vermelho" onclick="salvarCliente()">💾 Salvar Cliente Agora</button>
+  </div>
+
+  <div class="card">
+    <h2>📋 Clientes Cadastrados (<span id="qtdClientes">0</span>)</h2>
+    <div class="tabela-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Cliente</th>
+            <th>Usuário / Senha</th>
+            <th>Validade</th>
+            <th>Telas</th>
+            <th>Estado</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody id="tabelaClientes"></tbody>
+      </table>
+    </div>
+  </div>
+
+<script>
+let ipServidorAtual = window.location.origin;
+
+function avisar(txt, erro = false) {
+  const el = document.getElementById('msgStatus');
+  el.style.color = erro ? '#fca5a5' : '#4ade80';
+  el.textContent = txt;
+}
+
+function getPin() {
+  return (document.getElementById('pinInput').value || '').trim();
+}
+
+function preencherRapido(horas) {
+  const cod = Math.floor(100000 + Math.random() * 899999);
+  const suf = Math.floor(100 + Math.random() * 899);
+  document.getElementById('cliNome').value = horas <= 5 ? ('Teste Rápido ' + suf) : ('Cliente Mensal ' + suf);
+  document.getElementById('cliUser').value = (horas <= 5 ? 'teste' : 'cliente') + suf;
+  document.getElementById('cliPass').value = String(cod);
+  document.getElementById('cliHoras').value = String(horas);
+  document.getElementById('cliTelas').value = '1';
+  avisar('Dados preenchidos! Confira e clique em "Salvar Cliente Agora".');
+}
+
+async function carregarLista() {
+  try {
+    const resp = await fetch('/api/admin/clientes?pin=' + encodeURIComponent(getPin()));
+    const data = await resp.json();
+    if (!resp.ok || !data.ok) {
+      avisar(data.erro || 'Erro ao carregar.', true);
+      return;
+    }
+    ipServidorAtual = window.location.protocol + '//' + (data.porta_host || (data.ip_local + ':8090'));
+    document.getElementById('ipCasaTexto').textContent = 'http://' + data.ip_local;
+    document.getElementById('qtdClientes').textContent = data.clientes.length;
+
+    const modoEl = document.getElementById('modoTexto');
+    const btnModo = document.getElementById('btnModoCobranca');
+    if (data.exigir_login_clientes) {
+      modoEl.textContent = '🔒 Cobrança Individual ATIVA (só entram clientes da lista abaixo)';
+      btnModo.textContent = '🔓 Voltar para Modo Casa Aberto';
+    } else {
+      modoEl.textContent = '🔓 Modo Casa Aberto (qualquer usuário entra, mas clientes bloqueados são barrados)';
+      btnModo.textContent = '🔒 Ativar Cobrança Individual';
+    }
+
+    const tbody = document.getElementById('tabelaClientes');
+    tbody.innerHTML = data.clientes.map(c => {
+      const valTxt = c.expira_em > 3000000000
+        ? 'Vitalício'
+        : (c.vencido ? '<span class="badge badge-off">VENCIDO</span>' : (c.dias_restantes >= 1 ? (c.dias_restantes + ' dias') : (c.horas_restantes + ' horas')));
+      const stBadge = c.ativo && !c.vencido
+        ? '<span class="badge badge-ok">Ativo</span>'
+        : '<span class="badge badge-off">' + (c.vencido ? 'Vencido' : 'Bloqueado') + '</span>';
+      const podeMexer = c.usuario !== 'vip';
+      return `<tr>
+        <td><b>${c.nome}</b></td>
+        <td><code>${c.usuario}</code> / <code>${c.senha}</code></td>
+        <td>${valTxt}</td>
+        <td>${c.telas_online}/${c.max_telas}</td>
+        <td>${stBadge}</td>
+        <td class="acoes-linha">
+          <button type="button" class="btn btn-verde" onclick="mandarZap('${c.nome}','${c.usuario}','${c.senha}','${c.dias_restantes}')">📲 Zap</button>
+          <button type="button" class="btn btn-azul" onclick="executarAcao('renovar','${c.usuario}')">+30 Dias</button>
+          ${podeMexer ? `<button type="button" class="btn btn-amarelo" onclick="executarAcao('alternar','${c.usuario}')">${c.ativo ? 'Bloquear' : 'Liberar'}</button>` : ''}
+          ${podeMexer ? `<button type="button" class="btn btn-cinza" onclick="executarAcao('excluir','${c.usuario}')">Excluir</button>` : ''}
+        </td>
+      </tr>`;
+    }).join('');
+  } catch (e) {
+    avisar('Falha ao conectar com o servidor.', true);
+  }
+}
+
+async function salvarCliente() {
+  const nome = document.getElementById('cliNome').value.trim();
+  const usuario = document.getElementById('cliUser').value.trim();
+  const senha = document.getElementById('cliPass').value.trim();
+  const horas = document.getElementById('cliHoras').value.trim() || '720';
+  const maxTelas = document.getElementById('cliTelas').value.trim() || '1';
+  if (!usuario || !senha) {
+    avisar('Preencha usuário e senha!', true);
+    return;
+  }
+  const url = `/api/admin/acao?pin=${encodeURIComponent(getPin())}&acao=criar&nome=${encodeURIComponent(nome || usuario)}&usuario=${encodeURIComponent(usuario)}&senha=${encodeURIComponent(senha)}&horas=${encodeURIComponent(horas)}&max_telas=${encodeURIComponent(maxTelas)}`;
+  const r = await fetch(url);
+  const d = await r.json();
+  if (d.ok) {
+    avisar(`Cliente "${usuario}" salvo com sucesso!`);
+    carregarLista();
+  } else {
+    avisar(d.erro || 'Erro ao salvar.', true);
+  }
+}
+
+async function executarAcao(acao, usuario) {
+  const url = `/api/admin/acao?pin=${encodeURIComponent(getPin())}&acao=${encodeURIComponent(acao)}&usuario=${encodeURIComponent(usuario)}`;
+  const r = await fetch(url);
+  const d = await r.json();
+  if (d.ok) {
+    avisar('Ação aplicada com sucesso!');
+    carregarLista();
+  }
+}
+
+async function alternarModoCobranca() {
+  await executarAcao('modo_cobranca', '');
+}
+
+function mandarZap(nome, usuario, senha, dias) {
+  const texto = `Olá, ${nome}! Aqui está o seu acesso VIP do CinePro TV:\n\n📺 Servidor (IP/DNS): ${ipServidorAtual}\n👤 Usuário: ${usuario}\n🔑 Senha: ${senha}\n⏳ Validade: ${dias} dias\n\n📱 Lista M3U: ${ipServidorAtual}/get.php?username=${usuario}&password=${senha}&type=m3u_plus`;
+  try { navigator.clipboard.writeText(texto); } catch (_) {}
+  window.open('https://wa.me/?text=' + encodeURIComponent(texto), '_blank', 'noopener');
+  avisar('Dados copiados e prontos para enviar no WhatsApp!');
+}
+
+carregarLista();
+</script>
+</body>
+</html>
