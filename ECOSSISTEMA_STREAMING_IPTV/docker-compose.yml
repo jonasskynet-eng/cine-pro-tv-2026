@@ -1,15 +1,16 @@
 services:
-  # Guovin/iptv-api (~26k stars) - Motor de autocoleta, teste de velocidade e gerador M3U/EPG
-  iptv-api:
-    image: guovern/iptv-api:latest
-    container_name: iptv_api_engine
+  cinepro-vip:
+    build: ..
+    container_name: cinepro_tv_vip
     restart: unless-stopped
     ports:
-      - "8000:8000"
+      - "8090:8090"
     environment:
       - TZ=America/Sao_Paulo
-      - UPDATE_CRON=0 3 * * * # Atualiza diariamente às 03:00
-      - TIMEOUT=5 # Tempo limite de conexão por stream (segundos)
+      - PORT=8090
+      - CINEPRO_MODO=VIP_DOCKER
+      - CINEPRO_VIP_TOKEN=${CINEPRO_VIP_TOKEN:-}
+      - VIP_M3U_URL=${VIP_M3U_URL:-}
     volumes:
-      - ./config:/app/config
-      - ./output:/app/output
+      - ../docs:/app/docs:ro
+      - ./vip_privado:/app/vip_privado

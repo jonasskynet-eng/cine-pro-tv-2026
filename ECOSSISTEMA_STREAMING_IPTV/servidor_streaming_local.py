@@ -11,6 +11,7 @@ import json
 import threading
 import gzip
 import zlib
+import time
 from pathlib import Path
 
 def decodificar_manifesto(raw_bytes, content_encoding=''):
@@ -31,8 +32,129 @@ def decodificar_manifesto(raw_bytes, content_encoding=''):
                 pass
     return raw_bytes.decode('utf-8', errors='ignore')
 
-PORT = 8080
-DIRETORIO_SAIDA = Path(__file__).parent / "saida"
+PORT = int(os.environ.get("PORT", "8080"))
+CINEPRO_MODO = os.environ.get("CINEPRO_MODO", "LOCAL").strip().upper()
+CINEPRO_VIP_TOKEN = os.environ.get("CINEPRO_VIP_TOKEN", "").strip()
+VIP_M3U_URL = os.environ.get("VIP_M3U_URL", "").strip()
+
+_BASE_SCRIPT = Path(__file__).resolve().parent
+_STATIC_ENV = os.environ.get("CINEPRO_STATIC_DIR", "").strip()
+if _STATIC_ENV and Path(_STATIC_ENV).exists():
+    DIRETORIO_SAIDA = Path(_STATIC_ENV)
+elif (_BASE_SCRIPT.parent / "docs").exists():
+    DIRETORIO_SAIDA = _BASE_SCRIPT.parent / "docs"
+else:
+    DIRETORIO_SAIDA = _BASE_SCRIPT / "saida"
+
+DIRETORIO_VIP = Path(os.environ.get("CINEPRO_VIP_DIR", str(_BASE_SCRIPT / "vip_privado")))
+DIRETORIO_VIP.mkdir(parents=True, exist_ok=True)
+
+_CACHE_VIP = {
+    "assinatura_arquivos": None,
+    "url_remota": "",
+    "expira_remoto": 0.0,
+    "canais": []
+}
+
+def _classificar_tags_vip(nome: str, grupo: str):
+    texto = f"{nome} {grupo}".lower()
+    tags = ["vip"]
+    mapa = [
+        ("esportes", ["esport", "sport", "premiere", "combate", "espn", "fox sports", "caze", "futebol", "nba", "ufc"]),
+        ("filmes", ["filme", "movie", "cine", "hbo", "telecine", "megapix", "tnt", "space", "cinemax", "paramount"]),
+        ("series", ["serie", "série", "series", "warner", "axn", "sony", "universal", "star channel", "fx"]),
+        ("infantil", ["kids", "infantil", "desenho", "cartoon", "disney", "discovery kids", "gloob", "nick"]),
+        ("noticias", ["noticia", "notícia", "news", "cnn", "globonews", "bandnews", "jovem pan"]),
+        ("aberta", ["globo", "sbt", "record", "band", "redetv", "cultura"]),
+        ("comedia", ["comedia", "comédia", "comedy", "humor", "multishow"]),
+        ("musica", ["music", "música", "mtv", "show", "bis", "radio", "rádio"]),
+    ]
+    for tag, termos in mapa:
+        if any(t in texto for t in termos):
+            tags.append(tag)
+    return tags
+
+def _parse_conteudo_m3u_vip(conteudo: str, canais_out: list, urls_vistas: set):
+    nome_atual = ""
+    grupo_atual = "⭐ Pacote VIP"
+    logo_atual = ""
+    for linha in conteudo.splitlines():
+        l = linha.strip()
+        if not l:
+            continue
+        if l.startswith("#EXTINF"):
+            m_logo = re.search(r'tvg-logo="([^"]*)"', l, re.I)
+            m_grupo = re.search(r'group-title="([^"]*)"', l, re.I)
+            logo_atual = m_logo.group(1).strip() if m_logo else ""
+            grupo_atual = (m_grupo.group(1).strip() if m_grupo else "") or "⭐ Pacote VIP"
+            nome_atual = l.split(",")[-1].strip() if "," in l else "Canal VIP"
+        elif l.startswith("http://") or l.startswith("https://"):
+            if l not in urls_vistas:
+                urls_vistas.add(l)
+                idx = len(canais_out)
+                nome_final = nome_atual or f"Canal VIP {idx + 1}"
+                num = 1001 + idx
+                canais_out.append({
+                    "id": 90001 + idx,
+                    "numero": num,
+                    "numero_str": str(num),
+                    "nome": nome_final,
+                    "url": l,
+                    "logo": logo_atual,
+                    "categoria": grupo_atual,
+                    "pais": "🇧🇷 Brasil",
+                    "pais_codigo": "BR",
+                    "idioma_badge": "👑 VIP",
+                    "tags": _classificar_tags_vip(nome_final, grupo_atual),
+                    "cors": 0
+                })
+            nome_atual = ""
+            grupo_atual = "⭐ Pacote VIP"
+            logo_atual = ""
+
+def carregar_canais_vip_extras():
+    """Carrega listas VIP (.m3u/.m3u8) da pasta privada e de VIP_M3U_URL com cache em memória."""
+    arquivos = sorted(
+        list(DIRETORIO_VIP.glob("*.m3u")) + list(DIRETORIO_VIP.glob("*.m3u8")),
+        key=lambda p: p.name.lower()
+    )
+    assinatura = tuple((str(p), p.stat().st_mtime) for p in arquivos)
+    agora = time.monotonic()
+    remoto_valido = (not VIP_M3U_URL) or (
+        _CACHE_VIP["url_remota"] == VIP_M3U_URL and agora < _CACHE_VIP["expira_remoto"]
+    )
+    if _CACHE_VIP["assinatura_arquivos"] == assinatura and remoto_valido:
+        return _CACHE_VIP["canais"]
+
+    canais = []
+    urls_vistas = set()
+    for arq in arquivos:
+        try:
+            texto = arq.read_text(encoding="utf-8", errors="ignore")
+            _parse_conteudo_m3u_vip(texto, canais, urls_vistas)
+        except Exception:
+            pass
+
+    if VIP_M3U_URL:
+        try:
+            ctx_vip = ssl.create_default_context()
+            ctx_vip.check_hostname = False
+            ctx_vip.verify_mode = ssl.CERT_NONE
+            req_vip = urllib.request.Request(VIP_M3U_URL, headers={"User-Agent": "Mozilla/5.0"})
+            with urllib.request.urlopen(req_vip, context=ctx_vip, timeout=12) as resp_vip:
+                texto_remoto = decodificar_manifesto(
+                    resp_vip.read(),
+                    resp_vip.headers.get("Content-Encoding", "")
+                )
+                _parse_conteudo_m3u_vip(texto_remoto, canais, urls_vistas)
+        except Exception:
+            pass
+
+    _CACHE_VIP["assinatura_arquivos"] = assinatura
+    _CACHE_VIP["url_remota"] = VIP_M3U_URL
+    _CACHE_VIP["expira_remoto"] = agora + 900.0
+    _CACHE_VIP["canais"] = canais
+    return canais
 
 # Fila sincronizada de comandos remotos (Celular -> TV)
 LOCK_COMANDOS = threading.Lock()
@@ -81,7 +203,78 @@ class ServidorMultithreadStreaming(http.server.SimpleHTTPRequestHandler):
         self.send_response(200)
         self.end_headers()
 
+    def do_HEAD(self):
+        rota = urllib.parse.urlparse(self.path).path
+        if rota in ('/', '/index.html', '/healthz', '/api/status_servidor'):
+            self.send_response(200)
+            ctype = 'application/json' if rota in ('/healthz', '/api/status_servidor') else 'text/html; charset=utf-8'
+            self.send_header('Content-Type', ctype)
+            self.end_headers()
+            return
+        super().do_HEAD()
+
     def do_GET(self):
+        parsed_req = urllib.parse.urlparse(self.path)
+        rota_req = parsed_req.path
+
+        if rota_req == '/healthz':
+            payload = json.dumps({
+                "status": "ok",
+                "modo": CINEPRO_MODO,
+                "porta": PORT
+            }).encode('utf-8')
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json; charset=utf-8')
+            self.send_header('Content-Length', str(len(payload)))
+            self.end_headers()
+            self.wfile.write(payload)
+            return
+
+        if rota_req == '/api/status_servidor':
+            canais_vip = carregar_canais_vip_extras()
+            payload = json.dumps({
+                "ativo": True,
+                "modo": CINEPRO_MODO,
+                "docker": (CINEPRO_MODO == "VIP_DOCKER"),
+                "requer_chave": bool(CINEPRO_VIP_TOKEN),
+                "qtd_vip_extras": len(canais_vip),
+                "versao": "2026.4-VIP"
+            }, ensure_ascii=False).encode('utf-8')
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json; charset=utf-8')
+            self.send_header('Content-Length', str(len(payload)))
+            self.end_headers()
+            self.wfile.write(payload)
+            return
+
+        if rota_req == '/api/canais_vip':
+            params_vip = urllib.parse.parse_qs(parsed_req.query)
+            chave_enviada = (params_vip.get('chave', [''])[0] or self.headers.get('X-Vip-Token', '')).strip()
+            if CINEPRO_VIP_TOKEN and chave_enviada != CINEPRO_VIP_TOKEN:
+                payload = json.dumps({
+                    "ok": False,
+                    "requer_chave": True,
+                    "erro": "Chave VIP inválida. Solicite no WhatsApp (11) 96670-7293."
+                }, ensure_ascii=False).encode('utf-8')
+                self.send_response(401)
+                self.send_header('Content-Type', 'application/json; charset=utf-8')
+                self.send_header('Content-Length', str(len(payload)))
+                self.end_headers()
+                self.wfile.write(payload)
+                return
+
+            canais_vip = carregar_canais_vip_extras()
+            payload = json.dumps({
+                "ok": True,
+                "canais": canais_vip
+            }, ensure_ascii=False).encode('utf-8')
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json; charset=utf-8')
+            self.send_header('Content-Length', str(len(payload)))
+            self.end_headers()
+            self.wfile.write(payload)
+            return
+
         # 1. API DE COMANDOS REMOTOS (CELULAR -> TV)
         if self.path.startswith('/api/comando'):
             parsed = urllib.parse.urlparse(self.path)
@@ -285,6 +478,8 @@ class ServidorMultithreadStreaming(http.server.SimpleHTTPRequestHandler):
                 except:
                     pass
         else:
+            if self.path == '/' or self.path.startswith('/?'):
+                self.path = '/index.html'
             super().do_GET()
 
 # Servidor Threading (não trava com múltiplos requests simultâneos)

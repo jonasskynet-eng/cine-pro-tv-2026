@@ -1,0 +1,6 @@
+=== COMO ADICIONAR SUA LISTA VIP PAGA NO DOCKER COMPLETO ===
+
+1. Basta soltar qualquer arquivo .m3u ou .m3u8 pago aqui dentro desta pasta (vip_privado).
+2. O container Docker VIP Completo vai ler automaticamente todos os canais extras desta pasta!
+3. Fique 100% tranquilo: estes arquivos .m3u / .m3u8 estao bloqueados no .gitignore e NUNCA sobem para o GitHub publico.
+4. Voce tambem pode usar a variavel VIP_M3U_URL no arquivo .env (para lista remota) e CINEPRO_VIP_TOKEN (para exigir senha de assinante).

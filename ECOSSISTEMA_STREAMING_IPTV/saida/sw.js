@@ -1,4 +1,4 @@
-const CACHE_NAME = 'cinepro-tv-v2026-perf1';
+const CACHE_NAME = 'cinepro-tv-v2026-perf2';
 const APP_SHELL = [
     './',
     './index.html',
@@ -29,9 +29,11 @@ self.addEventListener('fetch', (event) => {
     if (event.request.method !== 'GET') return;
     const url = event.request.url;
 
-    // Nunca interceptar streams ao vivo, chaves AES ou chamadas de proxy
+    // Nunca interceptar streams ao vivo, chaves AES, APIs ou chamadas de proxy
     if (
         url.includes('/proxy') ||
+        url.includes('/api/') ||
+        url.includes('/healthz') ||
         url.includes('workers.dev') ||
         /\.(m3u8|ts|mp4|aac|mp3|ogg|key)(\?|$)/i.test(url)
     ) {
@@ -54,10 +56,10 @@ self.addEventListener('fetch', (event) => {
         return;
     }
 
-    // Stale-While-Revalidate para shell e biblioteca HLS
+    // Stale-While-Revalidate para shell e bibliotecas HLS/MPEG-TS
     const mesmoOrigem = url.startsWith(self.location.origin);
-    const ehHlsLib = url.includes('cdn.jsdelivr.net/npm/hls.js');
-    if (mesmoOrigem || ehHlsLib) {
+    const ehPlayerLib = url.includes('cdn.jsdelivr.net/npm/hls.js') || url.includes('cdn.jsdelivr.net/npm/mpegts.js');
+    if (mesmoOrigem || ehPlayerLib) {
         event.respondWith(
             caches.match(event.request).then((cached) => {
                 const netFetch = fetch(event.request)

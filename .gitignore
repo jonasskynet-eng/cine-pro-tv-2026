@@ -68,3 +68,12 @@ MEU_AVATAR_JONAS.*
 face_crop.png
 jonas_mouth_open*
 yt_check/
+
+# Listas VIP Privadas e Chaves de Assinantes (NUNCA sobem para o GitHub público)
+.env
+.env.*
+!.env.example
+ECOSSISTEMA_STREAMING_IPTV/vip_privado/*.m3u
+ECOSSISTEMA_STREAMING_IPTV/vip_privado/*.m3u8
+ECOSSISTEMA_STREAMING_IPTV/vip_privado/*.txt
+!ECOSSISTEMA_STREAMING_IPTV/vip_privado/COMO_COLOCAR_LISTA_VIP.txt

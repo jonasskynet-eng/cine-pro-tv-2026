@@ -6483,9 +6483,14 @@ docs_dir = BASE_DIR.parent / "docs"
 docs_dir.mkdir(parents=True, exist_ok=True)
 html_docs_path = docs_dir / "index.html"
 
-html_saida_path.write_text(html_code, encoding="utf-8")
-shutil.copyfile(html_saida_path, html_desktop_path)
-shutil.copyfile(html_saida_path, html_docs_path)
+if html_docs_path.exists() and "netflixCatalogOverlay" in html_docs_path.read_text(encoding="utf-8", errors="ignore"):
+    shutil.copyfile(html_docs_path, html_saida_path)
+    shutil.copyfile(html_docs_path, html_desktop_path)
+else:
+    html_saida_path.write_text(html_code, encoding="utf-8")
+    shutil.copyfile(html_saida_path, html_desktop_path)
+    shutil.copyfile(html_saida_path, html_docs_path)
+
 shutil.copyfile(SAIDA_DIR / "canais.json", docs_dir / "canais.json")
 if (docs_dir / "controle.html").exists():
     shutil.copyfile(docs_dir / "controle.html", SAIDA_DIR / "controle.html")
