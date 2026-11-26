@@ -23,12 +23,14 @@ DESKTOP_DIR = Path(r"C:\Users\jonas\Desktop\iptv") if os.name == "nt" else (SAID
 FONTES_XMLTV = [
     ("iptv-epg.org", "https://iptv-epg.org/files/epg-br.xml", False),
     ("epg.pw", "https://epg.pw/xmltv/epg_BR.xml.gz", True),
+    ("pluto-br", "https://i.mjh.nz/PlutoTV/br.xml.gz", True),
 ]
 
 
 def normalizar_chave(texto: str) -> str:
     txt = unicodedata.normalize("NFKD", texto or "").encode("ascii", "ignore").decode("ascii").lower()
-    txt = re.sub(r"^(br|pt)\s*[-:|]\s*", "", txt)
+    txt = re.sub(r"^(br|pt|brasil)\s*[-:|]\s*", "", txt)
+    txt = re.sub(r"^pluto\s*tv\s*", "", txt)
     txt = re.sub(
         r"^(sao paulo/sp|rio de janeiro/rj|belo horizonte/mg|brasilia/df|curitiba/pr|porto alegre/rs|sp|rj|mg)\s+",
         "",

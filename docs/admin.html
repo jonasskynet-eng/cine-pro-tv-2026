@@ -47,7 +47,7 @@ th{color:#94a3b8;font-size:11.5px;text-transform:uppercase;}
       <div class="info-rede">IP da sua casa hoje: <b id="ipCasaTexto">Carregando...</b> • <a href="/" style="color:#93c5fd;">Voltar ao Player</a></div>
     </div>
     <div class="pin-box">
-      <input type="password" id="pinInput" value="jonas2026" placeholder="PIN do Jonas">
+      <input type="password" id="pinInput" value="" placeholder="Digite seu PIN secreto">
       <button type="button" class="btn btn-vermelho" onclick="carregarLista()">🔓 Entrar / Atualizar</button>
     </div>
   </div>
@@ -79,6 +79,43 @@ th{color:#94a3b8;font-size:11.5px;text-transform:uppercase;}
   </div>
 
   <div class="card">
+    <h2>📺 Lista VIP / Revenda (.m3u) — <span id="qtdCanaisVip">0</span> canais VIP ativos</h2>
+    <div style="font-size:12px;color:#94a3b8;margin-bottom:10px;">
+      Cole o link direto da sua lista paga de revenda (com Futebol, Premiere, HBO, Telecine) ou coloque o arquivo <code>.m3u</code> na pasta <code>vip_privado</code>.
+      Sincronização na nuvem: <b id="statusNuvemSync" style="color:#cbd5e1;">Local</b>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:10px;">
+      <input type="text" id="vipM3uUrlInput" style="flex:1;min-width:240px;" placeholder="https://seu-servidor-revenda.com/get.php?username=...&type=m3u_plus">
+      <button type="button" class="btn btn-azul" onclick="salvarVipUrl()">🔄 Salvar e Recarregar Canais VIP</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>💸 Automação PIX 24h (Webhook)</h2>
+    <div style="font-size:12px;color:#94a3b8;margin-bottom:10px;">
+      Cole este endereço no Mercado Pago ou Asaas para liberar o cliente de 30 dias na hora em que o PIX cair:
+      <code id="urlWebhookPix" style="color:#4ade80;">/api/webhook/pix</code>
+    </div>
+    <div style="margin-bottom:12px;">
+      <button type="button" class="btn btn-verde" onclick="simularPagamentoPix()">🧪 Simular Pagamento PIX (Teste 30 Dias)</button>
+    </div>
+    <div class="tabela-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>TXID</th>
+            <th>Provedor</th>
+            <th>Usuário Criado</th>
+            <th>Valor</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="tabelaPix"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
     <h2>📋 Clientes Cadastrados (<span id="qtdClientes">0</span>)</h2>
     <div class="tabela-wrap">
       <table>
@@ -107,8 +144,15 @@ function avisar(txt, erro = false) {
 }
 
 function getPin() {
-  return (document.getElementById('pinInput').value || '').trim();
+  const digitado = (document.getElementById('pinInput').value || '').trim();
+  if (digitado) return digitado;
+  return (sessionStorage.getItem('cinepro_admin_pin') || '').trim();
 }
+
+(function restaurarPinSessao() {
+  const salvo = sessionStorage.getItem('cinepro_admin_pin');
+  if (salvo) document.getElementById('pinInput').value = salvo;
+})();
 
 function preencherRapido(horas) {
   const cod = Math.floor(100000 + Math.random() * 899999);
@@ -122,16 +166,44 @@ function preencherRapido(horas) {
 }
 
 async function carregarLista() {
+  const pinAtual = getPin();
+  document.getElementById('urlWebhookPix').textContent = window.location.origin + '/api/webhook/pix';
+  if (!pinAtual) {
+    avisar('Digite seu PIN secreto acima e clique em "Entrar / Atualizar".', true);
+    return;
+  }
   try {
-    const resp = await fetch('/api/admin/clientes?pin=' + encodeURIComponent(getPin()));
+    const resp = await fetch('/api/admin/clientes?pin=' + encodeURIComponent(pinAtual));
     const data = await resp.json();
     if (!resp.ok || !data.ok) {
-      avisar(data.erro || 'Erro ao carregar.', true);
+      avisar(data.erro || 'PIN incorreto ou erro ao carregar.', true);
       return;
     }
+    sessionStorage.setItem('cinepro_admin_pin', pinAtual);
     ipServidorAtual = window.location.protocol + '//' + (data.porta_host || (data.ip_local + ':8090'));
     document.getElementById('ipCasaTexto').textContent = 'http://' + data.ip_local;
     document.getElementById('qtdClientes').textContent = data.clientes.length;
+    document.getElementById('qtdCanaisVip').textContent = data.qtd_canais_vip || 0;
+    document.getElementById('vipM3uUrlInput').value = data.vip_m3u_url || '';
+    const syncEl = document.getElementById('statusNuvemSync');
+    if (syncEl) {
+      syncEl.textContent = data.nuvem_sync_ativa ? '☁️ Ativa (D1 Nuvem)' : '💾 Apenas Local (SQLite)';
+      syncEl.style.color = data.nuvem_sync_ativa ? '#4ade80' : '#fbbf24';
+    }
+
+    const tbodyPix = document.getElementById('tabelaPix');
+    if (tbodyPix) {
+      const listaPix = data.pagamentos_pix || [];
+      tbodyPix.innerHTML = listaPix.length
+        ? listaPix.map(p => `<tr>
+            <td><code>${p.txid}</code></td>
+            <td>${p.provedor}</td>
+            <td><code>${p.cliente_usuario}</code></td>
+            <td>R$ ${Number(p.valor || 0).toFixed(2)}</td>
+            <td><span class="badge badge-ok">${p.status}</span></td>
+          </tr>`).join('')
+        : '<tr><td colspan="5" style="color:#94a3b8;">Nenhum pagamento PIX registrado ainda.</td></tr>';
+    }
 
     const modoEl = document.getElementById('modoTexto');
     const btnModo = document.getElementById('btnModoCobranca');
@@ -204,6 +276,31 @@ async function executarAcao(acao, usuario) {
 
 async function alternarModoCobranca() {
   await executarAcao('modo_cobranca', '');
+}
+
+async function salvarVipUrl() {
+  const vipUrl = (document.getElementById('vipM3uUrlInput').value || '').trim();
+  const url = `/api/admin/acao?pin=${encodeURIComponent(getPin())}&acao=salvar_vip_url&vip_m3u_url=${encodeURIComponent(vipUrl)}`;
+  const r = await fetch(url);
+  const d = await r.json();
+  if (d.ok) {
+    avisar(`Lista VIP atualizada! ${d.qtd_canais_vip || 0} canais VIP carregados.`);
+    carregarLista();
+  } else {
+    avisar(d.erro || 'Erro ao atualizar lista VIP.', true);
+  }
+}
+
+async function simularPagamentoPix() {
+  const url = `/api/admin/acao?pin=${encodeURIComponent(getPin())}&acao=simular_pix`;
+  const r = await fetch(url);
+  const d = await r.json();
+  if (d.ok && d.cliente) {
+    avisar(`PIX simulado! Cliente criado: ${d.cliente.usuario} / senha ${d.cliente.senha} (30 dias).`);
+    carregarLista();
+  } else {
+    avisar(d.erro || 'Erro ao simular PIX.', true);
+  }
 }
 
 function mandarZap(nome, usuario, senha, dias) {

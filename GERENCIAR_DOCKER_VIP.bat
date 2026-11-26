@@ -16,19 +16,21 @@ echo [1] Ver status do container Docker VIP (Portas 80 e 8090)
 echo [2] Iniciar ou atualizar Docker VIP Completo
 echo [3] Abrir pasta secreta das listas VIP (.m3u / .m3u8)
 echo [4] Abrir CinePro TV VIP no Navegador (http://localhost:8090)
-echo [5] Abrir Painel de Clientes 30 Dias (http://localhost:8090/admin)
-echo [6] Parar container Docker VIP
-echo [7] Sair
+echo [5] Abrir Painel de Clientes 30 Dias + PIX + Lista VIP (/admin)
+echo [6] Fixar IP 192.168.100.210 no Windows (para TV Samsung)
+echo [7] Parar container Docker VIP
+echo [8] Sair
 echo.
-set /p opcao="Escolha uma opcao [1-7]: "
+set /p opcao="Escolha uma opcao [1-8]: "
 
 if "%opcao%"=="1" goto STATUS
 if "%opcao%"=="2" goto SUBIR
 if "%opcao%"=="3" goto PASTA_VIP
 if "%opcao%"=="4" goto ABRIR
 if "%opcao%"=="5" goto ADMIN
-if "%opcao%"=="6" goto PARAR
-if "%opcao%"=="7" goto SAIR
+if "%opcao%"=="6" goto FIXAR_IP
+if "%opcao%"=="7" goto PARAR
+if "%opcao%"=="8" goto SAIR
 goto MENU
 
 :STATUS
@@ -60,6 +62,10 @@ goto MENU
 
 :ADMIN
 start http://localhost:8090/admin
+goto MENU
+
+:FIXAR_IP
+start "" "%~dp0ECOSSISTEMA_STREAMING_IPTV\FIXAR_IP_CASA_TV.bat"
 goto MENU
 
 :PARAR

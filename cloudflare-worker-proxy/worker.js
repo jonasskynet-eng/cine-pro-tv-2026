@@ -1109,6 +1109,46 @@ export default {
       if (path === "/api/mensagem_admin" && request.method === "POST") {
         return await tratarMensagemAdminApi(request, env, reqUrl);
       }
+      if (path === "/api/sync-clientes-vip") {
+        if (!validarAdmin(request, env, reqUrl)) {
+          return respostaJson({ ok: false, erro: "Acesso negado" }, 401);
+        }
+        if (!env || !env.DB) {
+          return respostaJson({ ok: false, erro: "Banco D1 não configurado" }, 500);
+        }
+        await env.DB.prepare(
+          "CREATE TABLE IF NOT EXISTS vip_clientes_backup (id INTEGER PRIMARY KEY CHECK (id = 1), payload_json TEXT NOT NULL, atualizado_em INTEGER NOT NULL)"
+        ).run();
+        if (request.method === "POST") {
+          const bruto = await request.text();
+          let dadosSync = {};
+          try {
+            dadosSync = JSON.parse(bruto || "{}");
+          } catch {
+            return respostaJson({ ok: false, erro: "JSON inválido" }, 400);
+          }
+          const agoraSync = Math.floor(Date.now() / 1000);
+          await env.DB.prepare(
+            "INSERT OR REPLACE INTO vip_clientes_backup (id, payload_json, atualizado_em) VALUES (1, ?, ?)"
+          )
+            .bind(JSON.stringify(dadosSync), agoraSync)
+            .run();
+          return respostaJson({ ok: true, atualizado_em: agoraSync });
+        }
+        const regSync = await env.DB.prepare(
+          "SELECT payload_json, atualizado_em FROM vip_clientes_backup WHERE id = 1"
+        ).first();
+        if (!regSync) {
+          return respostaJson({ ok: true, dados: null });
+        }
+        let dadosOut = null;
+        try {
+          dadosOut = JSON.parse(regSync.payload_json);
+        } catch {
+          dadosOut = null;
+        }
+        return respostaJson({ ok: true, atualizado_em: regSync.atualizado_em, dados: dadosOut });
+      }
 
       const targetUrl = reqUrl.searchParams.get("url");
 

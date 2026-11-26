@@ -13,6 +13,7 @@ import gzip
 import zlib
 import time
 import sqlite3
+import random
 from pathlib import Path
 
 def decodificar_manifesto(raw_bytes, content_encoding=''):
@@ -37,6 +38,9 @@ PORT = int(os.environ.get("PORT", "8080"))
 CINEPRO_MODO = os.environ.get("CINEPRO_MODO", "LOCAL").strip().upper()
 CINEPRO_VIP_TOKEN = os.environ.get("CINEPRO_VIP_TOKEN", "").strip()
 VIP_M3U_URL = os.environ.get("VIP_M3U_URL", "").strip()
+CINEPRO_CLOUD_SYNC_URL = os.environ.get("CINEPRO_CLOUD_SYNC_URL", "").strip()
+CINEPRO_CLOUD_SYNC_TOKEN = os.environ.get("CINEPRO_CLOUD_SYNC_TOKEN", "").strip()
+PIX_WEBHOOK_SECRET = os.environ.get("PIX_WEBHOOK_SECRET", "").strip()
 
 _BASE_SCRIPT = Path(__file__).resolve().parent
 _STATIC_ENV = os.environ.get("CINEPRO_STATIC_DIR", "").strip()
@@ -106,8 +110,19 @@ def _inicializar_banco_vip():
                     status TEXT NOT NULL DEFAULT 'PENDENTE'
                 );
 
+                CREATE TABLE IF NOT EXISTS pagamentos_pix (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    txid TEXT UNIQUE NOT NULL,
+                    provedor TEXT NOT NULL,
+                    cliente_usuario TEXT NOT NULL,
+                    valor REAL NOT NULL DEFAULT 0,
+                    status TEXT NOT NULL,
+                    criado_em INTEGER NOT NULL
+                );
+
                 CREATE INDEX IF NOT EXISTS idx_clientes_usuario ON clientes(usuario);
                 CREATE INDEX IF NOT EXISTS idx_sessoes_ultimo_acesso ON sessoes_ativas(ultimo_acesso);
+                CREATE INDEX IF NOT EXISTS idx_pagamentos_pix_usuario ON pagamentos_pix(cliente_usuario);
 
                 CREATE TRIGGER IF NOT EXISTS trg_clientes_updated_at
                 AFTER UPDATE ON clientes
@@ -129,6 +144,8 @@ def _inicializar_banco_vip():
             conn.execute(
                 "INSERT OR IGNORE INTO config_sistema (chave, valor) VALUES ('exigir_login_clientes', '0')"
             )
+            conn.execute(
+                "INSERT OR IGNORE INTO config_sistema (chave, valor) VALUES ('vip_m3u_url', '')")
 
             qtd_cli = conn.execute("SELECT COUNT(*) FROM clientes").fetchone()[0]
             if qtd_cli == 0:
@@ -194,6 +211,202 @@ def _inicializar_banco_vip():
 
 _inicializar_banco_vip()
 
+def _obter_config_vip(chave, padrao=""):
+    with LOCK_CLIENTES:
+        conn = _abrir_conexao_vip()
+        try:
+            row = conn.execute("SELECT valor FROM config_sistema WHERE chave = ?", (chave,)).fetchone()
+            return row[0] if row else padrao
+        finally:
+            conn.close()
+
+def _definir_config_vip(chave, valor):
+    with LOCK_CLIENTES:
+        conn = _abrir_conexao_vip()
+        try:
+            conn.execute(
+                "INSERT OR REPLACE INTO config_sistema (chave, valor) VALUES (?, ?)",
+                (chave, str(valor or ""))
+            )
+            conn.commit()
+        finally:
+            conn.close()
+
+def _listar_pagamentos_pix(limite=15):
+    with LOCK_CLIENTES:
+        conn = _abrir_conexao_vip()
+        try:
+            rows = conn.execute(
+                "SELECT txid, provedor, cliente_usuario, valor, status, criado_em FROM pagamentos_pix ORDER BY id DESC LIMIT ?",
+                (limite,)
+            ).fetchall()
+            return [
+                {
+                    "txid": r[0], "provedor": r[1], "cliente_usuario": r[2],
+                    "valor": float(r[3] or 0.0), "status": r[4], "criado_em": int(r[5])
+                }
+                for r in rows
+            ]
+        finally:
+            conn.close()
+
+def _puxar_backup_nuvem():
+    if not CINEPRO_CLOUD_SYNC_URL or not CINEPRO_CLOUD_SYNC_TOKEN:
+        return
+    try:
+        ctx = ssl.create_default_context()
+        ctx.check_hostname = False
+        ctx.verify_mode = ssl.CERT_NONE
+        req = urllib.request.Request(
+            CINEPRO_CLOUD_SYNC_URL,
+            headers={"X-Admin-Senha": CINEPRO_CLOUD_SYNC_TOKEN, "User-Agent": "CinePro-Sync/1.0"}
+        )
+        with urllib.request.urlopen(req, context=ctx, timeout=6) as resp:
+            res = json.loads(resp.read().decode("utf-8", errors="ignore"))
+        dados_remotos = res.get("dados") if isinstance(res, dict) else None
+        if isinstance(dados_remotos, dict) and isinstance(dados_remotos.get("clientes"), list):
+            _salvar_dados_clientes(dados_remotos, sincronizar_nuvem=False)
+            if dados_remotos.get("vip_m3u_url"):
+                _definir_config_vip("vip_m3u_url", dados_remotos["vip_m3u_url"])
+    except Exception:
+        pass
+
+def _enviar_backup_nuvem(dados):
+    if not CINEPRO_CLOUD_SYNC_URL or not CINEPRO_CLOUD_SYNC_TOKEN:
+        return
+    def _worker_sync():
+        try:
+            pacote = dict(dados)
+            pacote["vip_m3u_url"] = _obter_config_vip("vip_m3u_url", VIP_M3U_URL)
+            corpo = json.dumps(pacote, ensure_ascii=False).encode("utf-8")
+            ctx = ssl.create_default_context()
+            ctx.check_hostname = False
+            ctx.verify_mode = ssl.CERT_NONE
+            req = urllib.request.Request(
+                CINEPRO_CLOUD_SYNC_URL,
+                data=corpo,
+                method="POST",
+                headers={
+                    "Content-Type": "application/json",
+                    "X-Admin-Senha": CINEPRO_CLOUD_SYNC_TOKEN,
+                    "User-Agent": "CinePro-Sync/1.0"
+                }
+            )
+            urllib.request.urlopen(req, context=ctx, timeout=6).read()
+        except Exception:
+            pass
+    threading.Thread(target=_worker_sync, daemon=True).start()
+
+def _processar_pagamento_pix(payload):
+    """Cria ou renova um cliente de 30 dias a partir de um webhook PIX (Mercado Pago, Asaas ou direto)."""
+    if not isinstance(payload, dict):
+        return False, {"erro": "Payload inválido"}
+
+    provedor = str(payload.get("provedor") or "").strip()
+    txid = str(payload.get("txid") or payload.get("id") or "").strip()
+    status_pag = str(payload.get("status") or "APROVADO").strip().upper()
+    valor = float(payload.get("valor") or 0.0)
+    nome_cli = str(payload.get("nome") or "").strip()
+    usuario_req = str(payload.get("usuario") or "").strip()
+    dias = float(payload.get("dias") or 30.0)
+    telas = max(1, int(payload.get("telas") or 1))
+
+    # Formato Mercado Pago
+    if "data" in payload and isinstance(payload.get("data"), dict) and payload["data"].get("id"):
+        provedor = provedor or "MercadoPago"
+        txid = txid or f"MP-{payload['data']['id']}"
+    # Formato Asaas
+    elif "payment" in payload and isinstance(payload.get("payment"), dict):
+        provedor = provedor or "Asaas"
+        pay = payload["payment"]
+        txid = txid or str(pay.get("id") or "")
+        valor = float(pay.get("value") or valor or 0.0)
+        status_pag = str(payload.get("event") or pay.get("status") or status_pag).upper()
+        if not nome_cli and pay.get("description"):
+            nome_cli = str(pay.get("description"))
+
+    provedor = provedor or "PIX Direto"
+    if not txid:
+        txid = f"PIX-{int(time.time())}-{random.randint(100, 999)}"
+
+    with LOCK_CLIENTES:
+        conn = _abrir_conexao_vip()
+        try:
+            ja_existe = conn.execute(
+                "SELECT cliente_usuario, valor, status FROM pagamentos_pix WHERE txid = ?",
+                (txid,)
+            ).fetchone()
+            if ja_existe:
+                cli_row = conn.execute(
+                    "SELECT usuario, senha, nome, expira_em, max_telas FROM clientes WHERE usuario = ?",
+                    (ja_existe[0],)
+                ).fetchone()
+                return True, {
+                    "ok": True,
+                    "duplicado": True,
+                    "pagamento": {"txid": txid, "provedor": provedor, "cliente_usuario": ja_existe[0], "valor": ja_existe[1], "status": ja_existe[2]},
+                    "cliente": {
+                        "usuario": cli_row[0], "senha": cli_row[1], "nome": cli_row[2],
+                        "expira_em": cli_row[3], "max_telas": cli_row[4]
+                    } if cli_row else None
+                }
+        finally:
+            conn.close()
+
+    dados = _carregar_dados_clientes()
+    clientes = dados.get("clientes", [])
+    agora = time.time()
+    horas = max(1.0, dias * 24.0)
+
+    cli_existente = next((c for c in clientes if usuario_req and c.get("usuario") == usuario_req), None)
+    if cli_existente:
+        base_tempo = max(agora, float(cli_existente.get("expira_em", agora)))
+        cli_existente["expira_em"] = int(base_tempo + horas * 3600.0)
+        cli_existente["ativo"] = True
+        cli_final = cli_existente
+    else:
+        usuario_novo = usuario_req or f"pix{random.randint(1000, 9999)}"
+        while any(c.get("usuario") == usuario_novo for c in clientes):
+            usuario_novo = f"pix{random.randint(1000, 9999)}"
+        senha_nova = str(random.randint(100000, 999999))
+        cli_final = {
+            "usuario": usuario_novo,
+            "senha": senha_nova,
+            "nome": nome_cli or f"Cliente PIX {usuario_novo}",
+            "expira_em": int(agora + horas * 3600.0),
+            "max_telas": telas,
+            "ativo": True
+        }
+        clientes.append(cli_final)
+
+    dados["clientes"] = clientes
+    _salvar_dados_clientes(dados)
+
+    with LOCK_CLIENTES:
+        conn = _abrir_conexao_vip()
+        try:
+            conn.execute(
+                """INSERT INTO pagamentos_pix (txid, provedor, cliente_usuario, valor, status, criado_em)
+                   VALUES (?, ?, ?, ?, ?, ?)""",
+                (txid, provedor, cli_final["usuario"], valor, status_pag, int(agora))
+            )
+            conn.commit()
+        finally:
+            conn.close()
+
+    return True, {
+        "ok": True,
+        "duplicado": False,
+        "pagamento": {
+            "txid": txid,
+            "provedor": provedor,
+            "cliente_usuario": cli_final["usuario"],
+            "valor": valor,
+            "status": status_pag
+        },
+        "cliente": cli_final
+    }
+
 def _carregar_dados_clientes():
     with LOCK_CLIENTES:
         conn = _abrir_conexao_vip()
@@ -218,7 +431,7 @@ def _carregar_dados_clientes():
         finally:
             conn.close()
 
-def _salvar_dados_clientes(dados):
+def _salvar_dados_clientes(dados, sincronizar_nuvem=True):
     with LOCK_CLIENTES:
         conn = _abrir_conexao_vip()
         try:
@@ -272,6 +485,24 @@ def _salvar_dados_clientes(dados):
                         )
                     )
             conn.commit()
+        finally:
+            conn.close()
+
+def _listar_pagamentos_pix(limite=15):
+    with LOCK_CLIENTES:
+        conn = _abrir_conexao_vip()
+        try:
+            rows = conn.execute(
+                "SELECT txid, provedor, cliente_usuario, valor, status, criado_em FROM pagamentos_pix ORDER BY id DESC LIMIT ?",
+                (limite,)
+            ).fetchall()
+            return [
+                {
+                    "txid": r[0], "provedor": r[1], "cliente_usuario": r[2],
+                    "valor": float(r[3] or 0.0), "status": r[4], "criado_em": int(r[5])
+                }
+                for r in rows
+            ]
         finally:
             conn.close()
 
@@ -377,8 +608,9 @@ def carregar_canais_vip_extras():
     arquivos = arquivos_json + arquivos_m3u
     assinatura = tuple((str(p), p.stat().st_mtime) for p in arquivos)
     agora = time.monotonic()
-    remoto_valido = (not VIP_M3U_URL) or (
-        _CACHE_VIP["url_remota"] == VIP_M3U_URL and agora < _CACHE_VIP["expira_remoto"]
+    vip_url_ativa = (_obter_config_vip("vip_m3u_url", "") or VIP_M3U_URL).strip()
+    remoto_valido = (not vip_url_ativa) or (
+        _CACHE_VIP["url_remota"] == vip_url_ativa and agora < _CACHE_VIP["expira_remoto"]
     )
     if _CACHE_VIP["assinatura_arquivos"] == assinatura and remoto_valido:
         return _CACHE_VIP["canais"]
@@ -417,12 +649,12 @@ def carregar_canais_vip_extras():
         except Exception:
             pass
 
-    if VIP_M3U_URL:
+    if vip_url_ativa:
         try:
             ctx_vip = ssl.create_default_context()
             ctx_vip.check_hostname = False
             ctx_vip.verify_mode = ssl.CERT_NONE
-            req_vip = urllib.request.Request(VIP_M3U_URL, headers={"User-Agent": "Mozilla/5.0"})
+            req_vip = urllib.request.Request(vip_url_ativa, headers={"User-Agent": "Mozilla/5.0"})
             with urllib.request.urlopen(req_vip, context=ctx_vip, timeout=12) as resp_vip:
                 texto_remoto = decodificar_manifesto(
                     resp_vip.read(),
@@ -433,7 +665,7 @@ def carregar_canais_vip_extras():
             pass
 
     _CACHE_VIP["assinatura_arquivos"] = assinatura
-    _CACHE_VIP["url_remota"] = VIP_M3U_URL
+    _CACHE_VIP["url_remota"] = vip_url_ativa
     _CACHE_VIP["expira_remoto"] = agora + 900.0
     _CACHE_VIP["canais"] = canais
     return canais
@@ -536,7 +768,7 @@ class ServidorMultithreadStreaming(http.server.SimpleHTTPRequestHandler):
     def end_headers(self):
         self.send_header('Access-Control-Allow-Origin', '*')
         self.send_header('Access-Control-Allow-Private-Network', 'true')
-        self.send_header('Access-Control-Allow-Methods', 'GET, HEAD, OPTIONS')
+        self.send_header('Access-Control-Allow-Methods', 'GET, POST, HEAD, OPTIONS')
         self.send_header('Access-Control-Allow-Headers', '*')
         self.send_header('Access-Control-Expose-Headers', '*')
         self.send_header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
@@ -544,6 +776,44 @@ class ServidorMultithreadStreaming(http.server.SimpleHTTPRequestHandler):
 
     def do_OPTIONS(self):
         self.send_response(200)
+        self.end_headers()
+
+    def do_POST(self):
+        parsed_post = urllib.parse.urlparse(self.path)
+        if parsed_post.path == '/api/webhook/pix':
+            params_p = urllib.parse.parse_qs(parsed_post.query)
+            if PIX_WEBHOOK_SECRET:
+                segredo_req = (
+                    self.headers.get('X-Pix-Secret', '')
+                    or params_p.get('secret', [''])[0]
+                ).strip()
+                if segredo_req != PIX_WEBHOOK_SECRET:
+                    payload = json.dumps({"ok": False, "erro": "Segredo PIX inválido."}).encode('utf-8')
+                    self.send_response(401)
+                    self.send_header('Content-Type', 'application/json; charset=utf-8')
+                    self.send_header('Content-Length', str(len(payload)))
+                    self.end_headers()
+                    self.wfile.write(payload)
+                    return
+
+            tam = int(self.headers.get('Content-Length', '0') or '0')
+            bruto = self.rfile.read(min(tam, 1024 * 256)) if tam > 0 else b'{}'
+            try:
+                dados_pix = json.loads(bruto.decode('utf-8', errors='ignore') or '{}')
+            except Exception:
+                dados_pix = {}
+
+            ok_pix, res_pix = _processar_pagamento_pix(dados_pix)
+            status_http = 200 if ok_pix else 400
+            payload = json.dumps(res_pix, ensure_ascii=False).encode('utf-8')
+            self.send_response(status_http)
+            self.send_header('Content-Type', 'application/json; charset=utf-8')
+            self.send_header('Content-Length', str(len(payload)))
+            self.end_headers()
+            self.wfile.write(payload)
+            return
+
+        self.send_response(404)
         self.end_headers()
 
     def do_HEAD(self):
@@ -604,6 +874,10 @@ class ServidorMultithreadStreaming(http.server.SimpleHTTPRequestHandler):
                 "exigir_login_clientes": bool(dados.get("exigir_login_clientes", False)),
                 "ip_local": obter_ip_local(),
                 "porta_host": self.headers.get('Host') or f"{obter_ip_local()}:{PORT}",
+                "vip_m3u_url": _obter_config_vip("vip_m3u_url", VIP_M3U_URL),
+                "qtd_canais_vip": len(carregar_canais_vip_extras()),
+                "nuvem_sync_ativa": bool(CINEPRO_CLOUD_SYNC_URL and CINEPRO_CLOUD_SYNC_TOKEN),
+                "pagamentos_pix": _listar_pagamentos_pix(15),
                 "clientes": lista_clientes
             }, ensure_ascii=False).encode('utf-8')
             self.send_response(200)
@@ -692,6 +966,37 @@ class ServidorMultithreadStreaming(http.server.SimpleHTTPRequestHandler):
             elif acao == 'modo_cobranca':
                 dados["exigir_login_clientes"] = not bool(dados.get("exigir_login_clientes", False))
                 _salvar_dados_clientes(dados)
+
+            elif acao == 'salvar_vip_url':
+                nova_url_vip = (params_adm.get('vip_m3u_url', [''])[0] or '').strip()
+                _definir_config_vip("vip_m3u_url", nova_url_vip)
+                _CACHE_VIP["assinatura_arquivos"] = None
+                _CACHE_VIP["expira_remoto"] = 0.0
+                _enviar_backup_nuvem(dados)
+                qtd_rec = len(carregar_canais_vip_extras())
+                payload = json.dumps({"ok": True, "qtd_canais_vip": qtd_rec}).encode('utf-8')
+                self.send_response(200)
+                self.send_header('Content-Type', 'application/json; charset=utf-8')
+                self.send_header('Content-Length', str(len(payload)))
+                self.end_headers()
+                self.wfile.write(payload)
+                return
+
+            elif acao == 'simular_pix':
+                _, res_sim = _processar_pagamento_pix({
+                    "provedor": "Simulação Painel",
+                    "valor": 29.90,
+                    "dias": 30,
+                    "telas": 1,
+                    "status": "APROVADO"
+                })
+                payload = json.dumps(res_sim, ensure_ascii=False).encode('utf-8')
+                self.send_response(200)
+                self.send_header('Content-Type', 'application/json; charset=utf-8')
+                self.send_header('Content-Length', str(len(payload)))
+                self.end_headers()
+                self.wfile.write(payload)
+                return
 
             payload = json.dumps({
                 "ok": True,
@@ -1137,6 +1442,7 @@ class ThreadingHTTPServer(socketserver.ThreadingMixIn, http.server.HTTPServer):
 
 if __name__ == '__main__':
     try:
+        _puxar_backup_nuvem()
         httpd = ThreadingHTTPServer(("", PORT), ServidorMultithreadStreaming)
         print(f"Servidor Multithread Ativo na porta {PORT}")
         httpd.serve_forever()

@@ -10,6 +10,12 @@ services:
       - key: PORT
         value: "8090"
       - key: CINEPRO_ADMIN_PIN
-        value: jonas2026
+        generateValue: true
+      - key: CINEPRO_CLOUD_SYNC_URL
+        sync: false
+      - key: CINEPRO_CLOUD_SYNC_TOKEN
+        sync: false
+      - key: PIX_WEBHOOK_SECRET
+        sync: false
       - key: VIP_M3U_URL
         sync: false

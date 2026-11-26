@@ -110,20 +110,35 @@ html,body{width:100%;height:100%;background:#000;color:#fff;overflow:hidden;}
     var num = r.n !== undefined ? r.n : (r.numero || 0);
     var numStr = r.numero_str || String(num);
     while (numStr.length < 3) numStr = '0' + numStr;
+    var reservas = [];
+    function addRes(u) {
+      if (u && typeof u === 'string' && u !== r.url && reservas.indexOf(u) === -1) {
+        reservas.push(u);
+      }
+    }
+    addRes(r.res);
+    addRes(r.reserva_url);
+    addRes(r.res2);
+    addRes(r.reserva_url_2);
+    if (r.reservas && r.reservas.length) {
+      for (var i = 0; i < r.reservas.length; i++) addRes(r.reservas[i]);
+    }
     return {
       id: r.id,
       numero: num,
       numero_str: numStr,
       nome: r.nome || 'Canal',
       url: r.url || '',
-      reserva_url: r.res || r.reserva_url || '',
+      reserva_url: reservas[0] || '',
+      reservas: reservas,
       categoria: r.cat || r.categoria || '',
       tags: r.tags || []
     };
   }
 
-  function mostrarOsdCanal(ch) {
-    document.getElementById('osdCanalNum').textContent = '#' + ch.numero_str + ' • ' + (ch.categoria || 'TV');
+  function mostrarOsdCanal(ch, planoLabel) {
+    var extra = planoLabel ? (' • ' + planoLabel) : '';
+    document.getElementById('osdCanalNum').textContent = '#' + ch.numero_str + ' • ' + (ch.categoria || 'TV') + extra;
     document.getElementById('osdCanalNome').textContent = ch.nome;
     osdCanalEl.className = 'visivel';
     if (timerOsd) clearTimeout(timerOsd);
@@ -150,11 +165,20 @@ html,body{width:100%;height:100%;background:#000;color:#fff;overflow:hidden;}
     videoEl.removeAttribute('src');
   }
 
-  function sintonizar(ch, usarReserva) {
+  function sintonizar(ch, tentativaIdx) {
     if (!ch || !ch.url) return;
-    var linkEscolhido = (usarReserva && ch.reserva_url) ? ch.reserva_url : ch.url;
+    var idx = typeof tentativaIdx === 'number' ? tentativaIdx : 0;
+    var listaUrls = [ch.url];
+    if (ch.reservas && ch.reservas.length) {
+      for (var rIdx = 0; rIdx < ch.reservas.length; rIdx++) {
+        listaUrls.push(ch.reservas[rIdx]);
+      }
+    }
+    if (idx >= listaUrls.length) return;
+    var linkEscolhido = listaUrls[idx];
+    var planoLabel = idx === 0 ? '' : ('Plano ' + String.fromCharCode(65 + idx));
     atualId = ch.id;
-    mostrarOsdCanal(ch);
+    mostrarOsdCanal(ch, planoLabel);
     renderizarLista();
 
     var streamUrl = servidorAtivo
@@ -165,8 +189,8 @@ html,body{width:100%;height:100%;background:#000;color:#fff;overflow:hidden;}
     var ehM3u8 = linkEscolhido.toLowerCase().indexOf('.m3u8') !== -1 || streamUrl.indexOf('/proxy?url=') !== -1;
 
     function tentarReserva() {
-      if (ch.reserva_url && !usarReserva) {
-        setTimeout(function () { sintonizar(ch, true); }, 600);
+      if (idx + 1 < listaUrls.length) {
+        setTimeout(function () { sintonizar(ch, idx + 1); }, 600);
       }
     }
 
