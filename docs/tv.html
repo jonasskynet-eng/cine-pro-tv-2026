@@ -196,12 +196,18 @@ html,body{width:100%;height:100%;background:#000;color:#fff;overflow:hidden;}
 
     videoEl.onerror = tentarReserva;
 
-    if (ehM3u8 && typeof Hls !== 'undefined' && Hls.isSupported()) {
+    if (videoEl.canPlayType('application/vnd.apple.mpegurl') || !ehM3u8) {
+      videoEl.src = streamUrl;
+      tocarVideo();
+    } else if (ehM3u8 && typeof Hls !== 'undefined' && Hls.isSupported()) {
       hlsInst = new Hls({
-        enableWorker: false,
-        maxBufferLength: 16,
-        maxMaxBufferLength: 30,
-        backBufferLength: 10
+        enableWorker: true,
+        lowLatencyMode: false,
+        maxBufferLength: 8,
+        maxMaxBufferLength: 15,
+        backBufferLength: 6,
+        capLevelToPlayerSize: true,
+        startLevel: 0
       });
       hlsInst.on(Hls.Events.ERROR, function (ev, data) {
         if (data && data.fatal) tentarReserva();
@@ -211,9 +217,6 @@ html,body{width:100%;height:100%;background:#000;color:#fff;overflow:hidden;}
       hlsInst.on(Hls.Events.MANIFEST_PARSED, function () {
         tocarVideo();
       });
-    } else if (videoEl.canPlayType('application/vnd.apple.mpegurl') || !ehM3u8) {
-      videoEl.src = streamUrl;
-      tocarVideo();
     } else {
       videoEl.src = streamUrl;
       tocarVideo();
@@ -269,10 +272,6 @@ html,body{width:100%;height:100%;background:#000;color:#fff;overflow:hidden;}
         aplicarCategoria(parseInt(this.getAttribute('data-cidx'), 10));
       };
     }
-    var ativa = catsEl.querySelector('.cat-btn.ativa');
-    if (ativa && ativa.scrollIntoView) {
-      try { ativa.scrollIntoView({ inline: 'center', block: 'nearest' }); } catch (e) {}
-    }
   }
 
   function renderizarLista() {
@@ -283,13 +282,13 @@ html,body{width:100%;height:100%;background:#000;color:#fff;overflow:hidden;}
     if (focoIdx < 0) focoIdx = 0;
     if (focoIdx >= filtrados.length) focoIdx = filtrados.length - 1;
 
-    // Janela virtual leve (apenas 36 itens no DOM por vez para TVs antigas)
-    var ini = focoIdx - 14;
+    // Janela virtual ultra-leve (apenas 14 itens no DOM para não travar TV Samsung)
+    var ini = focoIdx - 6;
     if (ini < 0) ini = 0;
-    var fim = ini + 36;
+    var fim = ini + 14;
     if (fim > filtrados.length) {
       fim = filtrados.length;
-      ini = fim - 36;
+      ini = fim - 14;
       if (ini < 0) ini = 0;
     }
 
@@ -312,11 +311,8 @@ html,body{width:100%;height:100%;background:#000;color:#fff;overflow:hidden;}
         var idx = parseInt(this.getAttribute('data-idx'), 10);
         focoIdx = idx;
         sintonizar(filtrados[idx]);
+        setTimeout(function () { window.mostrarPainel(false); }, 1500);
       };
-    }
-    var focado = listaEl.querySelector('.item-tv.foco');
-    if (focado && focado.scrollIntoView) {
-      try { focado.scrollIntoView({ block: 'nearest' }); } catch (e) {}
     }
   }
 
@@ -392,24 +388,34 @@ html,body{width:100%;height:100%;background:#000;color:#fff;overflow:hidden;}
   });
 
   function iniciarTv() {
-    httpGetJson('./canais.json', function (err, base) {
-      if (err || !base || !base.length) return;
-      for (var i = 0; i < base.length; i++) todos.push(normalizarItem(base[i]));
-      aplicarCategoria(0);
-      sintonizar(filtrados[0]);
+    httpGetJson('./api/tv_canais', function (errApi, listaEnxuta) {
+      if (!errApi && listaEnxuta && listaEnxuta.length) {
+        servidorAtivo = true;
+        for (var i = 0; i < listaEnxuta.length; i++) todos.push(normalizarItem(listaEnxuta[i]));
+        seloEl.textContent = '⚡ ' + todos.length + ' Canais';
+        aplicarCategoria(0);
+        sintonizar(filtrados[0]);
+        return;
+      }
+      httpGetJson('./canais.json', function (err, base) {
+        if (err || !base || !base.length) return;
+        for (var i = 0; i < base.length; i++) todos.push(normalizarItem(base[i]));
+        aplicarCategoria(0);
+        sintonizar(filtrados[0]);
 
-      httpGetJson('./api/status_servidor', function (errSt, st) {
-        if (!errSt && st && st.ativo) {
-          servidorAtivo = true;
-          seloEl.textContent = st.docker ? '🐳 VIP TV' : '🟢 Local TV';
-          httpGetJson('./api/canais_vip', function (errVip, vip) {
-            if (!errVip && vip && vip.ok && vip.canais && vip.canais.length) {
-              for (var j = 0; j < vip.canais.length; j++) todos.push(normalizarItem(vip.canais[j]));
-              seloEl.textContent = '👑 ' + todos.length + ' Canais';
-              aplicarCategoria(catIdx);
-            }
-          });
-        }
+        httpGetJson('./api/status_servidor', function (errSt, st) {
+          if (!errSt && st && st.ativo) {
+            servidorAtivo = true;
+            seloEl.textContent = st.docker ? '🐳 VIP TV' : '🟢 Local TV';
+            httpGetJson('./api/canais_vip', function (errVip, vip) {
+              if (!errVip && vip && vip.ok && vip.canais && vip.canais.length) {
+                for (var j = 0; j < vip.canais.length; j++) todos.push(normalizarItem(vip.canais[j]));
+                seloEl.textContent = '👑 ' + todos.length + ' Canais';
+                aplicarCategoria(catIdx);
+              }
+            });
+          }
+        });
       });
     });
   }

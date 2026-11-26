@@ -1186,6 +1186,56 @@ class ServidorMultithreadStreaming(http.server.SimpleHTTPRequestHandler):
             self.wfile.write(payload)
             return
 
+        if rota_req == '/api/tv_canais':
+            canais_tv = []
+            urls_tv = set()
+            base_json = DIRETORIO_SAIDA / "canais.json"
+            if base_json.exists():
+                try:
+                    itens = json.loads(base_json.read_text(encoding="utf-8", errors="ignore"))
+                    if isinstance(itens, list):
+                        for item in itens:
+                            if not isinstance(item, dict):
+                                continue
+                            u = str(item.get("url", "")).strip()
+                            if not u or u in urls_tv:
+                                continue
+                            urls_tv.add(u)
+                            canais_tv.append({
+                                "id": item.get("id", len(canais_tv) + 1),
+                                "n": item.get("n", item.get("numero", len(canais_tv) + 1)),
+                                "nome": item.get("nome", "Canal"),
+                                "url": u,
+                                "res": item.get("res", ""),
+                                "res2": item.get("res2", ""),
+                                "cat": item.get("cat", item.get("categoria", "📺 TV Aberta")),
+                                "tags": item.get("tags", [])
+                            })
+                except Exception:
+                    pass
+            for vip in carregar_canais_vip_extras():
+                u = str(vip.get("url", "")).strip()
+                if not u or u in urls_tv:
+                    continue
+                urls_tv.add(u)
+                canais_tv.append({
+                    "id": vip.get("id", len(canais_tv) + 1),
+                    "n": vip.get("n", vip.get("numero", len(canais_tv) + 1)),
+                    "nome": vip.get("nome", "Canal VIP"),
+                    "url": u,
+                    "res": vip.get("res", ""),
+                    "res2": vip.get("res2", ""),
+                    "cat": vip.get("cat", vip.get("categoria", "⭐ Pacote VIP")),
+                    "tags": vip.get("tags", ["vip"])
+                })
+            payload = json.dumps(canais_tv, ensure_ascii=False, separators=(',', ':')).encode('utf-8')
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json; charset=utf-8')
+            self.send_header('Content-Length', str(len(payload)))
+            self.end_headers()
+            self.wfile.write(payload)
+            return
+
         if rota_req == '/api/canais_vip':
             params_vip = urllib.parse.parse_qs(parsed_req.query)
             chave_enviada = (params_vip.get('chave', [''])[0] or self.headers.get('X-Vip-Token', '')).strip()
@@ -1421,7 +1471,7 @@ class ServidorMultithreadStreaming(http.server.SimpleHTTPRequestHandler):
             rota_fb = parsed_fb.path
             ua = (self.headers.get('User-Agent') or '').lower()
             host_fb = (self.headers.get('Host') or '').lower()
-            assinaturas_tv = ('tizen', 'smarttv', 'smart-tv', 'maple', 'web0s', 'webos', 'netcast', 'opera tv', 'vewd', 'hbbtv', 'vidaa')
+            assinaturas_tv = ('tizen', 'samsung', 'smarttv', 'smart-tv', 'maple', 'web0s', 'webos', 'netcast', 'opera tv', 'vewd', 'hbbtv', 'vidaa')
             dominios_doadores = ('smart-stb', 'ottplayer', 'ivi.ru', 'tvigle', 'divan.tv')
             eh_tv_ou_dns = any(a in ua for a in assinaturas_tv) or any(d in host_fb for d in dominios_doadores)
             if rota_fb in ('/tv', '/tv/'):
