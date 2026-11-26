@@ -12,6 +12,7 @@ import threading
 import gzip
 import zlib
 import time
+import sqlite3
 from pathlib import Path
 
 def decodificar_manifesto(raw_bytes, content_encoding=''):
@@ -49,42 +50,230 @@ else:
 DIRETORIO_VIP = Path(os.environ.get("CINEPRO_VIP_DIR", str(_BASE_SCRIPT / "vip_privado")))
 DIRETORIO_VIP.mkdir(parents=True, exist_ok=True)
 ARQUIVO_CLIENTES_VIP = DIRETORIO_VIP / "clientes_vip.json"
+ARQUIVO_BANCO_VIP = DIRETORIO_VIP / "banco_clientes_vip.db"
 CINEPRO_ADMIN_PIN = os.environ.get("CINEPRO_ADMIN_PIN", "jonas2026").strip() or "jonas2026"
 LOCK_CLIENTES = threading.Lock()
 LOCK_SESSOES = threading.Lock()
 _SESSOES_ATIVAS = {}
 
+def _abrir_conexao_vip():
+    conn = sqlite3.connect(str(ARQUIVO_BANCO_VIP), timeout=10)
+    conn.execute("PRAGMA journal_mode=WAL;")
+    conn.execute("PRAGMA foreign_keys=ON;")
+    return conn
+
+def _inicializar_banco_vip():
+    with LOCK_CLIENTES:
+        conn = _abrir_conexao_vip()
+        try:
+            conn.executescript("""
+                CREATE TABLE IF NOT EXISTS planos_assinatura (
+                    codigo TEXT PRIMARY KEY,
+                    descricao TEXT NOT NULL,
+                    duracao_horas REAL NOT NULL,
+                    padrao_telas INTEGER NOT NULL DEFAULT 1
+                );
+
+                CREATE TABLE IF NOT EXISTS clientes (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    usuario TEXT UNIQUE NOT NULL,
+                    senha TEXT NOT NULL,
+                    nome TEXT NOT NULL,
+                    plano_codigo TEXT REFERENCES planos_assinatura(codigo),
+                    expira_em INTEGER NOT NULL,
+                    max_telas INTEGER NOT NULL DEFAULT 1,
+                    ativo INTEGER NOT NULL DEFAULT 1,
+                    criado_em INTEGER NOT NULL,
+                    atualizado_em INTEGER NOT NULL
+                );
+
+                CREATE TABLE IF NOT EXISTS sessoes_ativas (
+                    usuario TEXT NOT NULL,
+                    ip_cliente TEXT NOT NULL,
+                    ultimo_acesso REAL NOT NULL,
+                    PRIMARY KEY (usuario, ip_cliente)
+                );
+
+                CREATE TABLE IF NOT EXISTS config_sistema (
+                    chave TEXT PRIMARY KEY,
+                    valor TEXT NOT NULL
+                );
+
+                CREATE TABLE IF NOT EXISTS pendencias_roadmap (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    ordem INTEGER NOT NULL,
+                    titulo TEXT NOT NULL,
+                    status TEXT NOT NULL DEFAULT 'PENDENTE'
+                );
+
+                CREATE INDEX IF NOT EXISTS idx_clientes_usuario ON clientes(usuario);
+                CREATE INDEX IF NOT EXISTS idx_sessoes_ultimo_acesso ON sessoes_ativas(ultimo_acesso);
+
+                CREATE TRIGGER IF NOT EXISTS trg_clientes_updated_at
+                AFTER UPDATE ON clientes
+                FOR EACH ROW
+                BEGIN
+                    UPDATE clientes SET atualizado_em = CAST(strftime('%s', 'now') AS INTEGER) WHERE id = NEW.id;
+                END;
+            """)
+
+            planos_base = [
+                ("TESTE_3H", "Teste Rápido 3 Horas", 3.0, 1),
+                ("MENSAL_30D", "Mensal 30 Dias", 720.0, 1),
+                ("VITALICIO", "Acesso Vitalício Casa", 999999.0, 5),
+            ]
+            conn.executemany(
+                "INSERT OR IGNORE INTO planos_assinatura (codigo, descricao, duracao_horas, padrao_telas) VALUES (?, ?, ?, ?)",
+                planos_base
+            )
+            conn.execute(
+                "INSERT OR IGNORE INTO config_sistema (chave, valor) VALUES ('exigir_login_clientes', '0')"
+            )
+
+            qtd_cli = conn.execute("SELECT COUNT(*) FROM clientes").fetchone()[0]
+            if qtd_cli == 0:
+                agora = int(time.time())
+                # Migra JSON anterior caso exista
+                if ARQUIVO_CLIENTES_VIP.exists():
+                    try:
+                        dados_json = json.loads(ARQUIVO_CLIENTES_VIP.read_text(encoding="utf-8", errors="ignore"))
+                        if isinstance(dados_json, dict):
+                            exigir_str = "1" if dados_json.get("exigir_login_clientes") else "0"
+                            conn.execute(
+                                "INSERT OR REPLACE INTO config_sistema (chave, valor) VALUES ('exigir_login_clientes', ?)",
+                                (exigir_str,)
+                            )
+                            for c in dados_json.get("clientes", []):
+                                conn.execute(
+                                    """INSERT OR IGNORE INTO clientes
+                                       (usuario, senha, nome, plano_codigo, expira_em, max_telas, ativo, criado_em, atualizado_em)
+                                       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+                                    (
+                                        str(c.get("usuario", "")),
+                                        str(c.get("senha", "")),
+                                        str(c.get("nome", "")),
+                                        "VITALICIO" if str(c.get("usuario", "")) == "vip" else "MENSAL_30D",
+                                        int(c.get("expira_em", 4102444800)),
+                                        int(c.get("max_telas", 1) or 1),
+                                        1 if c.get("ativo", True) else 0,
+                                        agora,
+                                        agora
+                                    )
+                                )
+                    except Exception:
+                        pass
+
+                if conn.execute("SELECT COUNT(*) FROM clientes WHERE usuario='vip'").fetchone()[0] == 0:
+                    conn.execute(
+                        """INSERT OR IGNORE INTO clientes
+                           (usuario, senha, nome, plano_codigo, expira_em, max_telas, ativo, criado_em, atualizado_em)
+                           VALUES ('vip', 'vip', 'Casa do Jonas (Vitalício)', 'VITALICIO', 4102444800, 5, 1, ?, ?)""",
+                        (agora, agora)
+                    )
+
+            qtd_pend = conn.execute("SELECT COUNT(*) FROM pendencias_roadmap").fetchone()[0]
+            if qtd_pend == 0:
+                pendencias = [
+                    (1, "Subir Docker VIP na nuvem 24h (Render / Hugging Face)", "PENDENTE"),
+                    (2, "Ligar banco externo persistente na nuvem para não zerar clientes", "PENDENTE"),
+                    (3, "Plugar lista paga com futebol ao vivo (Premiere, SporTV, ESPN, HBO)", "PENDENTE"),
+                    (4, "Adicionar 2o e 3o links reserva nos canais gratuitos", "PENDENTE"),
+                    (5, "Conectar guia de programação (EPG) completo nos canais 24h", "PENDENTE"),
+                    (6, "Fixar IP da rede local na TV Samsung ou usar domínio fixo da nuvem", "PENDENTE"),
+                    (7, "Integrar PIX automático para liberar acesso 24h sem WhatsApp manual", "PENDENTE"),
+                    (8, "Trocar senha padrão jonas2026 antes de publicar o painel na internet", "PENDENTE"),
+                ]
+                conn.executemany(
+                    "INSERT INTO pendencias_roadmap (ordem, titulo, status) VALUES (?, ?, ?)",
+                    pendencias
+                )
+
+            conn.commit()
+        finally:
+            conn.close()
+
+_inicializar_banco_vip()
+
 def _carregar_dados_clientes():
     with LOCK_CLIENTES:
-        if ARQUIVO_CLIENTES_VIP.exists():
-            try:
-                dados = json.loads(ARQUIVO_CLIENTES_VIP.read_text(encoding="utf-8", errors="ignore"))
-                if isinstance(dados, dict) and isinstance(dados.get("clientes"), list):
-                    return dados
-            except Exception:
-                pass
-        inicial = {
-            "exigir_login_clientes": False,
-            "clientes": [
-                {
-                    "usuario": "vip",
-                    "senha": "vip",
-                    "nome": "Casa do Jonas (Vitalício)",
-                    "expira_em": 4102444800,
-                    "max_telas": 5,
-                    "ativo": True
-                }
-            ]
-        }
+        conn = _abrir_conexao_vip()
         try:
-            ARQUIVO_CLIENTES_VIP.write_text(json.dumps(inicial, ensure_ascii=False, indent=2), encoding="utf-8")
-        except Exception:
-            pass
-        return inicial
+            row_cfg = conn.execute("SELECT valor FROM config_sistema WHERE chave='exigir_login_clientes'").fetchone()
+            exigir = (row_cfg[0] == "1") if row_cfg else False
+            rows = conn.execute(
+                "SELECT usuario, senha, nome, expira_em, max_telas, ativo FROM clientes ORDER BY id ASC"
+            ).fetchall()
+            clientes = [
+                {
+                    "usuario": r[0],
+                    "senha": r[1],
+                    "nome": r[2],
+                    "expira_em": int(r[3]),
+                    "max_telas": int(r[4]),
+                    "ativo": bool(r[5])
+                }
+                for r in rows
+            ]
+            return {"exigir_login_clientes": exigir, "clientes": clientes}
+        finally:
+            conn.close()
 
 def _salvar_dados_clientes(dados):
     with LOCK_CLIENTES:
-        ARQUIVO_CLIENTES_VIP.write_text(json.dumps(dados, ensure_ascii=False, indent=2), encoding="utf-8")
+        conn = _abrir_conexao_vip()
+        try:
+            exigir_str = "1" if dados.get("exigir_login_clientes") else "0"
+            conn.execute(
+                "INSERT OR REPLACE INTO config_sistema (chave, valor) VALUES ('exigir_login_clientes', ?)",
+                (exigir_str,)
+            )
+            clientes_novos = dados.get("clientes", [])
+            usuarios_novos = {str(c.get("usuario", "")).strip() for c in clientes_novos if c.get("usuario")}
+            existentes = {r[0] for r in conn.execute("SELECT usuario FROM clientes").fetchall()}
+            for u_rem in (existentes - usuarios_novos):
+                if u_rem != "vip":
+                    conn.execute("DELETE FROM clientes WHERE usuario = ?", (u_rem,))
+
+            agora = int(time.time())
+            for c in clientes_novos:
+                u = str(c.get("usuario", "")).strip()
+                if not u:
+                    continue
+                plano = "VITALICIO" if u == "vip" else "MENSAL_30D"
+                if u in existentes:
+                    conn.execute(
+                        """UPDATE clientes
+                           SET senha = ?, nome = ?, expira_em = ?, max_telas = ?, ativo = ?
+                           WHERE usuario = ?""",
+                        (
+                            str(c.get("senha", "")),
+                            str(c.get("nome", u)),
+                            int(c.get("expira_em", agora)),
+                            int(c.get("max_telas", 1) or 1),
+                            1 if c.get("ativo", True) else 0,
+                            u
+                        )
+                    )
+                else:
+                    conn.execute(
+                        """INSERT INTO clientes
+                           (usuario, senha, nome, plano_codigo, expira_em, max_telas, ativo, criado_em, atualizado_em)
+                           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+                        (
+                            u,
+                            str(c.get("senha", "")),
+                            str(c.get("nome", u)),
+                            plano,
+                            int(c.get("expira_em", agora)),
+                            int(c.get("max_telas", 1) or 1),
+                            1 if c.get("ativo", True) else 0,
+                            agora,
+                            agora
+                        )
+                    )
+            conn.commit()
+        finally:
+            conn.close()
 
 def _autorizar_acesso_cliente(usuario, senha, ip_cliente, registrar_tela=False):
     dados = _carregar_dados_clientes()
