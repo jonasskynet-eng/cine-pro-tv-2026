@@ -697,6 +697,9 @@ header{background:linear-gradient(180deg,rgba(0,0,0,0.96) 0%,rgba(20,20,20,0.92)
             salvos.forEach((item, idx) => {
                 TODOS_CANAIS.unshift(construirObjetoMeuCanal(item, idx + 1));
             });
+            if (typeof CANAIS_VIP_EXTRAS_CACHE !== 'undefined' && CANAIS_VIP_EXTRAS_CACHE.length) {
+                TODOS_CANAIS.push(...CANAIS_VIP_EXTRAS_CACHE);
+            }
             reconstruirIndicesCatalogo();
             const badgeTotal = document.getElementById('totalCanaisBadge');
             if (badgeTotal) badgeTotal.textContent = TODOS_CANAIS.length;
@@ -1189,6 +1192,7 @@ header{background:linear-gradient(180deg,rgba(0,0,0,0.96) 0%,rgba(20,20,20,0.92)
         let SERVIDOR_DOCKER_VIP = false;
         let REQUER_CHAVE_VIP = false;
         let VIP_DESBLOQUEADO = false;
+        let CANAIS_VIP_EXTRAS_CACHE = [];
         let mpegtsPlayer = null;
         let pulosConsecutivos = 0;
 
@@ -1411,11 +1415,12 @@ header{background:linear-gradient(180deg,rgba(0,0,0,0.96) 0%,rgba(20,20,20,0.92)
                 if (extras.length > 0) {
                     const idsExistentes = new Set(TODOS_CANAIS.map(c => c.id));
                     const novos = extras.filter(c => c && !idsExistentes.has(c.id));
+                    CANAIS_VIP_EXTRAS_CACHE = novos;
                     if (novos.length > 0) {
                         TODOS_CANAIS = TODOS_CANAIS.concat(novos);
-                        if (typeof MAPA_IDX_POR_ID !== 'undefined' && MAPA_IDX_POR_ID && typeof MAPA_IDX_POR_ID.set === 'function') {
-                            TODOS_CANAIS.forEach((c, idx) => MAPA_IDX_POR_ID.set(c.id, idx));
-                        }
+                        reconstruirIndicesCatalogo();
+                        const badgeTotal = document.getElementById('totalCanaisBadge');
+                        if (badgeTotal) badgeTotal.textContent = TODOS_CANAIS.length;
                         if (typeof atualizarContadoresPillsRapidas === 'function') atualizarContadoresPillsRapidas();
                         aplicarFiltros(true);
                     }
