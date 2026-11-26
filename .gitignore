@@ -75,5 +75,6 @@ yt_check/
 !.env.example
 ECOSSISTEMA_STREAMING_IPTV/vip_privado/*.m3u
 ECOSSISTEMA_STREAMING_IPTV/vip_privado/*.m3u8
+ECOSSISTEMA_STREAMING_IPTV/vip_privado/*.json
 ECOSSISTEMA_STREAMING_IPTV/vip_privado/*.txt
 !ECOSSISTEMA_STREAMING_IPTV/vip_privado/COMO_COLOCAR_LISTA_VIP.txt

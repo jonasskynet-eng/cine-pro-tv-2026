@@ -1849,6 +1849,14 @@ print(f"Canais com Link Reserva (Plano B): {total_com_reserva}")
 print(f"Contagem por País: {contagem_paises}")
 print(f"Contagem por Tags: {contagem_tags}")
 
+# Trava comercial: manter apenas os 200 canais de degustação no GitHub público
+LIMITE_DEGUSTACAO_GIT = 200
+if len(canais_estruturados) > LIMITE_DEGUSTACAO_GIT:
+    canais_estruturados = canais_estruturados[:LIMITE_DEGUSTACAO_GIT]
+    for idx_g, ch_g in enumerate(canais_estruturados, start=1):
+        ch_g["numero"] = idx_g
+        ch_g["numero_str"] = f"{idx_g:03d}"
+
 # Gravar JSON limpo e versão ultracompacta (chaves enxutas e sem valores vazios)
 json_path = SAIDA_DIR / "canais_leves.json"
 with open(json_path, "w", encoding="utf-8") as f:

@@ -205,7 +205,7 @@ header{background:linear-gradient(180deg,rgba(0,0,0,0.96) 0%,rgba(20,20,20,0.92)
         </div>
 
         <div class="header-controls">
-            <button type="button" id="btnModoComercial" class="btn-ui" onclick="acaoBotaoModoComercial()" style="background:rgba(245,158,11,0.16); border-color:rgba(245,158,11,0.5); color:#fde68a;" title="Modo Degustação Gratuita — Clique para liberar o Pacote VIP Completo">🎁 Degustação • Assinar VIP</button>
+            <button type="button" id="btnModoComercial" class="btn-ui" onclick="acaoBotaoModoComercial()" style="background:rgba(245,158,11,0.16); border-color:rgba(245,158,11,0.5); color:#fde68a;" title="Modo Degustação Gratuita — Clique para liberar o Pacote VIP Completo">🎁 Degustação (200) • Liberar +800 VIP</button>
             <button type="button" id="btnNetflixCatalog" class="btn-ui btn-netflix-catalog" onclick="abrirCatalogoNetflix()" title="Explorar canais por fileiras estilo Netflix">🎬 Catálogo</button>
             <button id="btnFavFilter" class="btn-ui" title="Mostrar Favoritos">⭐ Favoritos</button>
             <button id="btnQrRemote" class="btn-ui" style="background: rgba(16, 185, 129, 0.14); border-color: rgba(16, 185, 129, 0.4); color: #6ee7b7;" title="Controlar pelo Celular">📱 Controle</button>
@@ -1411,7 +1411,8 @@ header{background:linear-gradient(180deg,rgba(0,0,0,0.96) 0%,rgba(20,20,20,0.92)
                 if (!data || !data.ok) return false;
 
                 VIP_DESBLOQUEADO = true;
-                const extras = Array.isArray(data.canais) ? data.canais : [];
+                const rawExtras = Array.isArray(data.canais) ? data.canais : [];
+                const extras = (typeof hidratarCanaisCompactos === 'function') ? hidratarCanaisCompactos(rawExtras) : rawExtras;
                 if (extras.length > 0) {
                     const idsExistentes = new Set(TODOS_CANAIS.map(c => c.id));
                     const novos = extras.filter(c => c && !idsExistentes.has(c.id));
@@ -1485,9 +1486,12 @@ header{background:linear-gradient(180deg,rgba(0,0,0,0.96) 0%,rgba(20,20,20,0.92)
             }
             if (typeof selecionarCategoriaDireta === 'function') {
                 document.body.classList.remove('channels-minimized');
+                paisFiltro = 'ALL';
+                const selPaisEl = document.getElementById('selectPaisFiltro');
+                if (selPaisEl) selPaisEl.value = 'ALL';
                 const pillVip = document.querySelector('.q-pill[data-cat="vip"]');
                 selecionarCategoriaDireta('vip', pillVip);
-                mostrarHUD('👑 Exibindo canais da categoria VIP Completo!');
+                mostrarHUD('👑 Exibindo todos os canais do Pacote VIP Completo!');
             }
         }
         window.acaoBotaoModoComercial = acaoBotaoModoComercial;

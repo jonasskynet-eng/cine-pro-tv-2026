@@ -93,11 +93,11 @@ def _parse_conteudo_m3u_vip(conteudo: str, canais_out: list, urls_vistas: set):
                 urls_vistas.add(l)
                 idx = len(canais_out)
                 nome_final = nome_atual or f"Canal VIP {idx + 1}"
-                num = 1001 + idx
+                num = 201 + idx
                 canais_out.append({
                     "id": 90001 + idx,
                     "numero": num,
-                    "numero_str": str(num),
+                    "numero_str": f"{num:03d}",
                     "nome": nome_final,
                     "url": l,
                     "logo": logo_atual,
@@ -113,11 +113,13 @@ def _parse_conteudo_m3u_vip(conteudo: str, canais_out: list, urls_vistas: set):
             logo_atual = ""
 
 def carregar_canais_vip_extras():
-    """Carrega listas VIP (.m3u/.m3u8) da pasta privada e de VIP_M3U_URL com cache em memória."""
-    arquivos = sorted(
+    """Carrega listas VIP (.json, .m3u/.m3u8) da pasta privada e de VIP_M3U_URL com cache em memória."""
+    arquivos_json = sorted(list(DIRETORIO_VIP.glob("*.json")), key=lambda p: p.name.lower())
+    arquivos_m3u = sorted(
         list(DIRETORIO_VIP.glob("*.m3u")) + list(DIRETORIO_VIP.glob("*.m3u8")),
         key=lambda p: p.name.lower()
     )
+    arquivos = arquivos_json + arquivos_m3u
     assinatura = tuple((str(p), p.stat().st_mtime) for p in arquivos)
     agora = time.monotonic()
     remoto_valido = (not VIP_M3U_URL) or (
@@ -128,7 +130,32 @@ def carregar_canais_vip_extras():
 
     canais = []
     urls_vistas = set()
-    for arq in arquivos:
+
+    for arq_json in arquivos_json:
+        try:
+            itens = json.loads(arq_json.read_text(encoding="utf-8", errors="ignore"))
+            if isinstance(itens, list):
+                for item in itens:
+                    if not isinstance(item, dict):
+                        continue
+                    url_item = str(item.get("url", "")).strip()
+                    if not url_item or url_item in urls_vistas:
+                        continue
+                    urls_vistas.add(url_item)
+                    novo = dict(item)
+                    tags_atuais = list(novo.get("tags") or [])
+                    if "vip" not in tags_atuais:
+                        tags_atuais.append("vip")
+                    novo["tags"] = tags_atuais
+                    num = 201 + len(canais)
+                    novo["n"] = num
+                    novo["numero"] = num
+                    novo["numero_str"] = f"{num:03d}"
+                    canais.append(novo)
+        except Exception:
+            pass
+
+    for arq in arquivos_m3u:
         try:
             texto = arq.read_text(encoding="utf-8", errors="ignore")
             _parse_conteudo_m3u_vip(texto, canais, urls_vistas)
