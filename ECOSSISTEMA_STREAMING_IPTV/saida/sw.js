@@ -1,7 +1,8 @@
-const CACHE_NAME = 'cinepro-tv-v2026-perf2';
+const CACHE_NAME = 'cinepro-tv-v2026-perf3';
 const APP_SHELL = [
     './',
     './index.html',
+    './tv.html',
     './controle.html',
     './manifest.json',
     './cinepro-icon.svg'
@@ -29,11 +30,16 @@ self.addEventListener('fetch', (event) => {
     if (event.request.method !== 'GET') return;
     const url = event.request.url;
 
-    // Nunca interceptar streams ao vivo, chaves AES, APIs ou chamadas de proxy
+    // Nunca interceptar streams ao vivo, chaves AES, APIs ou rotas de Smart TV
     if (
         url.includes('/proxy') ||
         url.includes('/api/') ||
         url.includes('/healthz') ||
+        url.includes('/player_api.php') ||
+        url.includes('/get.php') ||
+        url.includes('/vip.m3u') ||
+        url.includes('/live/') ||
+        url.includes('/msx/') ||
         url.includes('workers.dev') ||
         /\.(m3u8|ts|mp4|aac|mp3|ogg|key)(\?|$)/i.test(url)
     ) {

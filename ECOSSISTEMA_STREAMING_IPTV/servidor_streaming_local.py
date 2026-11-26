@@ -183,6 +183,67 @@ def carregar_canais_vip_extras():
     _CACHE_VIP["canais"] = canais
     return canais
 
+def carregar_catalogo_completo_unificado():
+    """Retorna todos os canais base (canais.json) somados aos canais VIP privados."""
+    lista = []
+    urls_vistas = set()
+    base_json = DIRETORIO_SAIDA / "canais.json"
+    if base_json.exists():
+        try:
+            itens = json.loads(base_json.read_text(encoding="utf-8", errors="ignore"))
+            if isinstance(itens, list):
+                for item in itens:
+                    if not isinstance(item, dict):
+                        continue
+                    u = str(item.get("url", "")).strip()
+                    if not u or u in urls_vistas:
+                        continue
+                    urls_vistas.add(u)
+                    num = item.get("n", item.get("numero", len(lista) + 1))
+                    lista.append({
+                        "id": int(item.get("id", num)),
+                        "numero": int(num),
+                        "nome": str(item.get("nome", "Canal")),
+                        "url": u,
+                        "logo": str(item.get("logo", "")),
+                        "categoria": str(item.get("cat", item.get("categoria", "📺 TV Aberta")))
+                    })
+        except Exception:
+            pass
+
+    for vip in carregar_canais_vip_extras():
+        u = str(vip.get("url", "")).strip()
+        if not u or u in urls_vistas:
+            continue
+        urls_vistas.add(u)
+        num = vip.get("n", vip.get("numero", len(lista) + 1))
+        lista.append({
+            "id": int(vip.get("id", num)),
+            "numero": int(num),
+            "nome": str(vip.get("nome", "Canal VIP")),
+            "url": u,
+            "logo": str(vip.get("logo", "")),
+            "categoria": str(vip.get("cat", vip.get("categoria", "⭐ Pacote VIP")))
+        })
+    return lista
+
+def _validar_credencial_tv(params):
+    if not CINEPRO_VIP_TOKEN:
+        return True
+    senha = (params.get("password", [""])[0] or params.get("chave", [""])[0] or "").strip()
+    return senha == CINEPRO_VIP_TOKEN
+
+def _gerar_categorias_xtream(catalogo):
+    mapa = {}
+    cats = []
+    for ch in catalogo:
+        cname = ch["categoria"] or "📺 TV Aberta"
+        if cname not in mapa:
+            cid = str(len(cats) + 1)
+            mapa[cname] = cid
+            cats.append({"category_id": cid, "category_name": cname, "parent_id": 0})
+    return mapa, cats
+
 # Fila sincronizada de comandos remotos (Celular -> TV)
 LOCK_COMANDOS = threading.Lock()
 COMANDOS_PENDENTES = []
@@ -232,9 +293,9 @@ class ServidorMultithreadStreaming(http.server.SimpleHTTPRequestHandler):
 
     def do_HEAD(self):
         rota = urllib.parse.urlparse(self.path).path
-        if rota in ('/', '/index.html', '/healthz', '/api/status_servidor'):
+        if rota in ('/', '/index.html', '/tv', '/tv/', '/tv.html', '/healthz', '/api/status_servidor', '/msx/start.json', '/start.json'):
             self.send_response(200)
-            ctype = 'application/json' if rota in ('/healthz', '/api/status_servidor') else 'text/html; charset=utf-8'
+            ctype = 'application/json' if rota in ('/healthz', '/api/status_servidor', '/msx/start.json', '/start.json') else 'text/html; charset=utf-8'
             self.send_header('Content-Type', ctype)
             self.end_headers()
             return
@@ -243,6 +304,147 @@ class ServidorMultithreadStreaming(http.server.SimpleHTTPRequestHandler):
     def do_GET(self):
         parsed_req = urllib.parse.urlparse(self.path)
         rota_req = parsed_req.path
+
+        if rota_req in ('/msx/start.json', '/start.json'):
+            host_header = self.headers.get('Host') or f"127.0.0.1:{PORT}"
+            payload = json.dumps({
+                "name": "CinePro TV Samsung",
+                "version": "1.0.0",
+                "parameter": f"menu:request:interaction:init@http://{host_header}/tv.html",
+                "welcome": "none"
+            }, ensure_ascii=False).encode('utf-8')
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json; charset=utf-8')
+            self.send_header('Content-Length', str(len(payload)))
+            self.end_headers()
+            self.wfile.write(payload)
+            return
+
+        if rota_req == '/player_api.php':
+            params_x = urllib.parse.parse_qs(parsed_req.query)
+            username = (params_x.get('username', ['vip'])[0] or 'vip').strip()
+            password = (params_x.get('password', ['vip'])[0] or 'vip').strip()
+            action = (params_x.get('action', [''])[0] or '').strip()
+
+            if not _validar_credencial_tv(params_x):
+                payload = json.dumps({"user_info": {"auth": 0, "status": "Disabled"}}).encode('utf-8')
+                self.send_response(200)
+                self.send_header('Content-Type', 'application/json; charset=utf-8')
+                self.send_header('Content-Length', str(len(payload)))
+                self.end_headers()
+                self.wfile.write(payload)
+                return
+
+            catalogo = carregar_catalogo_completo_unificado()
+            mapa_cats, lista_cats = _gerar_categorias_xtream(catalogo)
+
+            if action == 'get_live_categories':
+                payload = json.dumps(lista_cats, ensure_ascii=False).encode('utf-8')
+            elif action == 'get_live_streams':
+                cat_filtro = (params_x.get('category_id', [''])[0] or '').strip()
+                streams = []
+                for ch in catalogo:
+                    cid = mapa_cats.get(ch["categoria"] or "📺 TV Aberta", "1")
+                    if cat_filtro and cid != cat_filtro:
+                        continue
+                    streams.append({
+                        "num": ch["numero"],
+                        "name": ch["nome"],
+                        "stream_type": "live",
+                        "stream_id": ch["id"],
+                        "stream_icon": ch["logo"],
+                        "epg_channel_id": "",
+                        "added": "1700000000",
+                        "category_id": cid,
+                        "custom_sid": "",
+                        "tv_archive": 0,
+                        "direct_source": "",
+                        "tv_archive_duration": 0
+                    })
+                payload = json.dumps(streams, ensure_ascii=False).encode('utf-8')
+            else:
+                host_raw = self.headers.get('Host') or f"192.168.100.210:{PORT}"
+                host_sem_porta = host_raw.split(':')[0]
+                porta_host = host_raw.split(':')[1] if ':' in host_raw else "80"
+                payload = json.dumps({
+                    "user_info": {
+                        "username": username,
+                        "password": password,
+                        "message": "CinePro TV VIP",
+                        "auth": 1,
+                        "status": "Active",
+                        "exp_date": "1999999999",
+                        "is_trial": "0",
+                        "active_cons": "1",
+                        "created_at": "1700000000",
+                        "max_connections": "5",
+                        "allowed_output_formats": ["m3u8", "ts"]
+                    },
+                    "server_info": {
+                        "url": host_sem_porta,
+                        "port": porta_host,
+                        "https_port": "443",
+                        "server_protocol": "http",
+                        "rtmp_port": "1935",
+                        "timezone": "America/Sao_Paulo",
+                        "timestamp_now": int(time.time()),
+                        "time_now": time.strftime("%Y-%m-%d %H:%M:%S")
+                    }
+                }, ensure_ascii=False).encode('utf-8')
+
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json; charset=utf-8')
+            self.send_header('Content-Length', str(len(payload)))
+            self.end_headers()
+            self.wfile.write(payload)
+            return
+
+        if rota_req in ('/get.php', '/vip.m3u'):
+            params_m = urllib.parse.parse_qs(parsed_req.query)
+            if not _validar_credencial_tv(params_m):
+                self.send_response(401)
+                self.end_headers()
+                self.wfile.write(b'Credencial VIP invalida')
+                return
+            user_m = urllib.parse.quote((params_m.get('username', ['vip'])[0] or 'vip').strip(), safe='')
+            pass_m = urllib.parse.quote((params_m.get('password', [CINEPRO_VIP_TOKEN or 'vip'])[0] or 'vip').strip(), safe='')
+            host_m = self.headers.get('Host') or f"192.168.100.210:{PORT}"
+            catalogo = carregar_catalogo_completo_unificado()
+            linhas_m3u = ['#EXTM3U']
+            for ch in catalogo:
+                nome_limpo = ch["nome"].replace('"', "'")
+                cat_limpa = (ch["categoria"] or "TV").replace('"', "'")
+                linhas_m3u.append(
+                    f'#EXTINF:-1 tvg-id="{ch["id"]}" tvg-name="{nome_limpo}" tvg-logo="{ch["logo"]}" group-title="{cat_limpa}",{ch["nome"]}'
+                )
+                linhas_m3u.append(f'http://{host_m}/live/{user_m}/{pass_m}/{ch["id"]}.m3u8')
+            body_m3u = ('\n'.join(linhas_m3u) + '\n').encode('utf-8')
+            self.send_response(200)
+            self.send_header('Content-Type', 'audio/x-mpegurl; charset=utf-8')
+            self.send_header('Content-Disposition', 'inline; filename="cinepro_vip.m3u"')
+            self.send_header('Content-Length', str(len(body_m3u)))
+            self.end_headers()
+            self.wfile.write(body_m3u)
+            return
+
+        if rota_req.startswith('/live/'):
+            partes_live = [p for p in rota_req.split('/') if p]
+            if len(partes_live) >= 4:
+                senha_live = urllib.parse.unquote(partes_live[2])
+                if CINEPRO_VIP_TOKEN and senha_live != CINEPRO_VIP_TOKEN:
+                    self.send_response(401)
+                    self.end_headers()
+                    return
+                m_id = re.match(r'^(\d+)', partes_live[3])
+                if m_id:
+                    sid = int(m_id.group(1))
+                    canal_alvo = next((c for c in carregar_catalogo_completo_unificado() if c["id"] == sid), None)
+                    if canal_alvo:
+                        self.path = '/proxy?url=' + urllib.parse.quote(canal_alvo["url"], safe='')
+                    else:
+                        self.send_response(404)
+                        self.end_headers()
+                        return
 
         if rota_req == '/healthz':
             payload = json.dumps({
@@ -505,8 +707,20 @@ class ServidorMultithreadStreaming(http.server.SimpleHTTPRequestHandler):
                 except:
                     pass
         else:
-            if self.path == '/' or self.path.startswith('/?'):
-                self.path = '/index.html'
+            parsed_fb = urllib.parse.urlparse(self.path)
+            rota_fb = parsed_fb.path
+            ua = (self.headers.get('User-Agent') or '').lower()
+            host_fb = (self.headers.get('Host') or '').lower()
+            assinaturas_tv = ('tizen', 'smarttv', 'smart-tv', 'maple', 'web0s', 'webos', 'netcast', 'opera tv', 'vewd', 'hbbtv', 'vidaa')
+            dominios_doadores = ('smart-stb', 'ottplayer', 'ivi.ru', 'tvigle', 'divan.tv')
+            eh_tv_ou_dns = any(a in ua for a in assinaturas_tv) or any(d in host_fb for d in dominios_doadores)
+            if rota_fb in ('/tv', '/tv/'):
+                self.path = '/tv.html'
+            elif rota_fb == '/' or self.path.startswith('/?'):
+                if eh_tv_ou_dns and 'completo=1' not in parsed_fb.query:
+                    self.path = '/tv.html'
+                else:
+                    self.path = '/index.html'
             super().do_GET()
 
 # Servidor Threading (não trava com múltiplos requests simultâneos)
