@@ -818,9 +818,9 @@ class ServidorMultithreadStreaming(http.server.SimpleHTTPRequestHandler):
 
     def do_HEAD(self):
         rota = urllib.parse.urlparse(self.path).path
-        if rota in ('/', '/index.html', '/tv', '/tv/', '/tv.html', '/admin', '/admin/', '/admin.html', '/healthz', '/api/status_servidor', '/msx/start.json', '/start.json'):
+        if rota in ('/', '/index.html', '/tv', '/tv/', '/tv.html', '/admin', '/admin/', '/admin.html', '/healthz', '/api/status_servidor', '/msx/start.json', '/start.json', '/msx/menu.json', '/msx/cat.json'):
             self.send_response(200)
-            ctype = 'application/json' if rota in ('/healthz', '/api/status_servidor', '/msx/start.json', '/start.json') else 'text/html; charset=utf-8'
+            ctype = 'application/json' if rota in ('/healthz', '/api/status_servidor', '/msx/start.json', '/start.json', '/msx/menu.json', '/msx/cat.json') else 'text/html; charset=utf-8'
             self.send_header('Content-Type', ctype)
             self.end_headers()
             return
@@ -1010,12 +1010,113 @@ class ServidorMultithreadStreaming(http.server.SimpleHTTPRequestHandler):
             return
 
         if rota_req in ('/msx/start.json', '/start.json'):
-            host_header = self.headers.get('Host') or f"127.0.0.1:{PORT}"
+            host_header = self.headers.get('Host') or f"{obter_ip_local()}:{PORT}"
             payload = json.dumps({
-                "name": "CinePro TV Samsung",
-                "version": "1.0.0",
-                "parameter": f"menu:request:interaction:init@http://{host_header}/tv.html",
+                "name": "CinePro TV 2026",
+                "version": "2.0.0",
+                "parameter": f"menu:http://{host_header}/msx/menu.json",
                 "welcome": "none"
+            }, ensure_ascii=False).encode('utf-8')
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json; charset=utf-8')
+            self.send_header('Content-Length', str(len(payload)))
+            self.end_headers()
+            self.wfile.write(payload)
+            return
+
+        if rota_req == '/msx/menu.json':
+            host_header = self.headers.get('Host') or f"{obter_ip_local()}:{PORT}"
+            cats_msx = [
+                ("all", "⭐ Todos (Top 200)"),
+                ("vip", "👑 VIP Exclusivos"),
+                ("aberta", "📺 TV Aberta"),
+                ("esportes", "⚽ Esportes"),
+                ("filmes", "🎬 Filmes"),
+                ("series", "🎞️ Séries"),
+                ("infantil", "🧸 Infantil & Animes"),
+                ("noticias", "📰 Notícias"),
+                ("musica", "📻 Rádios & Música"),
+            ]
+            menu_items = [
+                {"label": titulo, "data": f"http://{host_header}/msx/cat.json?cat={cid}"}
+                for cid, titulo in cats_msx
+            ]
+            payload = json.dumps({
+                "headline": "CinePro TV 2026",
+                "menu": menu_items
+            }, ensure_ascii=False).encode('utf-8')
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json; charset=utf-8')
+            self.send_header('Content-Length', str(len(payload)))
+            self.end_headers()
+            self.wfile.write(payload)
+            return
+
+        if rota_req == '/msx/cat.json':
+            host_header = self.headers.get('Host') or f"{obter_ip_local()}:{PORT}"
+            params_msx = urllib.parse.parse_qs(parsed_req.query)
+            cat_id = (params_msx.get('cat', ['all'])[0] or 'all').strip().lower()
+            titulos_cat = {
+                "all": "⭐ Todos os Canais (Top 200)",
+                "vip": "👑 Canais VIP Exclusivos",
+                "aberta": "📺 TV Aberta Brasil",
+                "esportes": "⚽ Esportes ao Vivo",
+                "filmes": "🎬 Filmes 24h",
+                "series": "🎞️ Séries 24h",
+                "infantil": "🧸 Infantil & Animes",
+                "noticias": "📰 Notícias ao Vivo",
+                "musica": "📻 Rádios & Música",
+            }
+            itens_brutos = []
+            urls_vistas_msx = set()
+            base_json = DIRETORIO_SAIDA / "canais.json"
+            if base_json.exists():
+                try:
+                    for it in json.loads(base_json.read_text(encoding="utf-8", errors="ignore")):
+                        if isinstance(it, dict) and it.get("url") and it["url"] not in urls_vistas_msx:
+                            urls_vistas_msx.add(it["url"])
+                            itens_brutos.append(it)
+                except Exception:
+                    pass
+            for vip in carregar_canais_vip_extras():
+                u_vip = str(vip.get("url", "")).strip()
+                if u_vip and u_vip not in urls_vistas_msx:
+                    urls_vistas_msx.add(u_vip)
+                    itens_brutos.append(vip)
+
+            itens_msx = []
+            for ch in itens_brutos:
+                tags_ch = [str(t).lower() for t in (ch.get("tags") or [])]
+                cat_txt = str(ch.get("cat", ch.get("categoria", ""))).lower()
+                if cat_id != "all":
+                    if cat_id not in tags_ch and cat_id not in cat_txt:
+                        continue
+                num = int(ch.get("n", ch.get("numero", len(itens_msx) + 1)) or (len(itens_msx) + 1))
+                nome_ch = str(ch.get("nome", "Canal"))
+                label_ch = str(ch.get("cat", ch.get("categoria", "TV")))
+                url_ch = str(ch.get("url", "")).strip()
+                logo_ch = str(ch.get("logo", "")).strip()
+                card = {
+                    "title": f"#{num:03d} {nome_ch}",
+                    "label": label_ch,
+                    "action": f"video:http://{host_header}/proxy?url=" + urllib.parse.quote(url_ch, safe='')
+                }
+                if logo_ch.startswith("http"):
+                    card["image"] = logo_ch
+                itens_msx.append(card)
+                max_lim = 200 if cat_id == "all" else 250
+                if len(itens_msx) >= max_lim:
+                    break
+
+            payload = json.dumps({
+                "type": "list",
+                "headline": titulos_cat.get(cat_id, "CinePro TV"),
+                "template": {
+                    "type": "separate",
+                    "layout": "0,0,2,2",
+                    "color": "msx-glass"
+                },
+                "items": itens_msx
             }, ensure_ascii=False).encode('utf-8')
             self.send_response(200)
             self.send_header('Content-Type', 'application/json; charset=utf-8')
