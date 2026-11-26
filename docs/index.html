@@ -1483,8 +1483,10 @@ header{background:linear-gradient(180deg,rgba(0,0,0,0.96) 0%,rgba(20,20,20,0.92)
                 }
                 return;
             }
-            if (typeof selecionarCategoria === 'function') {
-                selecionarCategoria('vip');
+            if (typeof selecionarCategoriaDireta === 'function') {
+                document.body.classList.remove('channels-minimized');
+                const pillVip = document.querySelector('.q-pill[data-cat="vip"]');
+                selecionarCategoriaDireta('vip', pillVip);
                 mostrarHUD('👑 Exibindo canais da categoria VIP Completo!');
             }
         }
